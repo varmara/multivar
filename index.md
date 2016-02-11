@@ -48,7 +48,7 @@ description: Презентации к курсу Анализ и визуали
 
 ## Ссылки и ресурсы
 
-- [Исходный код в RMarkdown](http://github.com/varmara/linmodr-course)
+- [Исходный код в RMarkdown](http://github.com/varmara/multivar-course)
 - [Другие ресурсы и книги для изучения R и статистики](pages/resources.html)
 
 <!--
