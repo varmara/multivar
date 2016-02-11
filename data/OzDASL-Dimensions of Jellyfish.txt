@@ -1,0 +1,36 @@
+Dimensions of Jellyfish
+
+Keywords: Principal components
+
+------------------------------------------------------------------------
+
+
+    Description
+
+Dimensions in millimetres are given of two samples of jellyfish from
+Hawkesbury River in New South Wales, Australia. One of the samples came
+from Dangar Island and the other from Salamander Bay. The first column
+contains a "D" if the measurement came from Dangar Island and a "S" if
+it came from Salamander Bay. The dimensions measured were length and
+width. What can one learn from graphing the two principal components?
+Try graphing principal components of the logarithms of the measurements.
+Can the dimensions determine the location?
+
+
+    Download
+
+Data file <jellfish.txt> (tab-delimited text)
+
+
+    Source
+
+Lunn, A.D. and McNeil, D.R. (1991) /Computer-Interface Data Analysis/,
+Chichester: John Wiley & Sons, 308.
+Hand D.J., Daly F., Lunn A.D., McConway K.J., Ostrowski E. (1994) /A
+Handbook of Small Data Sets./ London: Chapman & Hall. Data set 335.
+
+ 
+
+------------------------------------------------------------------------
+http://www.statsci.org/data/oz/jellfish.html
+

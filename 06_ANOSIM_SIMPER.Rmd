@@ -1,0 +1,536 @@
+---
+title: "Тестирование гипотез на основе многомерных данных: ANOSIM, SIMPER и тест Мантела"
+author: "Вадим Хайтов"
+highlighter: highlight.js
+output: pdf_document
+job: Каф. Зоологии беспозвоночных, СПбГУ
+mode: standalone
+hitheme: idea
+subtitle: Многомерные методы на R, весна 2015
+framework: io2012
+widgets: mathjax
+
+---
+
+# Вы сможете
+
++ Протестировать гипотезу о различиях между дискретными группами многомерных данных с помощью теста ANOSIM
++ Выявить переменные, вносящие наибольший вклад в формирование различий между группами, применив процедуру SIMPER
++ Протестировать гипотезу о наличии в данных некоторого специфичского паттерна с помощью метода модельных матриц.
+
+
+
+
+```{r setup, include = FALSE, cache = FALSE, eval = -3}
+#----------------------------------------------------------------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = 
+          c("no_intra_emphasis",# skip markdown embedded in words
+            "tables",           # create HTML tables
+            "fenced_code",      # treat text as verbatim when surrounded with begin and ending lines with three ~ or ' characters.
+            "autolink",         # create HTML links from urls and email addresses.
+            "strikethrough",    # create strikethroughs by surrounding text with ~~.
+            "lax_spacing",      # allow HTML tags inside paragraphs without being surrounded by newlines.
+            "space_headers",    # add a space between header hashes and the header itself.
+            "latex_math"))      # transforms all math equations into syntactically correct MathJax equations.
+#--------------------------------------------------------------
+# output options
+options(width = 90, # set the maximum number of columns on a line
+        scipen = 6, # fixed notation of floating point numbers, unless it is more than scipen digits wider, else - exponential notation
+        digits = 4) # the number of digits to print when printing numeric values
+
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+
+# chunk default options
+library(knitr)
+opts_chunk$set(
+#   fig.align='center',  # default figure alignment
+               warnings = FALSE,
+               message = FALSE,
+               fig.width = 10,      # default figure width
+               fig.height = 6)      # default figure height
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+
+```
+
+--- &twocol
+
+# Вспомним основы
+
+*** =left
+<img src="figure/underwood.png" width="450" height="500" alt="Underwood, 1997">
+(Underwood, 1997)
+
+*** =right
+Этапы работы с гипотезами
+
++ Формулировка биологической гипотезы
++ Численное выражение биологической гипотезы ($H$)
++ Формулировка альтернативной гипотезы ($H_0$ - нулевой гипотезы)
++ Тестирование нулевой гипотезы
+
+
+Если $H_0$ ложна, то признаем, что верна $H$ и, следовательно, биологическую гипотезу можно рассматривать как истинное утверждение
+
+Если $H_0$ истинна, то…
+
+---- .segue
+
+# Процедура ANOSIM (ANalysis Of SIMilarity)
+
+---- &twocol
+
+# Различаются ли сообщества, связанные с мидиевыми банками, сформированными крупными и мелкими мидиями? 
+
+Khaitov, 2013   
+
+***=left
+
+```{r, echo=TRUE}
+com <- read.csv("mussel_beds.csv", sep=';', header = T)
+log_com <- com
+log_com [,4:15] <- log(com [,4:15]+1)
+```
+
+***=right
+
+<img src="figure/musselbed.png" width="450" height="350" alt="Мидиевая банка">
+
+----
+
+# Задание
+
++ Постройте ординацию описаний в осях nMDS на основе матрицы Брея-Кёртиса
++ Раскрасьте разными цветами точки, относящиеся к двум разным группам: "Large dominated"  и  "Small dominated"
+
+----
+
+# Решение
+
+Обратите внимание, здесь есть две группы расстояний между точками
+
+```{r, echo=FALSE, results='hide'}
+library(vegan)
+library(ggplot2)
+theme_set(theme_bw())
+ord_log_com <- metaMDS(log_com[, 4:15], distance = "bray", k=2)
+MDS <- data.frame(ord_log_com$points)
+ 
+```
+```{r, echo=FALSE}
+ggplot(MDS, aes(x=MDS1, y=MDS2, fill = log_com$Mussel_size)) + geom_point(shape=21, size = 4) + scale_fill_manual(values = c("red", "blue")) + labs(fill = "Mussel size structure type") + ggtitle(paste("Stress =", round(ord_log_com$stress, 3), sep=" "))
+
+```
+
+----
+
+## 1. Внутригрупповые расстояния  
+
+![Within group distance](figure/witnin group distances.png)
+
+----
+
+## 2. Межгрупповые расстояния
+
+![between group distance](figure/Between groups distances.png)
+
+
+---
+
+Для работы удобно (но не обязательно!) перейти от исходных расстояний между объектами, к их рангам   
+
+Обозначим внутригрупповые расстояния (ранги), как $r_w$, а межгрупповые, как $r_b$.    
+<br>
+
+Вычислим   
+
+* средние значения внутригрупповых рангов расстояний $R_w$ 
+* средние значения межгрупповых рангов расстояний $R_b$
+
+---
+
+На основе полученных значений можно построить статистику
+
+$$R_{global}=\frac{R_b-R_w}{n(n-1)/4}$$
+
+Эта статистика распределена в интервале -1 < $R_{global}$ < 1
+
+Статистическая значимость этой величины оценивается пермутационным методом
+
+----
+
+# Процедура ANOSIM в пакете `vegan`
+
+```{r}
+com_anosim <- anosim(log_com[,4:15], 
+                     grouping = com$Mussel_size, 
+                     permutations=999, 
+                     distance="bray")
+
+```
+
+
+### Задание
+Изучите структуру объекта `com_anosim` и постройте частотное распределени значений $R_{global}$, полученных при каждом акте пермутации
+
+----
+
+## Результаты оценки статистики $R_{global}$ при пермутациях
+
+```{r, echo=FALSE}
+anosim_perm <- data.frame(perm = com_anosim$perm)
+anosim_perm[(com_anosim$permutations + 1), 1] <- com_anosim$statistic
+ggplot(anosim_perm, aes(x = perm)) + geom_histogram(bin=0.01, color = "black", fill = "blue") + geom_vline(xintercept = com_anosim$statistic, linetype= 2)
+
+```
+
+----
+
+```{r}
+summary(com_anosim)
+```
+
+
+--- &twocol
+
+# Ограничения (Assumptions) для пирменения ANOSIM
+
+*** =left
+* Внутригрупповые расстояния (ранги) должны иметь приблизительно равные медианы и пределы варьирования.
+
+
+Для проверки этого допущения надо сравнить распределения внутригрупповых и межгрупповых расстояний (рангов)
+
+**** =right
+
+### Распределение расстояний имеет следующий вид
+
+```{r fig.width=7, fig.height=5, warning=FALSE}
+plot(com_anosim, main = "Dissimilarity ranks between and within classes")
+```
+
+
+----
+
+
+ANOSIM позволяет сравнивать одновременно и несколько групп
+---------------
+
+НО! Есть одно очень важное ограничение: Попарные сравненения групп можно осуществлять только если было показано, что $R_{global}$ достоверно.
+<br>
+Если это условие выплнено, то можно проводить попарные сравнения    
+<br>
+<br>
+
+Пусть у нас есть три группы объектов: A, B, C.   
+
+Можно вычислить $R_{A vs B}$, $R_{A vs C}$, $R_{B vs C}$.
+
+
+
+НО! При больших объемах выборки даже незначительные различия будут достоверны. Важно обращать внимание не только на оценку статистической значимости, но и на значения R! 
+<br>
+<br>
+<br>
+NB! Для сравнения нескольких групп многомерных объектов, есть более мощное средство - PERMANOVA 
+
+
+---
+
+# Задание
+
++ Постройте ординацию в осях nMDS, раскрасив точки в разные цвета в зависимости от номера мидиевой банки
++ Проверьте гипотезу о различиях в струкутре сообществ на разных банках
++ Проверьте условия применимости ANOSIM
++ Проведите попарное сравнение всех банок
+
+----
+
+# Решение
+
+```{r, echo=FALSE}
+ggplot(MDS, aes(x=MDS1, y=MDS2, fill = log_com$Bank)) + geom_point(shape=21, size = 4) + scale_fill_manual(values = c("red", "blue", "green")) + labs(fill = "Mussel beds") + ggtitle(paste("Stress =", round(ord_log_com$stress, 3), sep=" "))
+```
+
+---
+
+```{r}
+bed_anosim <- anosim(log_com[,4:15], 
+                     grouping = log_com$Bank, 
+                     permutations=999, 
+                     distance="bray")
+```
+
+---
+
+# Условия применимости
+
+```{r}
+plot(bed_anosim)
+```
+
+
+----
+
+# Попарные сравнения
+
+```{r}
+#Vor2 vs Vor4
+anosim(log_com[, 4:15] [log_com$Bank %in% c("Vor2", "Vor4"),], 
+       grouping = log_com$Bank[log_com$Bank %in% c("Vor2", "Vor4")])
+```
+
+----
+
+# Попарные сравнения
+
+```{r}
+#Vor2 vs Vor5
+anosim(log_com[, 4:15] [log_com$Bank %in% c("Vor2", "Vor5"),], grouping = log_com$Bank[log_com$Bank %in% c("Vor2", "Vor5")])
+```
+
+----
+
+# Попарные сравнения
+
+```{r}
+#Vor4 vs Vor5
+anosim(log_com[, 4:15] [log_com$Bank %in% c("Vor4", "Vor5"),], grouping = log_com$Bank[log_com$Bank %in% c("Vor4", "Vor5")])
+```
+
+----
+
+# Проблема малых выборок
+
+При малых выборках пермутационная оценка уровня значимсоти может не выявить достоверных различий, даже при очень высоком значении R.
+
+
+----
+
+# Какие признаки зависимой матрицы вносят наибольший вклад в формирование различий между группами?
+## Процедура SIMPER
+
+```{r, eval=FALSE}
+log_com_simper <- simper(log_com[,4:15], group = log_com$Mussel_size, permutations = 999)
+summary (log_com_simper)
+```
+
+---
+
+# Оценка вклада в формирование различий
+
+$$ Contr_i = \frac{|{y_{i,j}-y_{i,k}}|}{\sum{(y_{i,j}-y_{i,k})}} $$
+
+Величины $Contr_i$ далее усредняются для всех межгрупповых пар 
+
+$sd$ - среднеквадратичное отклонение 
+
+Отношение $Contr_i / sd$ характеризует дискриминирующую силу переменной 
+
+----
+# Задание
+
+Выявитие виды, отвечающие за различия в сообществах разых банок
+
+----
+# Решение
+
+
+```{r}
+summary(simper(log_com[, 4:15], 
+               group = log_com$Bank, 
+               permutations = 999 ))
+```
+
+
+---
+
+# Проверка гипотез с помощью *модельных матриц* 
+
+Рассмотрим данные трансект, описывающих сообщества кораллового рифа (Сlarke et al., 1993) до и после антропогенного воздействия
+
+```{r, echo=FALSE}
+
+corall <- read.csv("corall.csv", header=TRUE, sep=";")
+
+corall <- corall[-c(1,13),] 
+
+corall83 <- (corall[corall$Year==1983,])^(1/2)
+corall87 <- (corall[corall$Year==1987,])^(1/2)
+
+corall83 <- corall83[,-1]
+
+corall87 <- corall87[,-1]
+
+```
+```{r, echo=FALSE, results='hide'}
+mds_cor83 <- metaMDS(corall83, distance="bray")
+mds_cor83 <- as.data.frame(mds_cor83$points) 
+mds_cor87 <- metaMDS(corall87, distance="bray")
+mds_cor87 <- as.data.frame(mds_cor87$points) 
+
+```
+
+
+```{r, echo=FALSE }
+pl_cor83 <- ggplot(mds_cor83, aes(x=MDS1, y=MDS2))
+pl83 <- pl_cor83 + geom_point(size=5)
+
+for(i in 1:(nrow(mds_cor83)-1)) 
+ pl83 <- pl83 + geom_segment(x=mds_cor83$MDS1[i], y=mds_cor83$MDS2[i], xend=mds_cor83$MDS1[i+1], yend=mds_cor83$MDS2[i+1], color="blue") 
+
+pl83 <- pl83 + ggtitle("1983,Before impact") 
+
+
+pl_cor87 <- ggplot(mds_cor87, aes(x=MDS1, y=MDS2))
+pl87 <- pl_cor87 + geom_point(size=5)
+
+for(i in 1:(nrow(mds_cor87)-1)) 
+ pl87 <- pl87 + geom_segment(x=mds_cor87$MDS1[i], y=mds_cor87$MDS2[i], xend=mds_cor87$MDS1[i+1], yend=mds_cor87$MDS2[i+1], color="blue" ) 
+
+pl87 <- pl87 + ggtitle("1987, After impact") 
+
+grid.arrange(pl83, pl87)
+
+```
+
+---
+
+# Сравним эти две сопряженные матрицы с помощью теста Мантела
+
+```{r}
+dist_corall83 <- vegdist(corall83, method="bray")
+dist_corall87 <- vegdist(corall87, method="bray")
+mantel(dist_corall83, dist_corall87, method="spearman")
+```
+
+---
+
+## Сообщества изменились!
+
+Из результатов MDS видно, что изменился паттерн варьирования сообществ вдоль трансекты. Визуально он был градиентным, а стал пятнистым. 
+
+---
+
+# Протестируем гипотезу о градиентном характере распределения методом модельных матриц.
+
+```{r, echo=FALSE, warning=FALSE}
+model <- data.frame(X=seq(from=1, to=nrow(mds_cor83)), Y=seq(from = 2, to = (nrow(mds_cor83)+1)))
+dist_model <- vegdist(model, method="euclidian")
+mds_model <- model 
+```
+```{r, echo=FALSE}
+pl_model <- ggplot(mds_model, aes(x=X, y=Y))
+plm <- pl_model + geom_point(size=5, colour="red")
+
+for(i in 1:(nrow(mds_model)-1)) 
+ plm <- plm + geom_segment(x=mds_model$X[i], y=mds_model$Y[i], xend=mds_model$X[i+1], yend=mds_model$Y[i+1], color="blue", ) 
+
+plm + ggtitle("Gradient model")
+```
+
+---
+
+# Этот градиент может быть описан матрицей эвклидовых расстояний. 
+
+Это и будет *Модельная матрица* 
+
+```{r}
+dist_model
+```
+
+---
+
+Далее необходимо сравнить матрицы расстояний, полученные на основе биологических данных (матрицы Брея-Кёртиса), с `модельной` матрицей эвклидовых расстояний.   
+
+```{r}
+mantel_corall83_model <- mantel(dist_corall83, dist_model, method="spearman")
+mantel_corall87_model <- mantel(dist_corall87, dist_model, method="spearman")
+
+```
+
+В результате сравнения матрицы, описывающей сообщество кораллов в 1983 г., статистика $\rho =$`r mantel_corall83_model$statistic`, ее уровень значимости $p=$ `r mantel_corall83_model$signif`. Это означает, что *паттерн распределения кораллов очень похож на модельный паттерн*.
+
+При сравнении матрицы, описывающей сообщество кораллов в 1987 г., статистика $\rho =$ `r mantel_corall87_model$statistic`, ее уровень значимости $p=$ `r mantel_corall87_model$signif`. *Нет соответствия градиентному паттерну!*
+
+---
+
+# Могут быть и более сложные модельные матрицы
+
+```{r, echo=FALSE, fig.height=7, fig.width=7}
+cycmod <- function(x)
+  {
+  points <- data.frame(X=c(1:x), Y=c(1:x))
+  for (i in 1:x) 
+    {
+    points$X[i] <- cos(2*pi*(i-1)/x)
+    points$Y[i] <- sin(2*pi*(i-1)/x)
+    }
+  
+  return(points)
+  }
+
+qplot(cycmod(10)$X, cycmod(10)$Y, xlab="X", ylab="Y", size=4) 
+
+```
+
+---
+
+# Рассмотрим суточный ход температуры и влажности, измеренных в лесу. 
+
+```{r, echo=FALSE, results='hide'}
+
+temp <- read.csv("daydynamics.csv", header=TRUE, sep=";")
+dist_temp <- vegdist(temp[-c(1)], method="euclidian")
+mds_temp <- metaMDS(dist_temp)
+mds_temp <- as.data.frame(mds_temp$points) 
+pl_temp <- ggplot(mds_temp, aes(x=MDS1, y=MDS2))
+plt <- pl_temp + geom_point(size=5, colour="red")
+
+for(i in 1:(nrow(mds_temp)-1)) 
+ plt <- plt + geom_segment(x=mds_temp$MDS1[i], y=mds_temp$MDS2[i], xend=mds_temp$MDS1[i+1], yend=mds_temp$MDS2[i+1], color="blue", ) 
+```
+```{r, echo=FALSE}
+plt + ggtitle("Diurnal changes in parameters")+ theme_bw()
+
+```
+
+---
+
+# Сравним наблюдаемый паттерн с модельным
+
+```{r}
+dist_model <- vegdist(cycmod(nrow(temp)), method="euclidean")
+mantel(dist_temp, dist_model, method="spearman")
+
+```
+
+Вполне циклический процесс!
+
+---
+# Summary
+
++ Простейший вариант сравнения нескольких групп объектов, охарактеризованных по многим признакам, - ANOSIM
++ Вклад отдельных переменных в формирование различий между группами можно оценить с помощью процедуры SIMPER
++ Можно формулировать гипотезу о существоывании некоторого паттерна, который описывается модельной матрицей. Проверка соответствия паттерну производится с помощью теста Мантела.  
+
+----
+
+# Что почитать
+
+* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth.
+* Legendre P., Legendre L. (2012) Numerical ecology. Second english edition. Elsevier, Amsterdam.

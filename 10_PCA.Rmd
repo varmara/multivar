@@ -1,0 +1,1089 @@
+---
+title       : Анализ главных компонент
+subtitle    : Многомерные методы на R, весна 2014
+author      : Марина Варфоломеева
+job         : Каф. Зоологии беспозвоночных, СПбГУ
+framework   : io2012
+highlighter : highlight.js
+hitheme     : idea
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : standalone # {selfcontained, standalone, draft}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+#------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", "strikethrough", "lax_spacing", "space_headers", "latex_math"))
+#------
+# output options
+options(width = 70, scipen = 6, digits = 3) 
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align = 'center', fig.width = 10, fig.height = 6, cache = FALSE, comment="#") 
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+```
+
+```{r, libs-funs, echo=FALSE}
+library(ggplot2)
+library(grid)
+theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
+update_geom_defaults("point", list(shape = 19, size = 4))
+library(gridExtra)
+```
+
+
+## Анализ главных компонент
+
+- Анализ главных компонент - Principal Component Analysis (PCA)
+- Немного базовой статистики и операции над матрицами
+- Действительно многомерные данные
+    - Сколько компонент нужно оставить?
+    - Интерпретация компонент
+    - Ординация объектов
+    - Создание комплексных переменных
+
+## Вы сможете
+
+- Проводить анализ главных компонент при помощи функций из пакета `vegan`
+- Оценивать долю дисперсии, объясненной компонентами
+- Снизить размерность данных, оставив небольшое число компонент
+- Интерпретировать смысл компонент по их факторным нагрузкам
+- Строить ординацию объектов в пространстве главных компонент
+- Создавать комплексные переменные и использовать их в других видах анализов
+
+--- .segue
+
+## Анализ главных компонент - Principal Component Analysis (PCA)
+
+Бывают такие данные, когда мы не можем выделить четких групп объектов, но нам нужно сравнить множество объектов сразу по множеству признаков.
+
+Примеры: 
+- морфометрия
+- климатические переменные
+- экспрессия генов
+
+---
+
+## Облако точек в многомерном пространстве
+
+![Flocks of peep sandpipers in the marsh](./figs/Migration-DonMcCullough-Flickr.jpg)
+
+Migration by Don McCullough
+on [Flickr](https://flic.kr/p/fEFhCj)
+
+---
+
+## Не все проекции несут важную информацию
+
+![black shadows for a white horses / les negres ombres dels cavalls blancs by  Ferran Jordà](./figs/BlackShadows-FerranJorda-Flickr.jpg)
+
+black shadows for a white horses / les negres ombres dels cavalls blancs by  Ferran Jordà
+on [Flickr](https://flic.kr/p/9XJxiL)
+
+---
+
+## Можно найти оптимальную проекцию, чтобы сохранить максимум информации в минимуме измерений
+
+![Cat's shadow](./figs/CatsShadow-MarinaDelCastell-Flickr.jpg)
+
+Cat's shadow by Marina del Castell on [Flickr](https://flic.kr/p/ebe5UF)
+
+---
+
+## Объекты упорядочиваются в новой системе координат
+
+![Order please!](./figs/OrderPlease-lapidim-Flickr.jpg)
+
+Order please! by lapidim on [Flickr](https://flic.kr/p/6dBMB)
+
+---
+
+## Применение PCA
+
+- сжатие изображений
+- распознавание лиц
+- анализ формы (геометрическая морфометрия)
+- создание комплексных признаков для других анализов
+
+--- .segue
+
+## немного базовой статистики и операции над матрицами
+
+### Чтобы понять как это делается,
+
+--- &twocol
+
+## Описание единственной переменной
+
+*** =left
+
+- Среднее значение - оценка центральной тенденции
+
+$$\bar x = \frac{\sum_{i=1}^{n}{x _i}}{n}$$
+
+- Дисперсия - сумма квадратов отклонений от среднего
+
+$$SD^2 = \frac{\sum_{i=1}^{n}{(x _i - \bar x)^2}}{n - 1}$$
+
+- Стандартное отклонение - оценка среднеквадратичного расстояния от среднего значения.
+
+$$SD = \sqrt{\frac{\sum_{i=1}^{n}{(x _i - \bar x)^2}}{n - 1}}$$
+
+$\bar x - SD_x <$ 68% всех значений $< \bar x + SD_x$
+
+*** =right
+
+```{r echo = F, fig.width=6}
+M <- 57
+S <- 15
+dat <- data.frame(X = rnorm(500, M, S))
+
+library(MASS) # для fitdistr()
+
+ggplot(dat, aes(x = X)) + 
+  geom_histogram(binwidth = 5, colour = "black", fill = "grey85") +
+  stat_function(fun=function(x, mean, sd)5*nrow(dat)*dnorm(x, mean, sd), args=fitdistr(dat$X,"normal")$estimate, colour = "red", size = 1) +
+  geom_vline(x = mean(dat$X) - sd(dat$X), colour = "blue", size = 1, linetype = "dashed") +
+  geom_vline(x = mean(dat$X), colour = "red", size = 1, linetype = "dashed") +
+  geom_vline(x = mean(dat$X) + sd(dat$X), colour = "blue", size = 1, linetype = "dashed")
+```
+
+--- &twocol
+
+## Описание связи нескольких переменных
+
+- Ковариация - мера совместного варьирования двух признаков
+
+$Cov(X, Y) = \frac {\sum_{i = 1}^n{(x_i - \bar x)(y_i - \bar y)}}{n - 1}$, $- \infty < Cov(X, Y) < \infty$
+
+```{r, echo=FALSE, fig.width=13, fig.height=4}
+# Function adapted from http://stats.stackexchange.com/a/15035/21302
+# returns a data frame of two variables which correlate with a population correlation of rho
+# If desired, one of both variables can be fixed to an existing variable by specifying x
+getBiCop <- function(n, rho, mar.fun=rnorm, x = NULL, ...) {
+     if (!is.null(x)) {X1 <- x} else {X1 <- mar.fun(n, ...)}
+     if (!is.null(x) & length(x) != n) warning("Variable x does not have the same length as n!")
+     C <- matrix(rho, nrow = 2, ncol = 2)
+     diag(C) <- 1
+     C <- chol(C)
+     X2 <- mar.fun(n)
+     X <- cbind(X1,X2)
+     # induce correlation (does not change X1)
+     df <- X %*% C
+     df <- as.data.frame(df)
+     colnames(df) <- c("X", "Y")
+     ## if desired: check results
+     #all.equal(X1,X[,1])
+     #cor(X)
+     return(df)
+}
+corrs <- c(-0.9, -0.5, 0, 0.5, 0.9)
+set.seed(245817)
+dats <- lapply(corrs, getBiCop, n = 20, x = rnorm(20, sd = 1.7))
+
+g_covr <- lapply(1:length(dats), function(i) ggplot(data = dats[[i]], aes(x = X, y = Y)) + geom_point(alpha = 0.7, colour = "steelblue") + coord_equal(xlim = c(-7, 7), ylim = c(-7, 7))+ theme(axis.text = element_blank(), axis.ticks = element_blank(), plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"), axis.ticks.margin = unit(0, "mm"), panel.margin = unit(0.5, "mm")) + annotate(geom = "text", x = 0, y = 6, label = paste("cov =", round(cov(dats[[i]]$X, dats[[i]]$Y), 2)), size = 8) + annotate(geom = "text", x = 0, y = -6, label = paste("r =", round(cor(dats[[i]]$X, dats[[i]]$Y), 2)), size = 8))
+
+grid.arrange(g_covr[[1]], g_covr[[2]], g_covr[[3]], g_covr[[4]], g_covr[[5]], nrow = 1)
+```
+
+- Корреляция Пирсона - стандартизованная ковариация
+
+$Cor(X, Y) = \frac {Cov(X, Y)}{SD_X SD_Y}$, $- 1 < Cor(X, Y) < 1$
+
+---
+
+### Ковариация зависит от масштаба шкалы
+
+```{r, echo=FALSE, fig.height=3}
+set.seed(245817)
+dat_scale <- getBiCop(n = 20, rho = 0.8, x = rnorm(20, sd = 1.7))
+dat_scale$Y10 <- dat_scale$Y*10
+
+g_scat <- ggplot(data = dat_scale, aes(x = X, y = Y)) +
+    geom_point(alpha = 0.7, colour = "steelblue") + 
+    coord_cartesian(xlim = c(-7, 7), ylim = c(-7, 7))+ 
+    theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"), panel.margin = unit(0.5, "mm")) 
+
+g_unscaled <- g_scat + 
+    annotate(geom = "text", x = 0, y = 6, label = paste("cov =", round(cov(dat_scale$X, dat_scale$Y), 2)), size = 8) + 
+    annotate(geom = "text", x = 0, y = -6, label = paste("r =", round(cor(dat_scale$X, dat_scale$Y), 2)), size = 8)
+
+g_scaled <- g_scat + aes(y = Y10) + coord_cartesian(xlim = c(-7, 7), ylim = c(-70, 70)) + 
+    annotate(geom = "text", x = 0, y = 60, label = paste("cov =", round(cov(dat_scale$X, dat_scale$Y10), 2)), size = 8) + 
+    annotate(geom = "text", x = 0, y = -60, label = paste("r =", round(cor(dat_scale$X, dat_scale$Y10), 2)), size = 8)
+
+grid.arrange(g_unscaled + ggtitle(""), g_scaled + ggtitle("Масштаб Y увеличен"), nrow = 1)
+```
+
+### Ковариация чувствительна к выбросам
+
+```{r, echo=FALSE, fig.height=3}
+dat_scale$Y_outlier <- dat_scale$Y
+dat_scale <- dat_scale[order(dat_scale$Y_outlier), ]
+dat_scale$Y_outlier[19] <- dat_scale$Y[19] + 15
+
+g_scat_out <- g_scat %+% dat_scale + aes(y = Y_outlier) + coord_cartesian(xlim = c(-7, 7), ylim = c(-7, 26)) + 
+    annotate(geom = "text", x = 0, y = 23, label = paste("cov =", round(cov(dat_scale$X, dat_scale$Y_outlier), 2)), size = 8) + 
+    annotate(geom = "text", x = 0, y = -5, label = paste("r =", round(cor(dat_scale$X, dat_scale$Y_outlier), 2)), size = 8)
+
+grid.arrange(g_unscaled + ggtitle("Без выбросов"), g_scat_out + ggtitle("С выбросом"), nrow = 1)
+```
+
+---
+
+## Матрица ковариаций - описывает совместное варьирование множества переменных
+
+$$
+C = 
+\begin{pmatrix}
+cov(x, x) & cov(x, y) & cov(x, z) \\
+cov(y, x) & cov(y, y) & cov(y, z) \\
+cov(z, x) & cov(z, y) & cov(y, z) \\
+\end{pmatrix}$$
+
+Поскольку дисперсия - это ковариация признака с самим собой
+
+$$Cov(X, X) = \frac {\sum_{i = 1}^n{(x_i - \bar x)(x_i - \bar x)}}{n - 1} = \frac {\sum_{i = 1}^n{(x_i - \bar x)^2}}{n - 1} = SD^2$$
+
+большая диагональ матрицы ковариаций содержит дисперсии признаков
+
+$$
+С = \begin{pmatrix}
+SD_x^2 & cov(x, y) & cov(x, z) \\
+cov(y, x) & SD_y^2 & cov(y, z) \\
+cov(z, x) & cov(z, y) & SD_z^2 \\
+\end{pmatrix}$$
+
+> - __Раз матрица ковариаций описывает изменчивость всех признаков, хорошо бы научиться находить с ее помощью максимально варьирующие направления...__
+
+---
+
+## Умножение матрицы на вектор
+
+Сумма почленных произведений строки на столбец
+
+$$
+\begin{pmatrix}
+2 & 3 \\
+2 & 1 \\
+\end{pmatrix} \times 
+\begin{pmatrix}
+1 \\
+3 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+2 \times 1 + 3 \times 3 \\
+2 \times 1 + 1 \times 3 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+11 \\
+5 \\
+\end{pmatrix}$$
+
+$$
+\begin{pmatrix}
+1 & 2 & 3\\
+4 & 5 & 6 \\
+\end{pmatrix} \times
+\begin{pmatrix}
+7 \\
+8 \\
+9 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+1 \times 7 + 2 \times 8 + 3 \times 9 \\
+4 \times 7 + 5 \times 8 + 6 \times 9 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+50 \\
+122 \\
+\end{pmatrix}
+$$
+
+$$
+\begin{pmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6 \\
+\end{pmatrix} \times
+\begin{pmatrix}
+7 \\
+8 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+1 \times 7 + 2 \times 8 \\
+3 \times 7 + 4 \times 8 \\
+5 \times 7 + 6 \times 8 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+23 \\
+53 \\
+83 \\
+\end{pmatrix}
+$$
+
+> - __У некоторых векторов есть особые свойства! Они нам помогут находить максимально изменчивые направления__
+
+---
+
+## Cобственные вектора и собственные числа
+
+$$
+\begin{pmatrix}
+2 & 3 \\
+2 & 1 \\
+\end{pmatrix} \times
+\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+12 \\
+8 \\
+\end{pmatrix} = 
+4 \times
+\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix}$$
+
+Cобственное число $4$
+
+Cобственный вектор:
+
+$$\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix}$$
+
+### Свойства собственных векторов:
+
+- Собственные вектора и собственные числа есть только у некоторых квадратных матриц
+- У матрицы $n \times n$ будет _n_ собственных векторов
+- Собственные вектора перпендикулярны друг другу
+- Собственные вектора задают направления в пространстве, вдоль которых дисперсия максимальна
+
+---
+
+## От изменения длины собственных векторов не меняется собственное число
+
+Если умножить собственный вектор на число, то получится собственный вектор с таким же собственным числом. __Следствие - собственные вектора можно использовать для определения новой системы координат!__
+
+Было:
+
+$$
+\begin{pmatrix}
+2 & 3 \\
+2 & 1 \\
+\end{pmatrix} \times
+\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+12 \\
+8 \\
+\end{pmatrix} = 
+4 \times
+\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix}$$
+
+Если собственный вектор умножить на 3:
+
+$$
+4 \times
+\begin{pmatrix}
+3 \\
+2 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+9 \\
+6 \\
+\end{pmatrix}
+$$
+
+Станет:
+
+$$
+\begin{pmatrix}
+2 & 3 \\
+2 & 1 \\
+\end{pmatrix} \times
+\begin{pmatrix}
+9 \\
+6 \\
+\end{pmatrix} = 
+\begin{pmatrix}
+36 \\
+8 \\
+\end{pmatrix} = 
+4 \times
+\begin{pmatrix}
+9 \\
+48 \\
+\end{pmatrix}$$
+
+--- &twocol
+
+## Пример работы PCA: морфометрия медуз из реки Хоксбери
+
+*** =left
+
+Данные о размерах медуз _Catostylus mosaicus_ из реки Хоксбери (Новый Южный Уэльс, Австралия). Часть медуз собрана на острове Дангар, другая - в заливе Саламандер.
+
+
+*** =right
+
+![Bluber jellies](./figs/Blubberjellies-KirstiScott-Flickr.jpg)
+
+Blubber jellies! by  Kirsti Scott
+on [Flickr](https://flic.kr/p/nWikVp)
+
+<div class = "footnote">Данные из Lunn & McNeil 1991</div>
+
+
+--- &twocol
+
+## Двумерные исходные данные
+
+```{r echo = FALSE}
+jelly <- read.delim("jellyfish.csv")
+library(ggplot2)
+theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
+update_geom_defaults("point", list(shape = 19, size = 4))
+p_raw <- ggplot(jelly, aes(x = width, y = length)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) + 
+  coord_equal()
+```
+
+*** =left
+
+```{r, echo = FALSE}
+jelly
+```
+
+*** =right
+
+```{r, echo=FALSE, fig.width=6}
+p_raw
+```
+
+--- &twocol
+
+## Центрируем исходные данные
+
+```{r echo = FALSE}
+jelly$c_width <- jelly$width - mean(jelly$width)
+jelly$c_length <- jelly$length - mean(jelly$length)
+jelly <- jelly[order(jelly$c_width), ]
+# library(dplyr)
+# jelly <- jelly %>% 
+#   mutate(c_width = width - mean(width),
+#          c_length = length - mean(length))
+
+p_centered <- ggplot(jelly, aes(x = c_width, y = c_length)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) + 
+  coord_equal()
+```
+
+*** =left
+
+```{r echo=FALSE}
+jelly[, c(1, 4:5)]
+```
+
+*** =right
+
+```{r echo=FALSE, fig.width=6}
+p_centered
+```
+
+--- &twocol
+
+## Находим новые оси с помощью собственных векторов и собственных чисел
+
+```{r echo = FALSE}
+#covariance and new axes
+Covar <- cov(jelly[, c("c_width", "c_length")])
+eigen_values <- eigen(Covar)$values
+eigen_vectors <- eigen(Covar)$vectors
+jelly$pc1 <- eigen_vectors[2,1]/eigen_vectors[1,1] * jelly$c_width
+jelly$pc2 <- eigen_vectors[2,2]/eigen_vectors[1,2] * jelly$c_width
+
+# plot of future axes
+p_futureax <- ggplot(jelly, aes(x = c_width, y = c_length)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) +
+  geom_line(aes(x = c_width, y = pc1), linetype = "dashed") +
+  geom_line(aes(x = pc2, y = c_width), linetype = "dashed") + 
+  coord_equal() +
+  geom_segment(aes(x = 0, y = 0, xend = eigen_vectors[1, 1], yend = eigen_vectors[2,1]), colour = "red", size = 2) + 
+  geom_segment(aes(x = 0, y = 0, xend = eigen_vectors[1, 2], yend = eigen_vectors[2,2]), colour = "red", size = 2)
+```
+
+*** =left
+
+Матрица ковариаций:
+```{recho=FALSE}
+Covar
+```
+
+Собственные числа:
+```{r echo=FALSE}
+eigen_values
+```
+
+<br />
+Собственные вектора:
+```{r echo=FALSE}
+eigen_vectors
+```
+
+*** =right
+
+```{r echo=FALSE, fig.width=6}
+p_futureax
+```
+
+--- &twocol
+
+## Пересчитываем координаты точек в новом пространстве
+
+*** =left
+
+```{r echo=FALSE, fig.width=6}
+p_futureax
+# p_futureax + 
+#   geom_line(aes(x = c_width, y = predict(lm(c_length ~ c_width))), colour = "red", size = 1) + 
+#   geom_line(aes(x = predict(lm(c_width ~ c_length)), y = c_length), colour = "steelblue", size = 1)
+```
+
+До поворота осей
+
+*** =right
+
+```{r echo=FALSE, fig.width=6, message=FALSE}
+row_feature_vec <- t(eigen_vectors)
+row_data_centered <- t(jelly[, 4:5])
+findat <- row_feature_vec %*% row_data_centered
+fincoord <- as.data.frame(t(findat))
+colnames(fincoord) <- c("PC1", "PC2")
+
+p_rotated <- ggplot(fincoord, aes(x = PC1, y = PC2)) +
+  geom_point() +   
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) + 
+  coord_equal(ratio = 1, ylim = c(-10, 10))
+
+p_rotated
+
+# Можно добыть данные обратно
+# row_data_backtransformed <- t(row_feature_vec) %*% findat
+# row_data_orig <- t(row_feature_vec) %*% findat + orig_mean
+
+# То же самое в vegan
+# Вектора масштабированы
+# library(vegan)
+# jelly_pca <- rda(jelly[, 4:5], scale = TRUE)
+# biplot(jelly_pca) 
+# spec <- as.data.frame(scores(jelly_pca, display=c("sites"), scaling = 3))
+# vars <- as.data.frame(scores(jelly_pca, display=c("species"), scaling = 3))
+# p_rotated + geom_segment(data = jelly_vars, aes(x = 0, y = 0, xend = PC1, yend = PC2, label = rownames(jelly_vars))) + coord_equal(xlim = c(-3.5, 4.5), ylim = c(-1, 1))
+```
+
+После поворота осей
+
+---
+
+## Медузы упорядочились по размеру
+
+```{r echo=FALSE, fig.width=13, message=FALSE}
+p_rotated + 
+  aes(colour = jelly$location) + 
+  scale_color_brewer("Location", palette = "Set1") +
+  coord_equal()
+```
+
+- PC1 - больше всего изменчивости
+- PC2 - то, что осталось
+
+--- .segue
+
+## Действительно многомерные данные
+
+---
+
+## Пример: Потребление белков в странах Европы с разными видами продуктов питания
+
+![Paleo Diet by zsoolt](./figs/PaleoDiet-zsoolt-Flickr.jpg)
+
+Paleo Diet by zsoolt on [Flickr](https://flic.kr/p/pPK1nz)
+
+<div class = "footnote">Данные из Weber, 1973</div>
+
+---
+
+## Открываем данные
+
+```{r}
+library(XLConnect, quietly = TRUE)
+protein <- readWorksheetFromFile(file="protein.xls", sheet = 1)
+# protein <- read.table(file="protein.csv", sep="\t", dec=".", header=TRUE)
+protein$region <- factor(protein$region)
+rownames(protein) <- protein$country
+head(protein)
+```
+
+<div class = "footnote">Данные из Weber, 1973</div>
+
+--- .prompt
+
+## Как группируются страны по употреблению разных продуктов? 
+
+- Постройте ординацию стран при помощи nMDS с использованием евклидова расстояния
+- Постройте график ординации.
+- Нанесите при помощи envfit вектора изменения исходных переменных.
+
+---
+
+## Как группируются страны по потреблению продуктов? 
+
+```{r, message=FALSE, fig.width = 7}
+library(vegan)
+ord_nmds <- metaMDS(protein[, 3:ncol(protein)], distance = "euclidean", trace = 0)
+ef <- envfit(ord_nmds, protein[, 3:ncol(protein)])
+plot(ord_nmds, display = "site", type = "t", cex = 0.8)
+plot(ef)
+```
+
+---
+
+## Тот же график в ggplot
+
+```{r, ord_nmds_plot, echo = FALSE, fig.height=8}
+# данные
+df <- data.frame(protein[, 1:2], ord_nmds$points)
+const <- 0.2 # константа для масштабирования длин векторов в edf
+edf <- data.frame(scores(ef, display = "vectors") * const,
+                  pval = ef$vectors$pvals)
+# поправки для размещения подписей
+edf$hjust[edf$NMDS1 >= 0] <- -0.1
+edf$hjust[edf$NMDS1 < 0] <- 0.1
+edf$vjust[edf$NMDS2 >= 0] <- -0.1
+edf$vjust[edf$NMDS2 < 0] <- 0.25
+# достоверные виды
+edf_sign <- edf[edf$pval <= 0.05, ] 
+
+library(grid) # для стрелочек
+ar <- arrow(length = unit(0.25, "cm"))
+
+nmds_p <- ggplot(df, aes(x = MDS1, y = MDS2)) + 
+  geom_text(aes(label = country, colour = region), fontface = "bold", size = 6) + 
+  geom_segment(data = edf_sign, aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2), 
+               colour = "grey40", arrow = ar) + 
+  geom_text(data = edf_sign, aes(x = NMDS1, y = NMDS2, label = rownames(edf_sign)), 
+            size = 6, vjust = edf_sign$vjust, hjust = edf_sign$hjust) + 
+  coord_equal(xlim = c(-0.2, 0.2), ylim = c(-0.2, 0.2))
+nmds_p
+```
+
+---
+
+## Код для графика в ggplot
+
+```{r, ord_nmds_plot, eval = FALSE}
+```
+
+---
+
+## Анализ главных компонент
+
+```{r message = FALSE}
+prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
+summary(prot_pca)
+```
+
+
+---
+
+## Собственные вектора и собственные числа
+
+```
+Eigenvalues, and their contribution to the correlations 
+
+Importance of components:
+                         PC1    PC2    PC3    PC4     PC5     PC6  ...  
+Eigenvalue            4.0064 1.6350 1.1279 0.9547 0.46384 0.32513 ...
+Proportion Explained  0.4452 0.1817 0.1253 0.1061 0.05154 0.03613 ...
+Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...
+```
+
+### Свойства главных компонент (Principal Components)
+
+- Не скоррелированы друг с другом (ортогональны)
+- Вдоль компонент максимальный разброс
+- Чем больше собственное число (__Eigenvalue__), тем больше дисперсия вдоль оси (__Proportion Explained [variance]__)
+
+---
+
+## 1) Сколько компонент нужно оставить?
+
+- Эмпирические правила
+    - Объясняют больше чем по Broken Stick Model.
+    - Компоненты у которых соб. число > 1 (правило Кайзера-Гатмана)
+    - В сумме объясняют заданный % от общей изменчивости (60-80%) - слишком субъективно
+
+> - Это условности!
+
+--- .prompt
+
+## Постройте график собственных чисел в ggplot
+
+### Собственные числа можно добыть так:
+
+```{r}
+eigenvals(prot_pca) # собственные числа
+bstick(prot_pca) # ожидаемое по Brocken Stick Model
+```
+
+```{r, echo=FALSE}
+# Вам понадобятся
+# geom_line(aes(group = 1))
+# geom_point()
+```
+
+---
+
+## Графики собственных чисел
+
+```{r, evplot, echo = FALSE}
+# screeplot(prot_pca, type = "lines", bstick = TRUE) # график собственных чисел
+
+# Данные для ggplot
+eig <- data.frame(pc = factor(1:length(eigenvals(prot_pca))),
+           eigenval = as.vector(eigenvals(prot_pca)), 
+           bstick = bstick(prot_pca))
+# График
+eig_p_kaiser <- ggplot(eig, aes(x = pc, y = eigenval)) + 
+  geom_line(aes(group = 1), colour = "red") + geom_point(colour = "red") + 
+  geom_hline(yintercept = mean(eigenvals(prot_pca)), colour = "gray70") +
+  labs(x = "Компоненты", y = "Собственные числа")
+# график с brocken stick model
+eig_p_bstick <- eig_p_kaiser + 
+  geom_line(aes(x = pc, y = bstick, group = 1)) + 
+  geom_point(aes(x = pc, y = bstick))
+
+library(gridExtra)
+grid.arrange(eig_p_kaiser, eig_p_bstick, ncol = 2)
+```
+
+---
+
+## Код для графиков собственных чисел
+
+```{r, evplot, eval=FALSE}
+```
+
+--- &twocol
+
+## 2) Интерпретация компонент
+
+Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте
+
+*** =left
+
+- Модуль значения нагрузки - величина вклада 
+- Знак значения нагрузки - направление вклада
+
+```{r}
+scores(prot_pca, display = "species", 
+       choices = c(1, 2, 3), scaling = 0)
+```
+
+*** =right
+
+### Первая главная компонента:
+
+Высокие __положительные нагрузки по первой главной компоненте__ у переменных `cereals` и `nuts`. Значит, чем больше значение первой компоненты, тем больше потребление злаков и орехов.
+
+Высокие __отрицательные нагрузки__ у переменных `eggs`, `milk`, `whitemeat`, `redmeat`. Значит, чем меньше значение первой компоненты, тем больше потребление яиц, молока, белого и красного мяса. 
+
+> - Т.е. первую компоненту можно назвать "Мясо - злаки и орехи"
+
+--- &twocol
+
+## 2) Интерпретация компонент
+
+Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте
+
+*** =left
+
+- Модуль значения нагрузки - величина вклада 
+- Знак значения нагрузки - направление вклада
+
+```{r}
+scores(prot_pca, display = "species", 
+       choices = c(1, 2, 3), scaling = 0)
+```
+
+*** =right
+
+### Вторая главная компонента:
+
+Высокие __положительные нагрузки по второй главной компоненте__ у переменных `fish`, `frveg`. Значит, чем больше значение второй компоненты, тем больше потребление рыбы, овощей.
+
+Высоких __отрицательных нагрузкок по второй главной компоненте__ нет ни у одной из переменных. 
+
+> - Т.е. вторую компоненту можно назвать "Потребление рыбы и овощей"
+
+---
+
+## Параметр `scaling`
+
+Внимание! Координаты объектов или переменных можно получить в нескольких вариантах, отличающихся масштабом. От этого масштаба будет зависеть интерпретация.
+
+```{r, echo=FALSE, results='asis'}
+df <- data.frame(
+  scaling = c("1", "2", "3", "0"),
+  bip = c("биплот расстояний", "биплот корреляций", "", ""),
+  scaled = c("координаты объектов масштабированы (х корень из соб. чисел)", "координаты признаков масштабированы (х корень из соб. чисел)", "масштабированы координаты объектов и признаков (х корень 4-й степени из соб. чисел)", "нет масштабирования"),
+  dist = c("апроксимируют евклидовы", "НЕ апроксимируют евклидовы", "", ""),
+  ang = c("нет смысла", "отражают корреляции", "", "")
+  )
+
+colnames(df) <- c("scaling", "Название графика", "Масштаб", "Расстояния между объектами", "Углы между векторами")
+
+kable(df)
+```
+
+--- &twocol
+
+## Можно нарисовать график факторных нагрузок
+
+*** =left
+
+```{r}
+scores(prot_pca, display = "species", 
+       choices = c(1, 2, 3), scaling = 2)
+```
+
+*** =right
+
+```{r, fig.width=6}
+biplot(prot_pca, display = "species", scaling = 2)
+```
+
+---
+
+## График факторных нагрузок в ggplot
+
+```{r, load-p, echo=FALSE}
+df_load <- as.data.frame(scores(prot_pca, display = "species", 
+                                choices = c(1, 2, 3), scaling = 2))
+# поправки для размещения подписей
+df_load$hjust[df_load$PC1 >= 0] <- -0.1
+df_load$hjust[df_load$PC1 < 0] <- 1
+df_load$vjust[df_load$PC2 >= 0] <- -0.1
+df_load$vjust[df_load$PC2 < 0] <- 1
+library(grid) # для стрелочек
+ar <- arrow(length = unit(0.25, "cm"))
+
+p_load <- ggplot(df_load) + 
+  geom_text(aes(x = PC1, y = PC2, label = rownames(df_load)), 
+            size = 5, vjust = df_load$vjust, hjust = df_load$hjust) + 
+  geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC2), 
+               colour = "grey40", arrow = ar) + 
+  coord_equal(xlim = c(-1.9, 1.9), ylim = c(-1.9, 1.9))
+p_load
+```
+
+---
+
+## Код для графика факторных нагрузок
+
+```{r, load-p, eval=FALSE}
+```
+
+--- &twocol
+
+## 3) Ординация объектов
+
+Факторные координаты отражают положение объектов в пространстве главных компонент
+
+*** =left
+
+```{r}
+# Значения факторов (= факторные координаты)
+scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1)
+```
+
+*** =right
+
+```{r, fig.height=6, fig.width=6}
+biplot(prot_pca, display = "sites")
+```
+
+---
+
+## График ординации в ggplot
+
+```{r fig.height=6}
+df_scores <- data.frame(protein[, 1:2],
+  scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
+
+p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) + geom_point() + 
+  geom_text(aes(label = country), hjust = 1, vjust = -1) + 
+  coord_equal(xlim = c(-1.4, 1.4), ylim = c(-1.4, 1.4))
+p_scores
+```
+
+---
+
+## Несколько графиков рядом
+
+```{r, warning=FALSE, fig.width=14}
+library(gridExtra)
+grid.arrange(p_load, p_scores, ncol = 2, widths = c(0.42, 0.58))
+```
+
+---
+
+## В данном случае, результаты PCA похожи на nMDS
+
+```{r, compare-nmds, warning=FALSE, echo = FALSE, fig.height=8, fig.width=14}
+grid.arrange(p_scores, p_load + coord_fixed(ratio = 1.5, xlim = c(-2, 2), ylim = c(-0.8, 1.6)), nmds_p, ncol = 2)
+```
+
+---
+
+## В этом примере результаты PCA похожи на nMDS потому что:
+
+- исходные признаки - количественные, нормально распределенные переменные, связанные друг с другом линейно. Для ординации объектов с такими признаками подходит PCA. Для описания различий между объектами подходит евклидово расстояние
+- для данной nMDS-ординации использовано евклидово расстояние
+- расстояния между объектами на любой ординации PCA соответствуют их евклидовым расстояниям в пространстве главных компонент
+
+--- &twocol
+
+## 4) Создание комплексных переменных
+
+Факторные координаты - это новые составные признаки, которых можно использовать вместо исходных переменных
+
+*** =left
+
+Свойства факторных координат:
+
+- Среднее = 0, Дисперсия = 1
+- Не коррелируют друг с другом
+
+Применение:
+
+  - Уменьшение числа зависимых переменных - для дисперсионного анализа
+  - Уменьшение числа предикторов - во множественной регрессии
+
+*** =right
+
+```{r}
+# Значения факторов (= факторные координаты)
+scores(prot_pca, display = "sites", 
+       choices = c(1, 2, 3), scaling = 1)
+```
+
+--- .prompt
+
+## При помощи дисперсионного анализа проверьте, различается ли значение первой главной компоненты ("Мясо - злаки и орехи") между разными регионами Европы
+
+---
+
+## Дисперсионный анализ
+
+> - Регионы Европы различаются по потреблению мяса, злаков и орехов
+
+```{r}
+# Значения факторов (= факторные координаты)
+df <- data.frame(region = protein$region,
+  scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
+mod <- lm(PC1 ~ region, data = df)
+anova(mod)
+```
+
+---
+
+## Проверка условий применимости дисперсионного анализа
+
+> - Условия применимости дисперсионного анализа выполняются
+
+```{r, fig.width=13, fig.height=4}
+mod_diag <- fortify(mod)
+res_p <- ggplot(data = mod_diag, aes(x = .fitted, y = .stdresid)) + geom_point(aes(size = .cooksd)) + geom_hline(yintercept = 0) + geom_smooth(method="loess", se=FALSE) 
+mean_val <- mean(mod_diag$.stdresid)
+sd_val <- sd(mod_diag$.stdresid)
+norm_p <- ggplot(mod_diag, aes(sample = .stdresid)) + geom_point(stat = "qq") + geom_abline(intercept = mean_val, slope = sd_val)
+grid.arrange(res_p, norm_p, ncol = 2, widths = c(0.55, 0.45))
+```
+
+---
+
+## График значений первой компоненты по регионам
+
+```{r, pc1_p, fig.width = 12, fig.height=6}
+df$region <- reorder(df$region, df$PC1, FUN=mean)
+ggplot(df, aes(x = region, y = PC1, colour = region)) + 
+  stat_summary(geom = "pointrange", fun.data = "mean_cl_boot", size = 1) + 
+  theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1)) 
+```
+
+---
+
+## Пост-хок тест
+
+```{r}
+TukeyHSD(aov(mod))
+```
+
+---
+
+## Take home messages
+
+>- Применение метода главных компонент (PCA):
+  - снижение размерности данных
+  - исследование связей между переменными
+  - построение ординации объектов
+  - создание комплексных переменных
+> - Терминология:
+  - Собственные числа - вклад компонент в общую изменчивость
+  - Факторные нагрузки - корреляции исходных переменных с компонентами - используются для интерпретации
+  - Значения факторов - новые координаты объектов в пространстве уменьшенной размерности
+
+---
+
+## Дополнительные ресурсы
+
+- Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
+- Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
+- Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.
+- The Ordination Web Page [WWW Document], n.d. URL http://ordination.okstate.edu/ (accessed 10.21.13).
+- Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.
+- Zuur, A.F., Ieno, E.N., Smith, G.M., 2007. Analysing ecological data. Springer.
+

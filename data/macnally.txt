@@ -1,0 +1,19 @@
+##############################################################################
+#									     #
+#	Legend of formats and contents for data files accompany		     #
+#	"Experimental Design and Data Analysis for Biologists"		     #
+#	By G. P. Quinn and M. J. Keough, 2002			   	     #
+#									     #
+#	----------------------------------------------------------	     #
+#	Used in Box 17-3, Box 18-4, Fig 17-4, Fig 18-5			     #
+#									     # 
+##############################################################################
+
+Format of the files: (Box 17-3, Box 18-4, Fig 17-4, Fig 18-5)
+	* macnally.xls (Microsoft Excel)
+	* macnally.csv (comma delimeted ascii text file)
+
+File contents:
+	* SITE - sites in Southern Australia from which seasonal abundances of 102 species of birds were measured
+	* HABITAT - habitat type of each site
+	* V1.. through V102.. - abundances of birds

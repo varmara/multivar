@@ -1,0 +1,58 @@
+------------------------------------------------------------------------
+Go to Main Menu </DASL/DataArchive.html>
+
+	
+Go to Power Search </cgi-bin/dasl.cgi>
+
+	
+Go to Topics Listing </DASL/alltopics.html>
+
+	
+Go to Methods Listing </DASL/allmethods.html>
+
+------------------------------------------------------------------------
+**
+*Story Name:* Protein Consumption in Europe **
+*Story Topics:* Europe
+</cgi-bin/dasl.cgi?query=Europe&submit=Search&metaname=topics&sort=swishrank>
+, Health
+</cgi-bin/dasl.cgi?query=Health&submit=Search&metaname=topics&sort=swishrank>
+, Nutrition
+</cgi-bin/dasl.cgi?query=Nutrition&submit=Search&metaname=topics&sort=swishrank>
+**
+*Datafile Name:* Protein <../Datafiles/Protein.html> **
+*Methods:* Cluster analysis
+</cgi-bin/dasl.cgi?query=Cluster+analysis&submit=Search&metaname=methods&sort=swishrank>
+, Principal components
+</cgi-bin/dasl.cgi?query=Principal+components&submit=Search&metaname=methods&sort=swishrank>
+**
+*Abstract:* These data measure protein consumption in twenty-five
+European countries for nine food groups. It is possible to use
+multivariate methods to determine whether there are groupings of
+countries and whether meat consumption is related to that of other foods.
+
+A complete linkage cluster analysis of all nine variables shows that the
+diets of the countries can be divided into several groups according to
+their geographic locations. In the plot below, each group has been
+denoted by a different color. From top to bottom in the plot, the groups
+are: Eastern Europe (blue) containing East Germany, Czechoslovakia,
+Poland, USSR, and Hungary; Scandinavia (green) containing Sweden,
+Denmark, Norway, and Finland; Western Europe (red) containing UK,
+France, West Germany, Belgium, Ireland, the Netherlands, Austria, and
+Switzerland; Iberian (purple) containing Spain and Portugal;
+Mediterranean (orange) containing Italy and Greece; and the Balkans
+(yellow) containing Yugoslavia, Romania, Bulgaria, and Albania.
+
+Clustering the observations using single linkage gives different results
+that are not so easily interpreted.
+
+A principal components analysis of the nine variables reveals four large
+dimensions of variability. The first principal component may be
+interpreted roughly as a measure of total meat consumption. The second,
+third, and fourth principal components may be interpreted as red meat,
+white meat, and fish consumption respectively. **
+
+*Image:* A plot of the complete linkage cluster analysis of the protein
+data
+
+------------------------------------------------------------------------

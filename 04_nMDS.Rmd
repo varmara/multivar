@@ -1,0 +1,633 @@
+---
+title: "Ординация объектов и Многомерное шкалирование "
+author: "Вадим Хайтов"
+highlighter: highlight.js
+output: pdf_document
+job: Каф. Зоологии беспозвоночных, СПбГУ
+mode: standalone
+hitheme: idea
+subtitle: Многомерные методы на R, весна 2015
+framework: io2012
+widgets: mathjax
+
+---
+
+# Вы сможете
+
+- Построить диаграмму простейшей непрямой ординации.
+- Построить диаграмму nMDS.
+- Охарактеризовать качество ординации с помощью величины стресса.
+- Сравнить результаты нескольких ординаций
+
+
+
+
+```{r setup, include = FALSE, cache = FALSE, eval = -3}
+#----------------------------------------------------------------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = 
+          c("no_intra_emphasis",# skip markdown embedded in words
+            "tables",           # create HTML tables
+            "fenced_code",      # treat text as verbatim when surrounded with begin and ending lines with three ~ or ' characters.
+            "autolink",         # create HTML links from urls and email addresses.
+            "strikethrough",    # create strikethroughs by surrounding text with ~~.
+            "lax_spacing",      # allow HTML tags inside paragraphs without being surrounded by newlines.
+            "space_headers",    # add a space between header hashes and the header itself.
+            "latex_math"))      # transforms all math equations into syntactically correct MathJax equations.
+#--------------------------------------------------------------
+# output options
+options(width = 90, # set the maximum number of columns on a line
+        scipen = 6, # fixed notation of floating point numbers, unless it is more than scipen digits wider, else - exponential notation
+        digits = 4) # the number of digits to print when printing numeric values
+
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+
+# chunk default options
+library(knitr)
+opts_chunk$set(
+#   fig.align='center',  # default figure alignment
+               warnings = FALSE,
+               message = FALSE,
+               fig.width = 10,      # default figure width
+               fig.height = 6)      # default figure height
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+```
+
+--- .segue
+
+# Часть 1. Общие принципы ординации объектов
+
+---
+
+# Определения
+_Ординация_ (лат. ordinatio - расположение в порядке) - это упорядочивание объектов вдоль некоторых осей, определяющих варьирование объектов.
+
+_Прямая ординация_ - упорядочивание объектов вдоль осей реальных признаков (параметры среды, обилия видов, значения морфометрических параметров)   
+
+_Непрямая ординация_ - упорядочивание происходит вдоль направления изменения сходства объектов. 
+
+
+---- &twocol
+
+# Сообщества бентоса акватории Долгой губы (о. Б. Соловецкий)
+Нинбург, 1990; Хайтов и др., 2013   
+
+*** =left
+Используется сокращенный набор данных: Численность наиболее обильных видов
+
+Таблица 1.    
+25 видов (признаки)    
+68 станций (объекты)   
+
+Таблица 2.   
+4 признака: Глубина, Температура придонной воды, Соленость, Степень гидратации грунта.   
+68 станций (объекты)
+
+
+*** =right
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=9}
+library(ggmap)
+ggmap(work_map, fullpage = F, darken=0) + ggtitle("Solovetsky island")
+
+```
+
+
+----
+
+# Читаем данные
+
+```{r}
+abund <- read.table("dolg_abundance.txt", skip = 1, header = TRUE, sep = ";" )
+hydrol <- read.table("dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";" )
+```
+
+----
+
+# Прямая ординаця станций в осях Глубины и Солености
+
+Задание: Постройте диаграмму, отражающую ординацию станций в осях Глубины и Солености, но так чтобы была еще видна связь с суммарным обилием видов в пробах .
+
+---- &twocol
+
+# Прямая ординаця станций в осях Температуры и Солености
+## Решение
+
+*** =left
+```{r, eval=FALSE}
+ggplot(hydrol, aes(x = Temp, y = Sal, 
+                   size = (apply(abund[,-1], 1, FUN=sum )))) 
+  + geom_point(size = 4) 
+  + theme_bw() 
+  + labs(size = "Total abundance") 
+```
+
+*** =right
+```{r, echo=FALSE, fig.width=6, fig.align='right' }
+ggplot(hydrol, aes(x = Temp, y = Sal, size = (apply(abund[,-1], 1, FUN=sum )))) + geom_point()  + theme_bw() + labs(size = "Total abundance") 
+       
+       
+```
+
+----
+
+# Висконсинская полярная ординация 
+Это простейший прием непрямой ординации
+
+Шаг 1. Подготовим данные для анализа.
+```{r}
+log_abund <- log(abund[,-1] + 1)
+row.names(log_abund) <- abund$Station
+
+```
+
+----
+
+# Висконсинская полярная ординация 
+
+Шаг 2. Вычисление матрицы сходства/различия между объектами.     
+Из дедактических соображений возьмем матрицу Эвклидовых расстояний. 
+
+```{r}
+library(vegan)
+E_dist <- vegdist(log_abund, method = "euclidean")
+E_dist
+```
+
+----
+
+# Висконсинская полярная ординация 
+
+Шаг 3. Найдем наиболее различающиеся объекты (максимальное эвклидово расстояние между ними). 
+
+```{r, echo=FALSE}
+unfolding <- function(x, method = "euclidean") {
+  n <- nrow(x)
+  N <- (n^2 - n)/2
+  unfold <- data.frame(i = 1:N, Object_j = NA, Object_k = NA, Distance = NA)
+  pos <- 0
+  for(i in 1:(n-1)) for(j in (i+1):n) {
+    pos <- pos + 1
+    unfold$Object_j[pos] <- i
+    unfold$Object_k[pos] <- j
+  
+  }
+  unfold$Distance <- as.vector(vegdist(x, method = method))
+  unfold
+}
+
+
+polarord <- function(x, method = "euclidean") {
+  dist <- unfolding(x)
+  polar_distance <- max(dist$Distance)
+  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
+  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
+  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
+  for(i in 1:nrow(x)) {
+    
+    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
+    if (i !=  Object_polus1 & i !=  Object_polus2)  BC <- dist$Distance[(dist$Object_j == i  & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1  & dist$Object_k == i)]
+    if (i !=  Object_polus1 & i !=  Object_polus2)  AB <- dist$Distance[(dist$Object_j == i  & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2  & dist$Object_k == i)]
+    if (i !=  Object_polus1 & i !=  Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
+                     
+  }
+  Polar_coord$Coord[Object_polus1] <- 0
+  Polar_coord$Coord[Object_polus2] <- polar_distance
+  Polar_coord
+}
+
+
+New_coord <- polarord(log(abund[, -1]+1))
+
+```
+
+```{r}
+dist <- unfolding(log_abund) #Пользовательская функция
+
+dist[dist$Distance == max(dist$Distance),]
+
+```
+
+Эти два объекта и задают ось, вдоль которой будет производиться ординация.
+
+----
+
+# Висконсинская полярная ординация 
+
+Шаг 4. Координаты каждого из объектов на этой оси могут быть найдены, согласно правилам треугольника  
+
+Возьмем любую другую точку, например "S2"
+
+```{r, echo=FALSE}
+a <- dist$Distance[dist$Object_j == 1 & dist$Object_k == 2]
+
+b <- New_coord$Coord[New_coord$Object == 2]
+
+c <- sqrt(a^2 - b^2) 
+
+d <- dist$Distance[dist$Distance == max(dist$Distance)]
+
+point <- data.frame(X = c(0, d, b),Y = c(0, 0, c))
+
+ggplot(point, aes(x=X, y=Y)) +  ylim(-1, 14) +geom_text(aes(0, -1), label = "S1") + geom_text(aes(d, -1), label = "S45") + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 2, color = "red") + geom_text(x=(b-3), y=1, label ="Polar axis 1") + geom_segment(x = 0, xend = b, y = 0, yend=c, size = 1, color = "black") + geom_segment(x = d, xend = b, y = 0, yend=c, size = 1, color = "black")  + geom_point(size=4, color="blue") + geom_text(x = b, y = (c + 1), label = "S2") + geom_segment(x = b, xend = b, y = 0, yend=c, size = 1, color = "black", linetype=2) + geom_point(aes(x=b, y=0), size = 4, color="yellow") + geom_text(x=5, y=8, label = "D 1-2") + geom_text(x=17.5, y=8, label = "D 45-2") + geom_text(x=b, y= -1, label = "D 1-45") + theme_bw() + ggtitle("Point's coordinate on the polar axis")
+  
+
+```
+
+----
+
+# Висконсинская полярная ординация 
+
+Шаг 5. Вычисляем координаты на полярной оси для каждого объекта. 
+```{r, echo=FALSE}
+unfolding <- function(x, method = "euclidean") {
+  n <- nrow(x)
+  N <- (n^2 - n)/2
+  unfold <- data.frame(Position = 1:N, Object_j = NA, Object_k = NA, Distance = NA)
+  pos <- 0
+  for(i in 1:(n-1)) for(j in (i+1):n) {
+    pos <- pos + 1
+    unfold$Object_j[pos] <- i
+    unfold$Object_k[pos] <- j
+  
+  }
+  unfold$Distance <- as.vector(vegdist(x, method = method))
+  unfold
+}
+
+
+polarord <- function(x, method = "euclidean") {
+  dist <- unfolding(x)
+  polar_distance <- max(dist$Distance)
+  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
+  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
+  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
+  for(i in 1:nrow(x)) {
+    
+    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
+    if (i !=  Object_polus1 & i !=  Object_polus2)  BC <- dist$Distance[(dist$Object_j == i  & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1  & dist$Object_k == i)]
+    if (i !=  Object_polus1 & i !=  Object_polus2)  AB <- dist$Distance[(dist$Object_j == i  & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2  & dist$Object_k == i)]
+    if (i !=  Object_polus1 & i !=  Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
+                     
+  }
+  Polar_coord$Coord[Object_polus1] <- 0
+  Polar_coord$Coord[Object_polus2] <- polar_distance
+  Polar_coord
+}
+
+
+New_coord <- polarord(log_abund)
+
+
+ggplot(New_coord, aes(x=Coord, y =0)) + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 2, color = "red") + geom_point(aes(fill = hydrol$Depth), position = position_jitter(width = 0, height=0.1), size = 4, shape = 21) + ylim(-1, 1) + scale_fill_gradient(low = "cyan", high = "darkblue") + xlab("New coordinate") + ylab("") + theme_bw() + labs(fill = "Depth") 
+
+```
+
+----
+
+# Висконсинская полярная ординация 
+
+Шаг 6. При необходимости, находим следующую пару наиболее несходных объектов и вычисляем координаты для каждой точки на новой оси.   
+
+_At!_ Одновременное изображение информации об обеих полярных осях на одной диаграмме невозможно!   
+Мы не знаем как взаимосвязаны эти оси. Они могут быть неортогональны. 
+
+---- .segue
+
+# Non-metric multidimensional scaling (nMDS)
+
+----
+
+# Результаты функции `metaMDS()`
+
+```{r}
+library (vegan)
+ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
+ord
+```
+
+---
+# Графическое представление результатов средствами пакета `vegan`
+
+```{r}
+ordiplot(ord, display = "sites" )
+# text(ord) #Можно добавить обозначения сайтов (объектов)
+```
+
+----
+
+# Графическое представление результатов средствами `ggplot2`
+
+Задание: Исследуйте объект `ord` и извлеките из него данные с новыми координатами 
+
+----
+# Графическое представление результатов средствами `ggplot2`
+
+## Решение
+
+```{r}
+ord$points
+```
+
+----
+
+# Графическое представление результатов средствами `ggplot2`
+
+```{r}
+ord_MDS <- data.frame(ord$points)
+
+ggplot(ord_MDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(fill = hydrol$Depth),  size = 4, shape = 21) + scale_fill_gradient(low = "cyan", high = "darkblue") + theme_bw() + labs(fill = "Depth")
+```
+
+----
+
+# Важные свойства MDS  
+1. Ординация сохраняет ранг расстояний между объектами (похожие располагаются близко, непохожие - далеко).
+2. Значения координат точек в ординации лишены смысла (их вообще можно не приводить на итоговой ординации), имеет смысл лишь взаиморасположение объектов.
+3. Облако точек в осях MDS можно вращать, перемещать, зеркально отражать. Суть ординации от этого не изменится.
+
+
+---- .segue
+
+# Часть 3. Механика nMDS
+
+----
+
+# Задание: 
+- Создайте датафрейм, содержащий исходные (без логарифмировнаия) данные, включающий только данные по сайтам S17, S33, S37, S38, S44, S59.   
+- Постройте ординацию этих объектов с использованием в качестве меры различия коэффициент Брея-Кётиса.    
+- Измерьте линейкой расстояния между точками на бумаге.    
+- Сравните матрицу коэффициентов Брея-Кётиса и матрицу расстояний между точками на ординации.   
+
+
+----
+
+# Решение
+
+
+```{r, eval=FALSE}
+red_abund <- abund[abund$Station %in% c("S17", "S33", "S37", "S38", "S44", "S59"), ]
+row.names(red_abund) <- c("S17", "S33", "S37", "S38", "S44", "S59")
+ord1 <- metaMDS(red_abund[,-1], distance = "bray")
+ordiplot(ord1, display = "sites", type = "text")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8, fig.align='center'}
+ordiplot(ord1, display = "sites", type = "text")
+# ggplot(data.frame(ord1$points), aes(x=MDS1, y=MDS2)) + geom_point() + geom_text(aes(label = row.names(ord1$points))) + theme_bw()
+
+```
+
+
+-----
+
+# Взаиморасположение точек на плоскости подобно взаиморасположению точек в многомерном пространстве признаков
+
+```{r, echo=FALSE}
+
+dist_compare = data.frame(Bray = as.vector(vegdist(red_abund)), MDS = as.vector(vegdist(ord1$points, method = "euclidean")))
+ggplot(dist_compare, aes(x=Bray, y=MDS)) + geom_point(size=4)+ theme_bw() + xlab("Bray-Curtis dissimilarity") + ylab("Distance between points on ordination")
+
+```
+
+----
+# Stress - мера соответствия ординации на плоскости взаиморасположению точек в многомерном пространстве признаков
+
+Для вычисления величины стресса необходимо построить диаграмму Шепарда и подогнать монотонную регресию
+```{r}
+stressplot(ord1)
+```
+По оси OX - откладываются ранжированные (расположенные в порядке возрастания) значения D (коэффициент Брея-Кётиса)
+По оси OY- соответствующие им, значения расстояний на плоскости – Z
+Ломаная линия на диаграмме  - это монотонная регрессия.
+
+----
+
+# Перемешаем все шесть точек в случайном порядке
+
+```{r,echo=FALSE, warning=FALSE}
+rnd_ord <- data.frame(ord1$points)
+rnd1 <- c( 0.7485999,  0.8334655, -0.7273975,  0.1439452, -0.1557106,  0.1390855)
+rnd2 <- c( 0.33177854,  0.80112661, -0.55671397, -0.08128363, -0.28846371, -0.93977094)
+
+rnd_ord$RND1 <- rnd_ord$MDS1 - rnd1
+rnd_ord$RND2 <- rnd_ord$MDS2 - rnd2
+
+row.names(rnd_ord) <- row.names(ord1$points)
+
+pl1 <- ggplot(rnd_ord, aes(x=MDS1, y=MDS2)) +  geom_text(label=row.names(rnd_ord)) + theme_bw() + ggtitle("MDS ordination")
+
+pl2 <- ggplot(rnd_ord, aes(x=RND1, y=RND2))  + geom_text(label=row.names(rnd_ord)) + theme_bw() + ggtitle("Random ordination")
+library(gridExtra)
+grid.arrange(pl1, pl2)
+```
+
+
+----
+
+# Построение монотонной регрессии - up-down algorithm
+
+Выпишем в развернутом виде матрицу коэффициентов Брея-Кётиса, предварительно ранжировав их
+
+```{r, echo=FALSE}
+unfold_bray <- unfolding(red_abund, method="bray")
+unfold_bray2 <-unfold_bray [order(unfold_bray$Distance),]
+unfold_bray2
+```
+
+-----
+
+# Построение монотонной регрессии - up-down algorithm
+
+Выпишем в той же последовательности расстояния между случайно расположенными точками
+
+```{r, echo=FALSE}
+unfold_bray$RND_Distance <- as.vector(dist(rnd_ord[,3:4]))
+unfold_bray2 <-unfold_bray [order(unfold_bray$Distance),]
+unfold_bray2
+```
+
+----
+# Построение монотонной регрессии - up-down algorithm
+Вычисляем последовательно средние значения так, чтобы каждое новое значение было не меньше предыдущего
+
+функция в R: `isoreg()`
+
+```{r, echo=FALSE}
+M_regression <- unfold_bray2
+
+M_regression$Fitted_Monotone_regression <- isoreg(unfold_bray2$Distance, unfold_bray2$RND_Distance)$yf
+
+pl3 <- ggplot(M_regression, aes(x=Distance, y=Fitted_Monotone_regression)) + geom_line(color="blue") + geom_point(aes(x=Distance, y=RND_Distance), size=4) + theme_bw() + xlab("Dissimilarity") + ylab("Distance on ordination(Z)")
+
+pl4 <- ggplot(M_regression, aes(x=Distance, y=Fitted_Monotone_regression)) + geom_line(color="blue") + geom_point(aes(x=Distance, y=RND_Distance), size=4) + geom_segment(x=M_regression$Distance, xend = M_regression$Distance, y = M_regression$RND_Distance, yend =  M_regression$Fitted_Monotone_regression) + theme_bw() + xlab("Dissimilarity")+ ylab("Distance on ordination(Z)") + geom_text(x=0.5, y= 1.8, label = "Zh - deviation from \nfitted monotone regession")
+grid.arrange(pl3, pl4)
+
+```
+
+----
+# Вычсление величины стресса
+
+$$ Stress = \sqrt{\frac{\sum{(Z_i - Zh_i)^2}}{\sum{Z_{i}^2}}}$$
+
+```{r, echo=FALSE}
+stress <- sqrt(  sum((M_regression$RND_Distance - M_regression$Fitted_Monotone_regression)^2) / sum((M_regression$RND_Distance)^2))
+```
+
+Для данной, случайной, ординации точек стресс составляет Stress = `r stress`
+
+
+--- &twocol
+# Алгоритм MDS
+*** =left
+>- 1. Вычисляем матрицу коэффициенттов различия между объектами.
+>- 2. Распределеяем объекты в случайном порядке на плоскости [NB! от первичного распределения точек может зависеть и результат, поэтому на практике используются процедуры оптимального начального размещения точек (PCA)].
+>- 3. Вычисляем значение стресса.
+>- 4. Двигаем точки по плоскости так, чтобы найти минимальное значение стресса.
+>- 5. Повторяем процедуру 2-4 несколько раз для того чтобы избежать локальных минимумов стресса.
+>- 6. Обычно финальную ординацию поворачивают вдоль оси OX так, чтобы ось отражала максимальное варьирование.
+
+*** =right
+
+![Ежик в тумане] (figure/ezhik.png)
+
+
+----
+
+# Задание: Постройте диаграмму Шепарда вместе с монотонной регрессией на полном материале по Долгой губе. Найдите величину стресса.
+
+
+Hint: Используйте функцию stressplot() 
+
+
+---- &twocol
+
+# Решение    
+
+*** =left
+```{r}
+stressplot(ord)
+```
+
+*** =right
+
+Stress = `r ord$stress`   
+
+Надежна ли такая ординация?
+
+----
+
+# Оценка качества подгонки
+
++ Stress < 0.05 Ординация отличная. Можно в деталях проанализировать взаиморасположение точек
++ 0.05 < Stress < 0.1 Хорошая конфигурация.
++ 0.1 < Stress < 0.2 Приемлемая конфигурация. Надо быть осторожными в интерпретации. 
++ Stress > 0.2 Надо проводить ординацию в большем количестве осей. Двумерное изображение неадекватно отражает взаиморасположение точек.
+
+
+-----
+# MDS в трехмерном пространстве
+
+```{r, eval=FALSE, echo=FALSE}
+library(scatterplot3d)
+ord3 <- metaMDS(log_abund, k=3)
+
+```
+
+```{r, echo=FALSE}
+scatterplot3d(x=ord3$points[,1], y=ord3$points[,2], z=ord3$points[,3], xlab="MDS 1", ylab = "MDS 2", zlab = "MDS 3")
+```
+
+Stress = `r ord3$stress`
+
+At! Ни в коем случае не используете координаты 3D MDS для двумерной ординации.
+
+----
+
+# Сравнение ординаций
+
+Задание: постройте ординацию станций с использованием Эвклидова расстояния
+
+-----
+# Решение
+
+```{r, message=FALSE, fig.align='center', fig.height=6}
+ord4 <- metaMDS(log_abund, distance = "euclidean")
+ggplot(data.frame(ord4$points), aes(x = MDS1, y = MDS2)) + geom_point() + theme_bw()
+```
+
+---- &twocol
+
+# Насколько похожи ординации, полученные при использовании коэффициента Брея-Кётиса и Эвклидова расстояния?
+
+*** =left
+```{r, echo=FALSE, fig.width=7}
+ordiplot(ord, display = "site", type = "text", main = "Bray-Curtis")
+```
+
+*** =right
+
+```{r, echo=FALSE, fig.width=7}
+ordiplot(ord4, display = "site", type = "text", main = "Euclidean")
+```
+
+-----
+
+# Прокурстово преобразование
+
+```{r, fig.width=9, fig.align='center'}
+procrust <- procrustes(ord, ord4)
+plot(procrust)
+text(procrust, adj=1, cex = 0.6)
+```
+
+----
+# Трактовка результатов ординации
+
+```{r, echo=FALSE, fig.width=10, fig.align='center'}
+pl6 <- ggplot(data.frame(ord$points), aes(x=MDS1, y=MDS2, fill = hydrol$Depth)) + geom_point(shape=21, size = 4)  + scale_fill_gradient(low = "white", high = "black") + labs(fill = "Depth") +  theme( panel.background = element_rect(fill="white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text =element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title =element_blank() )
+
+pl7 <- ggplot(data.frame(ord$points), aes(x=MDS1, y=MDS2, fill = hydrol$Sal)) + geom_point(shape=21, size = 4) + theme_bw() + scale_fill_gradient(low = "cyan", high = "darkblue") + labs(fill = "Salinity")+  theme( panel.background = element_rect(fill="white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text =element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title =element_blank() )
+
+pl8 <- ggplot(data.frame(ord$points), aes(x=MDS1, y=MDS2, fill = hydrol$Temp)) + geom_point(shape=21, size = 4) + scale_fill_gradient(low = "yellow", high = "red") + theme_bw() + labs(fill = "Temperature")+  theme( panel.background = element_rect(fill="white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text =element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title =element_blank() )
+
+pl9 <- ggplot(data.frame(ord$points), aes(x=MDS1, y=MDS2, fill = hydrol$Water_content)) + geom_point(shape=21, size = 4) + scale_fill_gradient(low = "green", high = "black") + theme_bw() + labs(fill = "Water content") +  theme( panel.background = element_rect(fill="white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text =element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title =element_blank() )
+
+grid.arrange(pl6, pl7, pl8, pl9, ncol = 2)
+
+```
+
+---
+
+# Summary
+
++ Существует много методов непрямой ординации.
++ nMDS - один из методов ординации в пространстве сниженной размерности. При ординации этим методом сохраняются ранги расстояний между объектами.
++ Оценка качества подгонки ординации производится с помощью величины стресса.
++ Значения координат не имеют смысла. Имеет значение только взаиморасположение точек.
++ Результат nMDS зависит от выбора меры различия
+
+-----
+# Литература
+
++ Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
++ Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
++ Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.
++ Zuur, A. F., Ieno, E. N., Smith, G. M. Analysing Ecological Data. Springer 2007    
++ Миркин Б.М., Розенберг Г.С.,  Наумова Л.Г. Словарь понятий и терминов современной фитоцентологии. М. Наука, 1989.
+ 

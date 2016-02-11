@@ -1,0 +1,393 @@
+---
+title: "Анализ связи между наборами данных"
+author: "Вадим Хайтов"
+highlighter: highlight.js
+output: pdf_document
+job: Каф. Зоологии беспозвоночных, СПбГУ
+mode: standalone
+hitheme: idea
+subtitle: Многомерные методы на R, весна 2015
+framework: io2012
+widgets: mathjax
+
+---
+
+# Вы сможете
+
+- Отразить связь между nMDS и значениями признаков объектов, которые не были использованы при построении ординации.
+- Количественно оценить степень взаимосвязи между несколькими наборами данных.
+- Найти ортимальное сочетание признаков, не вошедших в ординацию, которые "объясняют" характер взаиморасположения точек на ординации 
+
+
+
+```{r setup, include = FALSE, cache = FALSE, eval = -3}
+#----------------------------------------------------------------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = 
+          c("no_intra_emphasis",# skip markdown embedded in words
+            "tables",           # create HTML tables
+            "fenced_code",      # treat text as verbatim when surrounded with begin and ending lines with three ~ or ' characters.
+            "autolink",         # create HTML links from urls and email addresses.
+            "strikethrough",    # create strikethroughs by surrounding text with ~~.
+            "lax_spacing",      # allow HTML tags inside paragraphs without being surrounded by newlines.
+            "space_headers",    # add a space between header hashes and the header itself.
+            "latex_math"))      # transforms all math equations into syntactically correct MathJax equations.
+#--------------------------------------------------------------
+# output options
+options(width = 90, # set the maximum number of columns on a line
+        scipen = 6, # fixed notation of floating point numbers, unless it is more than scipen digits wider, else - exponential notation
+        digits = 4) # the number of digits to print when printing numeric values
+
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+
+# chunk default options
+library(knitr)
+opts_chunk$set(
+#   fig.align='center',  # default figure alignment
+               warnings = FALSE,
+               message = FALSE,
+               fig.width = 10,      # default figure width
+               fig.height = 6)      # default figure height
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+```
+
+--- 
+
+# Постановка проблемы
+
+Мы имеем набор объектов, охарактеризованных по двум сопряженным наборам данных
+
+- Обилия видов (M видов x N описаний) и параметры среды (K параметров x N описаний) 
+- Морфометрические показатели (M признаков x N объектов) и генетические признаки (Экспрессия K геов x N объектов)
+- Признаки  хозяина (M признаков x N объектов) и признки паразита (K признаков x N объектов) 
+
+--- &twocol
+
+# Ординация растительности пастбищах северных оленей
+
+Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry Pinus sylvestris forests. Journal of Vegetation Science 6, 523–530.
+
+*** =left
+
+```{r}
+library(vegan)
+data(varespec)
+data(varechem)
+```
+
+
+Два набора данных:
++ `varespec` - Описание растительности (обилия отдельных видов)
++ `varechem` - Параметры среды на участках (Концентрации веществ)
+
+*** =right
+
+<img src="figure/Vare et al 1995 map.png" width="400" height="400 align="middle">    
+
+из Väre, Ohtonen & Oksanen (1995)
+
+---.segue
+
+# Часть 1. Выявление связи ординации объектов и значений конкретных факторов 
+
+---
+
+# Задание
+1. Постройте ординацию описаний растительности в осях MDS.  
+2. Вычислите величину стресса  
+3. Раскрасьте точки в соответствии с концентрацией Al    
+
+Hint. В качестве меры различия используйте коеээфициент Брея-Кёртиса
+
+
+---
+
+# Решение
+```{r, echo=FALSE}
+library(ggplot2)
+veg_MDS <- as.data.frame(veg_ord$points)
+ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  + geom_point(shape=21, size =4)+ scale_fill_gradient(low = "cyan", high = "darkblue") + theme_bw()  + labs(fill = "Aluminium concentration") 
+
+```
+
+
+--- &twocol
+
+# Анализ связи с переменными c помощью функции `envfit()`
+
+*** =left
+```{r}
+env_fit <- envfit(veg_ord, varechem)
+env_fit
+```
+
+*** =right
+
+*В основе работы функции лежит регрессионный анализ*
+
++ Колонки MDS1 и MDS2 содержат косинусы углов (пропорциональны коэффициентам частной корреляции) 
++ r2 - $R^2$ из регресионного анализа
++ Pr(>r) - Пермутационная оценка статистической значимости
+
+----
+
+# Визуализация результатов
+
+```{r}
+plot(veg_ord, display = "site")
+plot(env_fit)
+```
+
+---- 
+
+# Анализ связи с переменными c помощью функции `ordisurf()`
+
+```{r, echo=FALSE,  message=FALSE, results='hide', fig.height=9 }
+env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
+plot(veg_ord, display = "site")
+plot(env_fit2, col = "red")
+ordisurf(veg_ord, varechem$Al, 
+         add = TRUE, col="blue")
+ordisurf(veg_ord, varechem$Mn, 
+         add = TRUE, col="green")
+
+```
+
+
+----
+
+*В основе работы функции лежит анализ обобщенных аддитивных моделей (General Additive Model)*
++ Применяется, когда зависимость нелинейна 
++ Изолинии характеризуют уровень значения фактора для данной области ординации объектов
+
+-----
+# Задание: Отразите связь ординации растительности со значениями концентрации гумуса.  
+
+
+---- .segue
+
+# Часть 2. Тест Мантела   
+
+----
+
+# Постановка проблемы
+Нам необходимо оценить свзаны ли, в целом, два набора данных и оценить силу этой связи
++ Зависит ли растительность от параметров среды?
++ Связаны ли морфологические признаки и экспрессия генов?
++ Связаны ли характеристики паразитов и хозяев?
+
+и т.п.
+
+
+
+----
+# Метод сравнения сопряженных матриц, описывающих попарные расстояния (или сходства), был предложен Натаном Мантелом
+
+<img src="figure/Mantel.png" width="400" height="600 align="middle">
+
+
+--- &twocol
+
+
+*Если две матрицы сопряжены, то меры сходства/различия в одной матрице должны быть подоюбы мерам сходства/различия в другой матрице* 
+
+*** =left
+
+```{r}
+dist_com <- vegdist(varespec, method = "bray")
+dist_chem <- vegdist(varechem, method = "euclidean")
+```
+
+
+*** =right
+
+```{r, echo=FALSE, fig.width=6, fig.height=6}
+x <-as.vector(dist_com)
+y <- as.vector(dist_chem)
+R <- round(cor(x, y, method="spearman"), 3)
+xy <- data.frame (x, y)
+mant <- ggplot(xy, aes(x=x, y=y))
+mant + geom_point(size=3) + xlab ("Biological dissimilarity") + ylab ("Chemical dissimilarity") + annotate("text", x=0.25, y=0.35, label=paste("Rspearmen =", R, sep=" ")) + theme_bw() + geom_smooth(method = "lm", se = FALSE)
+
+```
+
+---
+
+# Корреляция матриц сходства/различия
+
+<img src="figure/Mantel princip.png" width="800" height="600 align="middle">
+
+*ВНИМАНИЕ!*
+Достоверность этой корреляции нельзя оценивать как обычную корреляцию, например функцией `cor.test()` или по таблице пороговых значений коэффициента корреляции.
+
+---
+# Для оценки достоверности мантеловской корреляции применяется пермутационная процедура. Эта процедура реализована в функции `mantel()` в пакете `{vegan}` 
+
+```{r}
+options(digits=4)
+mant <- mantel(dist_com, dist_chem, method="spearman", permutations = 999)
+mant
+```
+
+
+Вероятность истинности $H_0 =$ `r mant$signif`
+
+--- &twocol
+
+*** =left
+
+# Частная Мантеловская корреляция  
+В материале есть одна проблема 
+>- сходство между отдельными описаниями может быть обусловлено не только их биологическими свойствами, но и тем, что они просто располагаются ближе друг к другу в пространстве.    
+
+</br>
+
+>- Корреляция между биологическими признаками и химическими должна оцениваться при учете еще одной матрицы - Матрицы географических расстояний   
+
+```{r}
+geo <- read.table("Coordinates.txt", 
+                  header = TRUE, sep = "\t")
+dist_geo <- vegdist(geo[, -1], 
+                    method = "euclidean")
+```
+
+*** =right
+
+<img src="figure/Vare et al 1995 map.png" width="400" height="400 align="middle">
+
+---
+
+# Частная Мантеловская корреляция  
+
+```{r}
+mantel_partial <- mantel.partial(dist_com, dist_chem, dist_geo, method = "pearson", permutations = 9999)
+mantel_partial
+```
+
+
+---.segue   
+
+# Часть 3. Подбор оптимальной модели: процедура BIO-ENV
+
+----
+
+# Постановка задачи
+
+Необходимо выбрать предикторы, которые наилучшим образом объясняют поведение биологической системы.   
+
+NB! Эта задача аналогична задачам, ставящимся в регрессионном анализе.   
+
+К. Кларком и M. Эинсвортом был предложен метод BIO-ENV (Clarke, Ainsworth, 1993). Это непараметрический аналог пошагового регрессионного анализа.   
+
+----
+
+# Процедура BIO-ENV
+
+В этом анализе есть две сцепленные матрицы: 
+* Зависимая матрица (BIO) -  матрица геоботанических описаний.
+* Матрица-предиктор (ENV) - матрица химических параметров.
+
+
+
+----
+
+# Алгоритм процедуры BIO-ENV
+
+>- 1. Вычисляется матрица взаимных расстояний между объектами для зависимой матрицы $D_{BIO}$. Используются все ее перменные. 
+>- 2. Матрица-предиктор имеет $p$ переменных. Вычисляются все возможные матрицы взаимных расстояний между объектами для всех возможных комбинаций признаков матрицы ENV - $D_{ENV_i}$. ВНИМАНИЕ! Таких матриц будет $2^p-1$. 
+>- 3. Между каждой из матриц $D_{ENV_i}$ и матрицей $D_{BIO}$ вычисляется мантеловская корреляция. 
+>- 4. Находится матрица  $D_{ENV_i}$, имеющая максимальное значение мантеловской корреляции.
+>- 5. Выводятся признаки матрицы ENV, на основе которых получена максимально подобная матрица $D_{ENV_i}$. 
+
+-----
+
+# Функция `bioenv()` из пакета `vegan`
+
+```{r}
+BioEnv <- bioenv(varespec, varechem, method = "spearman", index = "bray")
+BioEnv
+```
+
+----
+
+*ВНИМАНИЕ* Не надо оценивать достоверность результата процедуры BIO-ENV путем оценки достоверности мантеловской корреляции между $D_{BIO}$ и матрицей, полученной в результате применения BIO-ENV $D_{ENV}$. _Это будет жульничеством_, так как это уже максимально подобная матрица.
+</br>
+</br>
+Для оценки достоверности полученного результата применяется пермутационный метод, основанный на *многократном повторении самой процедуры BIO-ENV*.
+</br>
+</br>
+*ВНИМАНИЕ!* Это занимает очень много времени
+
+---- &twocol
+
+*Алгоритм оценки достоверности применения процедуры BIO-ENV*
+
+*** =left
+1. Применяем процедуру BIO-ENV и находим лучшее сочетание переменных в матрице-предикторе (ENV).
+2. Пермутируем зависимую матрицу (BIO).  
+3. Применяем процедуру BIO-ENV к пермутированной матрице и вновь находим наилучшее сочетание и записываем значение мантеловской корреляции.  
+4. Поворяя шаги 2 и 3 многократно, получаем распределение пермутационных статистик.  
+5. Вычисляем уровень значимости способом, принятым при пермутционной оценке.   
+
+*** =right
+
+
+<img src="figure/BIOENV.png" width="400" height="600 align="middle">
+
+----
+
+# Трактовка результатов BIO-ENV?
+
+Задание: Постройте ординацию описаний в осях nMDS и отразите на этой диаграмме вектора, соответствующие результатам процедуры `BIO-ENV`
+
+----
+
+# Решение
+```{r}
+plot(veg_ord, display = "site")
+plot(envfit(veg_ord ~ N + P + Al + Mn + Baresoil, data = varechem ))
+```
+
+----
+
+# Summary
+
+* Оценку связи между ординацией объектов и значениями признаков, не использованных в ординации, можно осуществлять с помощью процедур `envfit()` и `ordisurf()` 
+* Степень сопряженности  двух наборов пизнаков можно оценивать с помощью теста Мантела.
+* Оценка достоверности теста Мантела и корреляций с признаками, вычисленными в процедуре envfit() проводится пермутационным методом
+* С помощью процедуры BIO-ENV можно выявить набор переменных в матрице-предикторе, которые обеспечивают наибольшее сходство с завивисимой матрицей.
+
+---
+
+# Другое программное обеспечение
+
+*PRIMER 6.*    
+Здесь реализована расширенная процедура `BEST`. 
+Она позволяет проводить не только полный перебор всех переменных в матрице-предикторе (Bio-Env), но и оптимизировать эту процедуру (BVStep). Кроме того, есть возможность оценивать достоверность результатов анализа. Но работает так же медленно. 
+
+---
+
+# Что почитать
+
++ Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.
+* Clarke, K. R & Ainsworth, M. 1993. A method of linking multivariate community structure to environmental variables. Marine Ecology Progress Series, 92, 205–219.
+* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth.
+* Legendre P., Legendre L. (2012) Numerical ecology. Second english edition. Elsevier, Amsterdam. (В этом издании приводятся ссылки на реализацию методов в R)
+
+
+
+

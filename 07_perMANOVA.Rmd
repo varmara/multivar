@@ -1,0 +1,632 @@
+---
+title: "Тестирование гипотез на основе многомерных данных: PERMANOVA"
+author: "Вадим Хайтов"
+highlighter: highlight.js
+output: pdf_document
+job: Каф. Зоологии беспозвоночных, СПбГУ
+mode: standalone
+hitheme: idea
+subtitle: Многомерные методы на R, весна 2015
+framework: io2012
+widgets: mathjax
+
+---
+
+# Вы сможете
+
+- Разобраться с оновными дизайнами тестирования гипотез в рамках дисперсионого анализа
+- Применить функции, реализованные в R, для тестирования гипотез с помощью метода PERMANOVA
+
+
+
+
+```{r setup, include = FALSE, cache = FALSE, eval = -3}
+#----------------------------------------------------------------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = 
+          c("no_intra_emphasis",# skip markdown embedded in words
+            "tables",           # create HTML tables
+            "fenced_code",      # treat text as verbatim when surrounded with begin and ending lines with three ~ or ' characters.
+            "autolink",         # create HTML links from urls and email addresses.
+            "strikethrough",    # create strikethroughs by surrounding text with ~~.
+            "lax_spacing",      # allow HTML tags inside paragraphs without being surrounded by newlines.
+            "space_headers",    # add a space between header hashes and the header itself.
+            "latex_math"))      # transforms all math equations into syntactically correct MathJax equations.
+#--------------------------------------------------------------
+# output options
+options(width = 90, # set the maximum number of columns on a line
+        scipen = 6, # fixed notation of floating point numbers, unless it is more than scipen digits wider, else - exponential notation
+        digits = 4) # the number of digits to print when printing numeric values
+
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+
+# chunk default options
+library(knitr)
+opts_chunk$set(
+#   fig.align='center',  # default figure alignment
+               warnings = FALSE,
+               message = FALSE,
+               fig.width = 10,      # default figure width
+               fig.height = 6)      # default figure height
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+
+```
+
+--- .segue 
+
+# Еще раз про множественные сравнения 
+
+
+---
+
+# Почему не годится t-критерий для множественных сравнений?
+
+* Обычно принимается, что отвержение $H_0$ происходит при $\alpha = 0.05$, то есть гипотеза ($H$) считается истинной, с вероятностью $P=1-\alpha=1-0.05=0.95$  
+
+* В случае сравнения двух средних X1 и X2, $H_0$ подразумевает, что $X1=X2$, а $H$, что $X1 \ne X2$
+
+---
+
+* Пусть у нас будет три средних значения X1, X2 и X3. Нулевая гипотеза в данном случае подразумевает _одновременную_ реализацию трех событий $X1=X2$, $X1=X3$ и $X2=X3$. Если $H_0$ не верна, то это означает, что _одновременно_ реализуется три события    
+ * $X1 \ne X2$ и $X1 \ne X3$ и $X2 \ne X3$ 
+
+или три таких
+
+ * $X1 = X2$ и $X1 \ne X3$ и $X2 \ne X3$ 
+
+или три таких
+
+ * $X1 = X2$ и $X1 = X3$ и $X2 \ne X3$ 
+
+или три таких 
+
+ * $X1 = X2$ и $X1 \ne X3$ и $X2 = X3$ 
+
+etc... 
+
+То есть достоверно (с вероятностью P=0.95) хотя бы одно из различий.
+
+---
+
+# НО! 
+тогда вероятность одновременного события, например, 
+
+$X1 \ne X2$ и $X1 \ne X3$ и $X2 \ne X3$ 
+
+будет равна 
+
+$P=P_{X1 \ne X2} \cdot P_{X1 \ne X2} \cdot  P_{X2 \ne X3} = 0.95 \cdot 0.95 \cdot 0.95 \approx 0.86$
+
+
+При множественных попарных сравннениях мы снижаем вероятность истинности гипотезы $H$
+
+---
+
+# Для решения проблемы есть два подхода
+
+
+1. Ввести поправку Бонферрони (в качестве порога для отвержения $H_0$ брать $\alpha=0.05/n$, где n - количество попарных сравнений)    
+
+2. Изменить схему тестирования гипотезы (ANOVA)
+
+--- &twocol
+
+***=left
+
+# Классический дисперсионный анализ 
+
+<img src="figure/fisher.jpg" width="234" height="297" alt="Ronald Fisher">
+
+Рональд Эйлмер Фишер
+
+***=right
+
+### Пусть имеется три градации фактора 
+
+A1  | A2 | A3
+------------- | ------------- | -------------
+$x_{1,1}$ | $x_{1,2}$ | $x_{1,3}$
+$x_{2,1}$ | $x_{2,2}$ | $x_{2,3}$ 
+$x_{3,1}$ | $x_{3,2}$ | $x_{3,3}$ 
+$\bar{X_{A1}}$ |$\bar{X_{A2}}$ | $\bar{X_{A3}}$
+   | $\bar{X}_{gen}$ |  
+
+* Почему  появляется _межгрупповая_ изменчивость, то есть разные $\bar{X_i}$?
+* Почему  появляется _внутригрупповая_ изменчивость, то есть разные $x_i$?
+
+---
+
+Чем больше межгрупповая изменчивость, тем сильнее влияние фактора. 
+
+
+Мера межгрупповой изменчивости - это отклонения $\bar{X_i}$ от $\bar{X}_{gen}$
+
+$SS_b= \sum (\bar{X_i} - \bar{X}_{gen})^2$
+--------------------
+
+
+Мера внутригрупповой изменчивости - это отклонения ${x_i}$ от $\bar{X}_{i}$
+Чем больше внутригрупповая изменчивость, тем сильнее влияние неучтенных факторов. 
+
+
+$SS_w= \sum \sum (x_i - \bar{X}_{i})^2$
+------------
+
+
+Общая изменчивость - это отклонения ${x_i}$ от $\bar{X}_{gen}$
+
+$SS_T= \sum (x_i - \bar{X}_{gen})^2$
+------------
+
+
+Суммарная дисперсия может быть разложена на две составляющие
+
+$SS_{T}=SS_b+SS_w$
+=============
+
+---&twocol
+
+***=left
+
+# Для тестирования гипотезы о влиянии фактора надо сравнить межгрупповую изменчивость ($SS_b$) и внутригрупповую ($SS_w$). 
+
+Для этого сравнения Фишер предложил статистику 
+
+$F=\frac{SS_b/(a-1)}{SS_w/(N-a)}$
+---------------
+
+Если межгрупповая изменчивость равна внутригрупповой (то есть они взяты из одной генеральной совокупности), то $F$ принадлежит F-распределению с двумя параметрами $df_b=a-1$ и $df_w=N-a$, где a-число классов, N - общее количество объектов в анализе.
+
+***=right
+
+```{r, echo=FALSE}
+library(ggplot2)
+theme_set (theme_bw())
+ggplot(data.frame(x=seq(0,5,0.1), y=df(seq(0,5,0.1), 3, 36)), aes (x=x, y=y)) + geom_line (size = 2, color = "blue") + xlab("F for df=3 and df=36") + ylab ("Probability") 
+```
+
+---
+
+
+# Основные дизайны в ANOVA
+
+1. Однофакторный дизайн 
+2. Многофакторный ортогональный дизайн
+3. Гнездовой дизайн
+
+etc... 
+
+Еще много разных дизайнов
+
+Величину, которую мы изучаем называют зависимой переменной   
+Величины, от которых она зависит называют предикторами (независимыми переменными), или факторами
+
+Предикторы бывают дискретными и непрерывными
+
+---&twocol
+
+***=left
+
+_Однофакторный дизайн (один дискретный предиктор)_
+
+A1  | A2 | A3
+------------- | ------------- | -------------
+ x | x | x
+ x | x | x
+ x | x | x
+
+выявляется влияние фактора А
+
+***=right
+
+_Многофакторный ортогональный дизайн (два и более дискретных предиктора)_
+
+$factor A / factor B$  | A1 | A2 | A3
+------------- | ------------- | ------------- | -------------
+ B1| x | x | x
+ B1| x | x | x
+ B1| x | x | x
+  |   |   |  
+ B2| x | x | x
+ B2| x | x | x
+ B2| x | x | x
+  |   |   |   
+ B3| x | x | x
+ B3| x | x | x
+ B3| x | x | x
+
+Выявляется влияние фактора А, B и A*B   
+
+---
+
+_Гнездовой дизайн_    
+один или более предикторов, иерархически починенные некоторому группирующему фактору, "блоку"
+
+Блок $B$  | A1 | A2 | A3
+------------- | ------------- | ------------- | -------------
+ B1| x | x | x
+ B1| x | x | x
+ B1| x | x | x
+  |   |   |  
+ B2| y | y | y
+ B2| y | y | y
+ B2| y | y | y
+  |   |   |   
+ B3| z | z | z
+ B3| z | z | z
+ B3| z | z | z
+
+Выявляется влияние фактора В и фактора А внутри градаций фактора B   
+
+
+----
+
+# ANOVA разработан для одномерных данных. 
+
+Но! Если мы хотим оценивать объект по многим признакам сразу?
+
+Примеры
+* Сообщество как целое
+* Поведение как целое
+* Ответы респондентов на взаимосвязанные вопросы в анкетах
+
+---&twocol
+
+***=left
+
+# Давно разработан парамтерический метод MANOVA (Multidimensional Analysis Of Variance)
+В его основе лежат представление о многомерном нормальном распределении.И рассотяниях между центроидами.
+
+<img src="figure/MANOVA.png" width="397" height="291" alt="MANOVA">
+
+***=right
+
+в модели MANOVA сравниваются отклонения точек от групповых центроидов (аналог $SS_w$) и отклонения групповых центроидов от общего центроида (аналог $SS_{b}$). 
+
+*Многомерные данные дают возможность проводить анализ аналогичный ANOVA*
+
+У MANOVA много ограничений:
+* Нормальность распределения
+* Гомогенность дисперсий
+* Отсутствие отскаивающих значений 
+
+---
+
+# Permutational Multivariate Analysis of Variance (PERMANOVA) 
+
+<img src="figure/Anderson.png" width="448" height="336" alt="Marti Anderson">
+
+Марти Джейн Андерсон
+
+
+---&twocol
+
+***=left
+
+# Пример: Поведение трех видов песчанок в тесте открытое поле
+
+Виды:
+
+* Карликовая песчанка (_Gerbillus gerbillus_)
+* Монгольская песчанка (_Meriones unguiculatus_)
+* Жирнохвостая песчанка (_Pachyuromys duprasi_)
+
+Оценка поведения песчанок трех видов
+Поведение описывается по семи признакам  
+
+* Время до выхода в квадрат открытого поля 
+* Количество актов мочеиспускания 
+* Количество актов дефекации 
+* Количество пересеченных квадратов 
+
+
+***=right
+
+<img src="figure/Peschanka.png" width="400" height="300" alt=" ">
+
+* Число вертикальных стоек 
+* Количество актов смещенной активности 
+* Время проведенное в центре квадрата открытого поля 
+
+
+**Гипотеза:** _Разные виды песчанок демонстрируют различия поведения в тесте "Открытое поле"_
+
+---
+
+# Данные наблюдений
+
+```{r}
+pesch <- read.csv("pesch.csv", header=TRUE, sep=";")
+head(pesch)
+```
+
+---
+
+Поскольку измеренные признаки варьируют в разных масштабах целесообразно провести лгарифмирование данных
+```{r}
+options(digits=4)
+log_pesch <- pesch
+log_pesch[,3:ncol(pesch)] <- log(pesch[,3:ncol(pesch)] +1)
+head(log_pesch)
+```
+
+---
+# Задание.
+Постройте ординацию объектов в осях MDS и раскрасьте точки в соответствии с видами
+
+---
+# Решение
+
+```{r, echo=FALSE, results='hide'}
+library(ggplot2)
+#dist_pesch <- vegdist(log_pesch[,3:ncol(pesch)], method="euclidian")
+mds_pesch <- metaMDS(log_pesch[,3:ncol(pesch)], distance="euclidian")
+mds_pesch <- as.data.frame(mds_pesch$points)
+mds_pesch$Species <- pesch$Species
+pl_pesch <- ggplot(mds_pesch, aes(x=MDS1, y=MDS2, colour=Species))
+```
+
+```{r, echo=FALSE}
+pl_pesch + geom_point(size=5)
+```
+
+---
+
+# Применим метод PERMANOVA реализованный в функци `adonis()` 
+```{r}
+library(vegan)
+permanova_pesch <- adonis(log_pesch[3:9] ~ log_pesch$Species, method="euclidean")
+permanova_pesch
+```
+
+Мы видим традиционную для ANOVA таблицу результатов. Что здесь что?
+
+---&twocol
+
+***=left
+
+Марти Андерон доказала, что сумма квадратов отклонений объектов от центроидов равна сумме квадратов взаимных расстояний
+
+<img src="figure/Centoid and distance.png" width="400" height="320" alt=" ">
+
+***=right
+
+<img src="figure/Matrix transformation.png" width="400" height="400" alt=" ">
+
+---
+
+# Разложение дисперсии становится очень простым
+
+Общая дисперсия 
+
+$SS_T=\frac{1}{N}\sum \sum {d_{ij}^2}$
+-----------
+
+d - расстояние между i-тым и j-тым объектами (d может быть любого типа!)
+N - общее количество объектов N=an 
+а - количество сравниваемых групп
+
+Внутригрупповая дисперсия
+
+$SS_w=\frac{1}{n}\sum \sum {d_{ij}^2 \dot \epsilon_{ij}}$
+---------------
+n-количество объектов в группе
+$\epsilon$ - dummy variable 1 если объект i и j из одной группы и 0, если они из разных.
+
+Межгрупповая дисперсия 
+
+$SS_b=SS_T-SS_w$
+------------
+F статистика (правильнее pseudo F)
+
+$F=\frac{SS_b/(a-1)}{SS_w/(N-a)}$
+-------------  
+
+---
+
+# Для оценки достоверности F используется премутационная процедура: 
+* Случайным образом перетасовываются строки исходной матрицы 
+* после каждого акта пермутации вычисляется $F_{perm}$
+* Уровень значимости
+* Внимаие! для гнездового дизайа процедура пермутаци имеет свои особенности (обсудим позднее).
+
+$p = \frac {F_{perm} \ge F}{Number of permutations}$
+
+---
+
+# Ограничения PERMANOVA
+1. Крайне желательно использование сбалансированных комплесов (В adonis() этого ограничения нет, но за это приходится платить отсутствием функции для post-hoc анализа). 
+
+2. Этот метод чувствителен к различиям в степени варьирования в пределах групп (гетероскедастичность)
+Для проверки равенства внутригрупповых дисперсий в пакете vegan  специальной функции нет, но можно использовать функцию _betadisper()_, которая изначально предназначена для сравнения $\beta$-разнообразия сообществ в местах с разными условиями 
+
+Эта функция вычисляет внутригрупповые центроиды и координаты точек в пространстве главных координат (Principal coordinates analysis = Metric MDS)  
+
+```{r}
+dist_pesch <- vegdist(log_pesch[,3:ncol(pesch)], method ="euclidian")
+PCO_pesch <- betadisper(dist_pesch, log_pesch$Species)
+```
+
+---
+
+# Эта функция позволяет также нарисовать наши объекты в пространстве PCO 
+
+```{r, echo=FALSE}
+library(graphics)
+plot(PCO_pesch)
+```
+
+---
+
+Достоверность различий отклонений от центроидов в разных группах проверяется с помощью ANOVA 
+
+```{r}
+anova(PCO_pesch)
+```
+
+В нашем случае достоверных различий между варьированием внутригрупповых расстояний не выявлено  
+
+---
+
+# Для визуализации можно нарисовать боксплот 
+
+```{r, echo=FALSE}
+boxplot(PCO_pesch)
+```
+
+
+---
+
+Гипотеза тестирована!
+Как трактовать эти результаты?
+
+```{r, echo=FALSE}
+library(ggplot2)
+#dist_pesch <- vegdist(log_pesch[,3:ncol(pesch)], method="euclidian")
+mds_pesch <- metaMDS(log_pesch[,3:ncol(pesch)], distance="euclidian")
+mds_pesch <- as.data.frame(mds_pesch$points)
+mds_pesch$Species <- pesch$Species
+pl_pesch <- ggplot(mds_pesch, aes(x=MDS1, y=MDS2, colour=Species))
+pl_pesch + geom_point(size=5)
+```
+На приведенной ординации видно, что точки, соответствующие Монгольским песчанкам сегрегированы от остальных. 
+Для выявления попарных различий нужны попарные сравнения.
+
+---
+
+# Post-hoc анализ
+
+At! В пакете vegan этот анализ не встроен.
+Попробуем его изобрести самостоятельно
+
+Проведем попарные сравнения между группами, то есть
+* Карликовые VS Монгольские
+* Карликовые VS Жирнохвостые
+* Монгольские VS Жирнохвостые
+
+```{r}
+pair <- combn(unique(as.character(log_pesch$Species)), 2)
+ncomb <- dim(pair)[2]
+x <- log_pesch[, -c(1:2)]
+y <- log_pesch$Species
+for (i in 1:ncomb) {
+  filter <- y %in% pair[, i]
+  posthoc <- adonis(x[filter, ] ~ y[filter], method = "euclidean")$aov.tab$Pr[1]
+  cat(pair[, i], ": p = ", posthoc, "\n", sep = " ")
+}
+```
+
+---
+
+# Введем попарвку Бонферрони
+Если мы принимаем $\alpha = 0.05$, как порог для отвержения $H_0$, то для отвержения $H_0$ при множественных сравнениях $\alpha$ становится $\alpha=\frac{0.05}{Number of comparisons}$ 
+Для нашего случая, когда используется 3 сравнения, $\alpha=\frac{0.05}{3}=0.017$
+То есть за достоверные будем принимать те значения p, которые будут меньше 0.017, а не 0.05
+
+---
+
+# Задание: Выясните какой из признаков сильнее всего различает виды?
+
+---
+# Решение
+
+Один из вариантов ответа - процедура SIMPER
+```{r}
+simper_pesch <- simper(log_pesch[, 3:9], log_pesch$Species, permutations = 999)
+summary(simper_pesch)
+```
+
+---
+
+# Многофакторный ортогональный дизайн в PERMANOVA
+ 
+Выясним влияет ли пол и вид полевок на поведение. 
+
+Редуцируем исходные данные (в случае с Жирнохвостыми полевками были изучены только самки)  
+```{r}
+log_pesch2 <- log_pesch[log_pesch$Species != "zhirnokhvost", ]
+```
+---
+
+# Проведем двухфакторный анализ PERMANOVA
+```{r}
+twofact_pesch <- adonis(log_pesch2[,3:ncol(pesch)] ~ log_pesch2$Gender * log_pesch2$Species, method="euclidian")
+
+twofact_pesch
+```
+
+---
+
+# Здесь возможен (и более корректен) гнездовой дизайн 
+
+
+```{r}
+nested_pesch <- adonis(log_pesch2[,3:ncol(pesch)] ~  log_pesch2$Gender, strata = log_pesch2$Species, method="euclidian")
+
+nested_pesch
+```
+
+At! Пермутации производятся только в пределах группирующего параметра, указанного в параметре `strata`
+
+---
+
+# Задание
+
++ Создайте датафрейм из файла `simulated_data.csv` (Это данные симулированные по алгоритму, приведенному в справке по функции `adonis()`)
++ В полученном датафрейме описано обилие двух видов на экспериментальных площадках двух типов: без добавления и с добавлением NO3, по 6 повторнотей в каждом эксперименте. Эксперименты были незаисимо проведены на 3 полях. 
++ Оцените, зависит ли структура совместного поселения этих двух видов от концентрации NO3.
+
+---
+
+# Решение
+
+```{r}
+com <- read.csv("simulated_data.csv", sep=',', header = T)
+
+# Ошибочный дизай
+com_permanova <- adonis(com [,1:2] ~ com$NO3)
+
+# Правильный дизайн
+com_permanova2 <- adonis(com [,1:2] ~ com$NO3, strata = com$field)
+
+```
+
+---
+# Summary
+
++ Для тестирования гипотез, связанных со множественными сравнениями, необходимы различные формы дисперсионных анализов. 
+
++ PERMANOVA дает возможность тестировать сложные гипотезы в отношении явлений, описанных по многим переменным. 
+
++ При использовании PERMANOVAb и других форм многофакторного дисперсионного анализа важно незапутаться в дизайне.
+
+---
+
+# Другие программы
+
+* *Primer 6.0 + PERMANOVA* Коммерческий продукт. Пожалуй самая удобная программа для применения метода PERMANOVA.
+* *PAST* Здесь метод называется NPMANOVA. Из некоммерческих продуктов - пожалуй самый лучший. R пока отстает...
+* *Оригинальная программа М. Андерсон (PEMANOVA)*. Можно скачать из сети. К ней прилагается программа *PERMDISP*, предназначенная для проверки на равенство дисперсий. Чудовищно неудобный ввод. Зато можно использовать почти любой дизайн (однофакторный, многофакторный, иерархический, с ковариатами). Важно, что факторы могут рассматриваться и как фиксированные и как случайные.
+
+---
+
+# Что почитать
+
+* Anderson, M.J. 2001. A new method for non-parametric multivariate analysis of variance. Austral Ecology, 26: 32–46.
+* Anderson, M.J. 2005. PERMANOVA: a FORTRAN computer program for permutational multivariate analysis of variance. Department of Statistics, University of Auckland, New Zealand.
+* Anderson, M.J. (2004). PERMDISP: a FORTRAN computer program for permutatinoal analysis of multivariate dispersions (for any two-factor ANOVA design) using permutation tests. Department of Statistics, University of Auckland, New Zealand. 
+* Legendre P., Legendre L. (2012) Numerical ecology. Second english edition. Elsevier, Amsterdam.

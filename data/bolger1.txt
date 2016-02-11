@@ -1,0 +1,34 @@
+##############################################################################
+#									     #
+#	Legend of formats and contents for data files accompany		     #
+#	"Experimental Design and Data Analysis for Biologists"		     #
+#	By G. P. Quinn and M. J. Keough, 2002			   	     #
+#									     #
+#	----------------------------------------------------------	     #
+#	Used in Box 17-2, Fig 17-3					     #
+#									     #
+##############################################################################
+
+Format of the files: (Box 17-2, Fig 17-3)
+	* bolger1.xls (Microsoft Excel)
+	* bolger1.csv (comma delimeted ascii text file)
+
+File contents:
+	* SITE - name of habitat fragments and mainland control sites in coastal southern California
+	* TYPE - type of site (FRAG=habitat fragment site, CON=mainland control site)	
+	* RRATTUS - abundance of R. rattus at site
+	* MMUSCUL - abundance of M. musculus at site
+	* PCALIFO - abundance of P. californicus at site
+	* PEREMIC - abundance of P. eremicus at site
+	* RMEGALO - abundance of R. megalotis at site
+	* NFUSCIP - abundance of N. fuscipes at site
+	* NLEPIDA - abundance of N. lepida at site
+	* PFALLAX - abundance of P. fallax at site
+	* MCALIFO - abundance of M. californicus at site
+	* COMPCOR1 - PCA correlation component 1
+	* COMPCOR2 -PCA correlation component 2
+	* COMPCOR3 - PCA correlation component 3
+	* COMPCOV1 - PCA covariance component 1
+	* COMPCOV2 - PCA covariance component 2
+	* COMPCOV3 - PCA covariance component 3
+

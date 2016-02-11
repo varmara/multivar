@@ -1,0 +1,544 @@
+---
+title       : Специальные случаи применения анализа главных компонент
+subtitle    : Многомерные методы на R, весна 2014
+author      : Марина Варфоломеева
+job         : Каф. Зоологии беспозвоночных, СПбГУ
+framework   : io2012
+highlighter : highlight.js
+hitheme     : idea
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : draft # {selfcontained, standalone, draft}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+#------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", "strikethrough", "lax_spacing", "space_headers", "latex_math"))
+#------
+# output options
+options(width = 70, scipen = 6, digits = 3) 
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align = 'center', fig.width = 10, fig.height = 6, cache = FALSE, comment="#") 
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+```
+
+```{r, libs-funs, echo=FALSE}
+library(ggplot2)
+library(grid)
+theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
+update_geom_defaults("point", list(shape = 19, size = 4))
+library(gridExtra)
+```
+
+## Анализ морфометрических данных при помощи анализа главных компонент
+
+- Классический подход к морфометрии
+- Геометрическая морфометрия
+- Эволюция формы
+
+### Вы сможете
+
+- Проанализировать морфометрические данные корректно удалив влияние абсолютного размера
+- Рассказать, что происходит во время обобщенного прокрустова анализа
+- Проанализировать данные о координатах меток используя методы геометрической морфометрии
+- Понимать, каким образом происходит отображение филогенетического древа в пространство форм
+
+--- .segue
+
+## Классический подход к морфометрии
+
+---
+
+## Классический подход к морфометрии
+
+Для анализа формы различных структур анализируются расстояния между метками, а не их координаты.
+
+Признаки сильно интегрированных структур, например частей скелета, лучше анализировать совместно друг с другом. Один из вариантов анализа - анализ главных компонент.
+
+---
+
+## Пример: морфометрия черепах
+
+Черепахи - единственные живые представители анапсид (череп не имеет височных окон). Морфология черепа важна для их черепах (Claude et al., 2004).
+
+Данные - 24 разных измерения черепов черепах 122 ныне живущих пресноводных, морских и наземных видов и одного ископаемого.
+
+![Морфометрия черепах](./figs/Fig30.1ZuurAED-mod.jpg)
+
+<div class = "footnote">Рис. 30.1 из Zuur et al. 2007</div>
+
+---
+
+## Читаем данные
+
+```{r}
+turt <- read.table("turtles.txt", header = TRUE)
+turt$Environment3 <- factor(turt$Environment3, levels = c(0, 1, 2, 9), labels = c("Freshwater", "Terrestrial", "Marine", "Fossil"))
+colnames(turt)
+```
+
+<div class = "footnote">Данные из Zuur et al. 2007</div>
+
+---
+
+## Чтобы понять, нужно ли стандартизовать исходные данные, построим боксплот
+
+```{r}
+boxplot(x = turt[8:31])
+```
+
+> - Наверное, лучше стандартизовать
+
+--- .prompt
+
+## Задание: Проведите анализ главных компонент
+
+- Сколько изменчивости объясняют компоненты?
+- Сколько компонент достаточно для описания данных?
+
+---
+
+## Делаем анализ главных компонент по стандартизованным данным
+
+```{r, fig.height=4}
+library(vegan)
+turt_pca <- rda(turt[, 8:31], scale = TRUE)
+eig <- eigenvals(turt_pca)[1:5]
+eig*100/sum(eig) # доля объясненной изменчивости
+screeplot(turt_pca, bstick = TRUE)
+```
+
+Первая компонента объясняет очень много, остальные - почти ничего
+
+--- .prompt
+
+## Что странного в этой картинке?
+
+```{r biplot-raw, fig.height=2, fig.width=2}
+biplot(turt_pca, display = "species", scaling = 2)
+```
+
+>- Как вы думаете, почему у всех переменных большие нагрузки по первой компоненте?
+
+---
+
+## При анализе сырых морфометрических данных первая компонента отражает размер объектов и, возможно, немножко - их форму
+
+```{r biplot-raw, echo=FALSE}
+```
+
+---
+
+## Классические способы избавится от влияния размера:
+
+- использовать одну из исходных переменных как оценку "размера": использовать в PCA остатки от регрессий исходных признаков от "размера"
+- стандартизация исходных данных при помощи деления на величину "размера" для каждого образца (корень из суммы квадратов измерений)
+- сделать двойное центрирование (логарифмированных) исходных данных
+- и т.д. и т.п.
+
+---
+
+## Двойное центрирование
+
+```{r}
+D <- cbind(turt[, 8:31])
+dbcent <- as.data.frame(matrix(nrow = 123, ncol = 24))
+names(dbcent) <- names(D)
+for (i in 1:123){
+  dbcent[i, ] <- (D[i, ] - mean(as.numeric(D[i, ])))
+}
+```
+
+---
+
+## После двойного центрирования большие собственные числа у нескольких компонент
+
+```{r, fig.height=3}
+turt_db_pca <- rda(dbcent)
+eig_db <- eigenvals(turt_db_pca)[1:5]
+eig_db*100/sum(eig_db)
+screeplot(turt_db_pca, bstick = TRUE)
+```
+
+---
+
+## После двойного центрирования у переменных высокие нагрузки на несколько компонент, влияние размера удалено
+
+```{r, fig.height=4}
+biplot(turt_db_pca, display = "species", scaling = 2)
+```
+
+Интерпретируем как обычно: компонента отражает несколько признаков
+
+---
+
+## Ординация черепах по морфометрии черепов (двойное центрирование данных)
+
+```{r tradit-pca, echo=FALSE, fig.show='hold', fig.width=12, fig.height=5}
+op <- par(mfrow = c(1, 2), mar = c(4, 4, 0.5, 0.5), cex = 1.3)
+biplot(turt_db_pca, display = "species", scaling = 2)
+# цвета для графика факторных координат
+colvec <- c("orange2", "limegreen", "steelblue", "red3")
+# пустой график
+plot(turt_db_pca, type = "n", scaling = 1)
+# точки, раскрашенные по уровням фактора turt$Environment3
+points(turt_db_pca, display = "sites", scaling = 1, pch = 21, 
+       col = colvec[turt$Environment3], bg = colvec[turt$Environment3])
+# легенда
+legend("bottomright", legend = levels(turt$Environment3), bty = "n", pch = 21, 
+       col = colvec, pt.bg = colvec)
+par(op)
+```
+
+- У пресноводных большие D12 и D13, и маленькая D2. У морских наоборот
+- Ископаемая черепаха похожа на нынешних морских
+
+---
+
+## Код для графика ординации черепах по морфометрии черепов
+
+```{r tradit-pca, eval=FALSE}
+```
+
+--- .segue
+
+## Геометрическая морфометрия
+
+### Но настоящие джедаи теперь анализируют координаты меток, а не расстояния между ними!
+
+--- &twocol
+
+## Пример: Форма головы Апалачских саламандр рода _Plethodon_
+
+P.jordani и P.teyahalee встречаются вместе и раздельно.
+В совместно обитающих популяциях меняется форма головы обоих видов. В разных группах популяций этот процесс параллельно приводит к одинаковым результатам. По-видимому, одной из причин параллельной эволюции может быть межвидовая конкуренция (Adams, 2004, 2010).
+
+*** =left
+
+![Plethodon jordani](./figs/PlethodoJordaniJordansSalamander-JohnPClare-Flickr.jpg)
+
+Plethodon jordani - Jordan's Salamander by [John P Clare on Flickr](https://flic.kr/p/dMfNq6)
+
+*** =right
+
+![Plethodon cf. teyahalee](./figs/PlethodonCfTeyahalee-squamatologist-Flickr.jpg)
+
+Plethodon cf. teyahalee by [squamatologist on Flickr](https://flic.kr/p/8m82g6)
+
+---
+
+## Морфометрия головы саламандр
+
+![Схема измерений](./figs/measurements-Adams2004.jpg)
+
+```{r}
+# install.packages("geomorph", dependencies = TRUE)
+library(geomorph)
+data(plethodon)
+str(plethodon, vec.len = 2, give.attr = F)
+```
+
+<div class = "footnote">рис. из Adams, 2004, 2010</div>
+
+---
+
+## Сырые морфометрические данные еще не выровнены
+
+Все образцы разного размера и разной ориентации в пространстве
+
+```{r}
+plotRefToTarget(plethodon$land[, , 1], plethodon$land[, ,10], 
+                method = "points", mag = 1, links = plethodon$links)
+```
+
+---
+
+## Если нарисовать невыровненные образцы, получится полная каша. Что делать?
+
+Слева - три образца, справа - все. Жирные точки - центроиды соответствующих меток
+
+```{r, fig.height=5, fig.show='hold'}
+op <- par(mfrow = c(1, 2), mar = c(4, 4, 1, 1))
+plotAllSpecimens(plethodon$land[, , 1:3], links=plethodon$links)
+plotAllSpecimens(plethodon$land,links=plethodon$links)
+par(op)
+```
+
+---
+
+## Геометрическая морфометрия
+
+1. Влияние размера удаляется при помощи обобщенного прокрустова анализа (масштабирование, поворот и сдвиг координат)
+1. Преобразованные коордианты меток используются как признаки объектов (конкретных особей) в анализе главных компонент. Получается морфопространство. Главные компоненты отражают изменения формы.
+
+- можно получить усредненную форму для любой группы выровненных координат
+- можно сравнить форму любой особи со средней формой
+- можно проследить изменение формы вдоль осей главных компонент
+
+---
+
+## Шаг 1. Выравниваем данные при помощи обобщенного прокрустова анализа
+
+Generalized Procrustes Analysis (GPA)
+
+Минимизируем сумму квадратов расстояний между одноименными метками, меняя масштаб, поворачивая и сдвигая координаты. Вот как это выглядит на данных про черепах:
+
+![Прокрустово преобразование](./figs/Fig30.8ZuurAED-mod.jpg)
+
+<div class = "footnote">Рис. 30.8 из Zuur et al. 2007 с изменениями</div>
+
+---
+
+### Выравниваем головы саламандр
+
+```{r}
+Y.gpa <- gpagen(plethodon$land)
+plotAllSpecimens(Y.gpa$coords,links=plethodon$links)
+```
+
+---
+
+## Усредненная форма
+
+```{r}
+ref <- mshape(Y.gpa$coords) 
+plotRefToTarget(ref, ref, method = "TPS", links = plethodon$links)
+```
+
+---
+
+## Можем посмотреть, как отличается любой из образцов от усредненной формы
+
+```{r comparis, echo=FALSE, fig.show='hold', fig.height=7, fig.width=12}
+m <- matrix(data = c(1, 1, 2, 2, 
+                     3, 3, 3, 3), 
+            nrow = 2, 
+            ncol = 4, 
+            byrow = TRUE)
+l <- layout(m, heights = c(3, 2))
+# layout.show(l)
+op <- par( mar = c(4, 4, 1, 1))
+# изменение конфигурации обозначено векторами
+plotRefToTarget(ref, Y.gpa$coords[, , 11], method = "vector", 
+                mag = 1, links = plethodon$links)
+# формы обозначены точками
+plotRefToTarget(ref, Y.gpa$coords[, , 11], method = "points", 
+                mag = 1, links = plethodon$links)
+# сплайн
+plotRefToTarget(ref, Y.gpa$coords[, , 11], method = "TPS", 
+                mag = 1, links = plethodon$links)
+par(op)
+```
+
+---
+
+## Код для графиков сравнения образцов с усредненной формой
+
+```{r comparis, echo=TRUE, eval=FALSE}
+```
+
+---
+
+## Шаг 2. Создаем морфопространство
+
+__Анализ главных компонент по координатам меток для выровненных образцов__. Главные компоненты отражают изменения формы.
+
+```{r}
+plotTangentSpace(Y.gpa$coords)
+```
+
+--- &twocol
+
+## Можно раскрасить по группам
+
+*** =left
+
+```{r pca-p, fig.width=9, fig.height=7, echo=FALSE}
+gp <- as.factor(paste(plethodon$species, plethodon$site)) # группа должна быть фактором
+# задаем соответствие цветов уровням фактора
+colvec <- c("Jord Allo" = "yellow2", "Jord Symp" = "orange", 
+            "Teyah Allo" = "green4", "Teyah Symp" = "green1")
+# вектор цветов в порядке заданном фактором gp
+colvec <- colvec[match(gp, names(colvec))]
+res <- plotTangentSpace(Y.gpa$coords, groups = colvec, 
+                        verbose = TRUE)
+```
+
+*** =right
+
+```{r pca-p-legend, fig.height=2, fig.width=2, echo=FALSE}
+# легенда
+op <- par(mar = c(0, 0, 0, 0), cex = 1.6)
+plot.new(); legend("center", legend = levels(gp), 
+                   bty = "n", pch = 21, 
+                   col = "grey20", 
+                   pt.bg = levels(as.factor(colvec)))
+par(op)
+```
+
+---
+
+## Код для графика ординации и для легенды
+
+```{r pca-p, eval=FALSE}
+```
+```{r pca-p-legend, eval=FALSE}
+```
+
+--- .prompt
+
+## Исследуйте структуру объекта результатов
+
+- Cколько процентов изменчивости объясняют первые 2 или 3 компоненты?
+- Как изменяется форма вдоль 2 компоненты в отрицательном и положительном направлении относительно средней формы? Постройте график
+
+---
+
+## Структура результатов
+
+- `$pc.summary` - результаты анализа главных компонент
+- `$pc.scores` - факторные координаты образцов
+- `$pc.shapes` - формы на противоположных концах главных компонент
+
+```{r}
+str(res, max.level = 2, vec.len = 2, give.attr = FALSE)
+```
+
+---
+
+## Доля объясненной изменчивости
+
+```{r}
+res$pc.summary$importance[, 1:5] # Доля изменчивости объясненной 1-5 компонентами
+head(res$pc.scores[, 1:5]) # Факторные координаты по 1-5 компонентам
+```
+
+---
+
+## Изменение формы вдоль 2 компоненты относительно средней формы
+
+```{r, fig.show='hold', fig.height=5}
+op <- par(mfrow = c(2, 1), mar = c(1, 1 , 1, 1))
+# изменение формы вдоль 2 компоненты в положительном направлении
+plotRefToTarget(M1=ref, M2=res$pc.shapes$PC2max, method="TPS", links = plethodon$links)
+# изменение формы вдоль 2 компоненты в отрицательном направлении
+plotRefToTarget(M1=ref, M2=res$pc.shapes$PC2min, method="TPS", links = plethodon$links)
+par(op)
+```
+
+---
+
+## Можно нарисовать одновременно изменение формы вдоль обеих компонент и ординацию
+
+```{r forms-pca-p, echo=FALSE, results='hide', fig.show='hold', fig.width=12, fig.height=7}
+mat <- matrix(c(0, 1, 0, 
+                2, 6, 3, 
+                0, 4, 5),
+              nrow = 3, ncol = 3, byrow = TRUE)
+l <- layout(mat, widths = c(1, 2, 1), heights = c(1, 3, 1))
+# layout.show(l)
+op <- par(mar = c(0, 0 , 0, 0)) # параметры для 1-4 графиков
+# графики форм (слева, справа, снизу, сверху)
+plotRefToTarget(M1 = ref, M2 = res$pc.shapes$PC2max, method = "TPS", links = plethodon$links)
+plotRefToTarget(M1 = ref, M2 = res$pc.shapes$PC1min, method = "TPS", links = plethodon$links)
+plotRefToTarget(M1 = ref, M2 = res$pc.shapes$PC1max, method = "TPS", links = plethodon$links)
+plotRefToTarget(M1 = ref, M2 = res$pc.shapes$PC2min, method = "TPS", links = plethodon$links)
+# легенда снизу слева
+par(mar = c(0.5, 0, 0, 0)) # параметры для легенды
+plot.new(); legend("center", legend = levels(gp), bty = "n", pch = 21, 
+                   col = "grey20",pt.bg = levels(as.factor(colvec)), cex = 2)
+# в центре
+par(mar = c(4, 4 , 1, 1), cex = 1) # параметры для последнего графика
+plotTangentSpace(Y.gpa$coords, warpgrids = FALSE, groups = colvec)
+par(op)
+```
+
+---
+
+## Код для графика изменения форм вдоль первых двух главных компонент
+
+```{r forms-pca-p, echo=TRUE, eval=FALSE}
+```
+
+--- .segue
+
+## Эволюционные изменения формы
+
+---
+
+## Фило-морфо пространство
+
+Если у вас есть данные о средних формах для каждого вида и данные о филогении (из любого источника), то можно изобразить эволюционные изменения формы
+
+Этапы:
+
+1. Выравнивание средних форм для таксонов при помощи обобщенного прокрустова анализа
+1. Ординация таксонов при помощи анализа главных компонент
+1. Поиск анцестральных состояний количественных признаков (форм) методом максимального правдоподобия
+1. Наложение филогенетического дерева и анцестральных форм на график ординации
+
+---
+
+## Фило-морфопространство саламандр рода Plethodon
+
+P. serratus, P. cinereus, P. shenandoah, P. hoffmani, P. virginia, P. nettingi, P. hubrichti, P. electromorphus, P. richmondi
+
+```{r}
+data(plethspecies)
+str(plethspecies, vec.len = 2, give.attr = F)
+```
+
+---
+
+## Выравниваем средние формы для видов
+
+```{r}
+Yphyl.gpa <- gpagen(plethspecies$land) #GPA-alignment
+```
+
+---
+
+## Наложение филогенетического дерева и анцестральных форм на график PCA ординации
+
+```{r}
+plotGMPhyloMorphoSpace(plethspecies$phy, Yphyl.gpa$coords)
+```
+
+---
+
+## Take home messages
+
+>- Классический подход к морфометрии
+    - анализируют расстояния между метками
+    - для корректного анализа необходимо удалить влияние размера и оставить форму, но сделать это корректно почти невозможно
+>- Геометрическая морфометрия
+    - анализируют координаты меток
+    - различные конфигурации выравнивают при помощи обобщенного прокрустова анализа
+    - преобразованные координаты точек используют в анализе главных компонент
+    - чтобы визуализировать эволюцию форм, можно наложить филогенетическое древо на ординацию
+
+---
+
+## Дополнительные ресурсы
+
+- Bookstein, F.L., 2003. Morphometric Tools for Landmark Data Geometry and Biology. Cambridge University Press.
+- Claude, J., 2008. Morphometrics With R. Springer.
+- GEOL G562 - Geometric Morphometrics [WWW Document], n.d. URL http://www.indiana.edu/~g562/PBDB2013/ (accessed 4.1.15).
+- Zelditch, M., Swiderski, D.L., Sheets, D.H., Fink, W.L., 2004. Geometric Morphometrics for Biologists. Academic Press.
+- Zuur, A.F., Ieno, E.N., Smith, G.M., 2007. Analysing ecological data. Springer.

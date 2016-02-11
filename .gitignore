@@ -1,0 +1,10 @@
+_gh-pages
+*_cache
+*_files
+*/figure
+*/cache
+*/.cache
+*/*.RData
+*/.Rhistory
+*_exercises
+.Rproj.user

@@ -1,0 +1,567 @@
+---
+title       : Канонический корреспондентный анализ
+subtitle    : Многомерные методы на R, весна 2015
+author      : Марина Варфоломеева
+job         : Каф. Зоологии беспозвоночных, СПбГУ
+framework   : io2012
+highlighter : highlight.js
+hitheme     : idea
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : standalone # {selfcontained, standalone, draft}
+---
+
+
+```{r setup, include = FALSE, cache = FALSE}
+#------
+# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+# to configure markdown parsing
+options(markdown.extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", "strikethrough", "lax_spacing", "space_headers", "latex_math"))
+#------
+# output options
+options(width = 70, scipen = 6, digits = 3) 
+# to render cyrillics in plots use cairo pdf
+options(device = function(file, width = 7, height = 7, ...) {
+  cairo_pdf(tempfile(), width = width, height = height, ...)
+  })
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align = 'center', fig.width = 10, fig.height = 6, cache = FALSE, comment="#") 
+
+# this allows for code formatting inline
+knit_hooks$set(inline = function(x) {
+   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
+   x = as.character(x)
+   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
+                                               size='normalsize', 
+                                               highlight = FALSE))
+   h = gsub("([_#$%&])", "\\\\\\1", h)
+   h = gsub('(["\'])', '\\1{}', h)
+   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+```
+
+```{r, libs-funs, echo=FALSE}
+library(ggplot2)
+library(grid)
+theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
+update_geom_defaults("point", list(shape = 19, size = 4))
+library(gridExtra)
+```
+
+## Канонический корреспондентный анализ
+
+- Как связать обилие видов и параметры среды, и чем канонический корреспондентный анализ лучше других
+- Канонический корреспондентный анализ
+- Частный канонический корреспондентный анализ
+
+### Вы сможете
+
+- Проводить канонический корреспондентный анализ
+- Оценивать долю объясненной инерции
+- Интерпретировать канонические оси по координатам переменных
+- Строить ординацию объектов в пространстве канонических осей
+- Проверять значимость модели ординации
+- Разделять общую изменчивость на компоненты при помощи частного канонического корреспондентного анализа
+
+--- .segue
+
+## Связь нескольких наборов переменных: виды и среда
+
+--- &twocol
+
+## Пример: клещи-орибатиды на зыбуне в канадском озере
+
+На площадке 10 х 2.6м взяли стратифицированную случайную выборку на 7 типах субстратов (70 проб). Исследователи хотели разделить влияние среды и положения в пространстве на структуру сообщества клещей-орибатид (Borcard & Legendre 1994).
+
+*** =left
+
+![Oribatid mite](./figs/OribatidMiteWithAVisitingFriendlySpringtail-AndyMurray-Flickr.jpg)
+
+Oribatid mite with a visiting friendly springtail by [Andy Murray on Flickr](https://flic.kr/p/bqAFBs)
+
+*** =right
+
+![Peat bog](./figs/Tourbière_PeatBog-peupleloup-Flickr.jpg)
+
+Tourbière/Peat bog* by [peupleloup on Flickr](https://flic.kr/p/51F8Ks)
+
+* - peat bog - зыбун, сплавина (плавина)
+
+---
+
+```{r message = FALSE}
+library(vegan)
+data(mite)
+data(mite.env)
+data(mite.xy)
+head(mite[ , 1:6], 2)
+str(mite.xy)
+str(mite.env)
+```
+
+---
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+theme_set(theme_bw(base_size = 18))
+update_geom_defaults("point", list(shape = 19))
+p <- ggplot(mite.xy, aes(x = x, y = y)) + geom_point()
+p + coord_fixed()
+```
+
+---
+
+```{r mite-maps, echo = FALSE, message = FALSE, results='hide', fig.height = 9, fig.width = 14, cache=TRUE}
+gginterp <- function(x, y, envir, nx, ny){
+  # функция интерполирует значения переменных среды
+  require(akima)
+  require(reshape2)
+  # Интерполяция
+  fld <- interp.new(x = x, y = y, z = envir, xo=seq(min(x), max(x), length = nx), yo=seq(min(y), max(y), length = ny))
+  # Перевод результатов в "длинную" форму
+  df_env <- melt(fld$z, na.rm = TRUE)
+  colnames(df_env) <- c("x", "y", "envir")
+  # Замена по порядковым номерам настоящими значениями переменных среды
+  df_env$x <- fld$x[df_env$x]
+  df_env$y <- fld$y[df_env$y]
+  return(df_env)
+}
+
+ggmapinterp <- function(x, y, envir, nx, ny){
+  # функция рисует график интерполированной переменной
+  df_env <- gginterp(x, y, envir, nx, ny)
+  require(ggplot2)
+  p <- ggplot(data = df_env, aes(x = x, y = y, z = envir)) +
+    geom_tile(aes(fill = envir)) # + stat_contour(colour = "gray40")
+  return(p)
+}
+
+# модификация темы для всех графиков
+th <- theme(legend.text = element_text(size = 13), legend.title = element_text(size = 14), legend.position = "bottom")
+th_narrow <- th + theme(legend.key.width = unit(3, "mm"))
+
+# Для легенды
+p0 <- ggmapinterp(x = mite.xy$x, y = mite.xy$y, envir = mite.env$SubsDens, nx = 50, ny = 200) + geom_point(data = mite.xy, aes(x = x, y = y, z = NULL, shape = mite.env$Substrate)) + 
+  scale_fill_continuous(name = "Плотность субстрата", low = "white", high = "green", guide = "none") +
+  scale_shape_manual(name = "Субстрат", values=1:7, labels = c("Сфагн1", "Сфагн2", "Сфагн3", "Сфагн4", "Раст. остатки", "Голый торф", "Поверхность" )) + th
+
+# Плотность субстрата
+p1 <- ggmapinterp(x = mite.xy$x, y = mite.xy$y, envir = mite.env$SubsDens, nx = 50, ny = 200) + geom_point(data = mite.xy, aes(x = x, y = y, z = NULL, shape = mite.env$Substrate)) +
+  scale_fill_continuous(name = "Плотность\nсубстрата", low = "white", high = "green") +
+  scale_shape_manual(name = "Субстрат", values=1:7, labels = c("Сфагн1", "Сфагн2", "Сфагн3", "Сфагн4", "Раст. остатки", "Голый торф", "Поверхность" ), guide = "none") + th
+
+# Содержание воды
+p2 <- ggmapinterp(x = mite.xy$x, y = mite.xy$y, envir = mite.env$WatrCont, nx = 50, ny = 200) +
+  geom_point(data = mite.xy, aes(x = x, y = y, z = NULL, shape = mite.env$Substrate)) +
+  scale_fill_continuous(name = "Содержание\nводы", low = "white", high = "blue") +
+  scale_shape_manual(name = "Субстрат", values=1:7, labels = c("Сфагн1", "Сфагн2", "Сфагн3", "Сфагн4", "Раст. остатки", "Голый торф", "Поверхность" ), guide = "none") + th
+
+# Количество кустарников
+p3 <- ggmapinterp(x = mite.xy$x, y = mite.xy$y, envir = mite.env$Shrub, nx = 50, ny = 200) +
+  geom_point(data = mite.xy, aes(x = x, y = y, z = NULL, shape = mite.env$Substrate)) +
+  scale_fill_continuous(name = "Кустарники", low = "white", high = "darkgreen", breaks = c(1, 2, 3), labels = c("Нет", "Мало", "Много")) +
+  scale_shape_manual(name = "Субстрат", values=1:7, labels = c("Сфагн1", "Сфагн2", "Сфагн3", "Сфагн4", "Раст. остатки", "Голый торф", "Поверхность" ), guide = "none") + th
+
+p4 <- ggmapinterp(x = mite.xy$x, y = mite.xy$y, envir = mite.env$Topo, nx = 50, ny = 200) +
+  geom_point(data = mite.xy, aes(x = x, y = y, z = NULL, shape = mite.env$Substrate)) +
+  scale_fill_continuous(name = "Топография", low = "white", high = "orange", breaks = c(1, 2), labels = c("Ровно", "Кочка")) +
+  scale_shape_manual(name = "Субстрат", values=1:7, labels = c("Сфагн1", "Сфагн2", "Сфагн3", "Сфагн4", "Раст. остатки", "Голый торф", "Поверхность" ), guide = "none") + th_narrow
+
+#extract legend
+#https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+mylegend<-g_legend(p0 + theme(legend.position = "bottom", legend.key = element_blank()))
+
+library(gridExtra)
+p_comb <- grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights = c(10, 1), main = textGrob("Характеристики среды на участке, где собраны клещи-орибатиды", gp=gpar(cex = 1.5)))
+```
+
+--- .segue
+
+## 50 оттенков градиентного анализа
+
+---
+
+## Косвенный градиентный анализ
+
+- ищем ось макс. варьирования, затем регрессия или корреляция другой переменной от координат по этой оси
+- примеры: анализ главных компонент (PCA), корреспондентный анализ (CA)
+
+
+>- Опасности:
+  > - теряем связи переменных среды и отброшенных компонент высоких порядков. 
+    - __Выход__ использовать прямой градиентный анализ.
+  > - PCA нужны линейные зависимости (т.к. матрица ковариаций или корреляций). Если связи нелинейны - искривление градиентов.
+    - __Выход__ использовать другие расстояния (CA использует хи-квадрат).
+
+---
+
+## Прямой градиентный анализ
+
+- новые оси - линейные комбинации переменных среды (две ординации одновременно, в пространстве видов и среды)
+- примеры 
+  - анализ устойчивости (RDA, аналог PCA), 
+  - канонический корреспондентный анализ (CCA, аналог CA)
+
+--- .segue
+
+## Канонический корреспондентный анализ
+
+---
+
+## Канонический корреспондентный анализ (CCA)
+
+- Основан на корреспондентном анализе
+- Нужно две матрицы данных: матрица зависимых переменных и матрица предикторов
+- Нужно найти такие компоненты матрицы зависимых переменных, которые являются линейными комбинациями предикторов и отражают максимум инерции
+
+### Условия применимости такие же как у CA
+
+
+
+--- &twocol
+
+## Новые оси
+
+- __Канонические__ - ограниченные переменными из второй матрицы
+- __Неканонические__ - корреспондентный анализ таблицы остатков от регрессии координат по каноническим осям от переменных среды.
+
+<center>Два подхода к анализу</center>
+
+*** =left
+
+Анализ канонических осей  
+- отношения между видами и средой
+
+
+*** =right
+
+Анализ неканонических осей  
+- отношения между видами или сайтами  
+после того, как учтен эффект среды
+
+---
+
+## CCA - канонический кореспондентный анализ в vegan
+
+- Зависимые переменные (отклики) - обилие видов
+- Независимые переменные (предикторы) - переменные среды
+
+```{r}
+mite_cca <- cca(mite ~ SubsDens + WatrCont + Substrate + Topo, data = mite.env)
+head(summary(mite_cca), 3)
+```
+
+---
+
+## Общая инерция
+
+о ней можно судить __по суммам собственных чисел канонических осей__ (ограниченных и неограниченных)
+
+```
+Partitioning of mean squared contingency coefficient:
+              Inertia Proportion
+Total           1.696      1.000
+Constrained     0.735      0.433
+Unconstrained   0.961      0.567
+```
+
+---
+
+## Важность различных компонент
+
+Можно более подробно оценить, как распределяется изменчивость между осями
+
+```
+Eigenvalues, and their contribution to the mean squared contingency coefficient 
+
+Importance of components:
+                       CCA1  CCA2   CCA3   CCA4   CCA5    CCA6 ...
+Eigenvalue            0.426 0.129 0.0667 0.0443 0.0321 0.01447 ...
+Proportion Explained  0.251 0.076 0.0393 0.0261 0.0189 0.00853 ...
+Cumulative Proportion 0.251 0.327 0.3666 0.3927 0.4117 0.42020 ...
+
+Accumulated constrained eigenvalues
+Importance of components:
+                       CCA1  CCA2   CCA3   CCA4   CCA5   CCA6 ...
+Eigenvalue            0.426 0.129 0.0667 0.0443 0.0321 0.0145 ...
+Proportion Explained  0.580 0.175 0.0907 0.0603 0.0437 0.0197 ...
+Cumulative Proportion 0.580 0.755 0.8458 0.9061 0.9498 0.9695 ...
+```
+
+- Лишь небольшую часть изменчивости структуры сообществ орибатид удается объяснить изменениями среды. Первые две ограниченных оси объясняют всего 32% общей инерции, а первые две неограниченных - целых 75%
+
+---
+
+## Распределение изменчивости, потенциально объяснимой факторами
+
+```
+Accumulated constrained eigenvalues
+Importance of components:
+                       CCA1  CCA2   CCA3   CCA4   CCA5   CCA6   CCA7 ...
+Eigenvalue            0.426 0.129 0.0667 0.0443 0.0321 0.0145 0.0107 ...
+Proportion Explained  0.580 0.175 0.0907 0.0603 0.0437 0.0197 0.0145 ...
+Cumulative Proportion 0.580 0.755 0.8458 0.9061 0.9498 0.9695 0.9840 ...
+```
+
+- Первая ограниченная ось объясняет 58%, вторая 17% того, что можно потенциально связать с воздействием среды, остальные оси почти ничего не объясняют. Значит, характеристики среды, в принципе, можно свести к двум комплексным независимым переменным.
+
+---
+
+## Собственные векторы, нагрузки переменных = “species scores”
+
+- обилие каких видов сильнее варьирует вдоль оси?
+
+```{r eval=FALSE}
+scores(mite_cca, display = "species", choices = 1:5)
+```
+
+
+*** =pnotes
+
+## Другие части результатов
+
+- Собственные векторы  (“species scores”) координаты видов
+- Координаты объектов  (“site scores”) - как взвешенное среднее по видам
+- Координаты объектов (“Site constraints”) - как линейные комбинации переменных среды
+- (“Biplot scores”) координаты для биплотов
+- Центроиды сайтов для бинарных переменных среды на диаграмме ординации (“Centroids for factor constraints”)
+
+---
+
+## Корреляции между откликами (видами) и предикторами (средой)
+
+```{r}
+spenvcor(mite_cca)
+```
+
+> - Несмотря на то, что канонические оси объясняют не очень большое количество изменчивости, почти все они сильно или умеренно коррелируют с характеристиками среды.
+
+---
+
+## Визуализация ординации
+
+
+- Какие предикторы важнее всего?
+- Какими факторами определяется значение зависимых переменных?
+
+Триплоты:
+
+- переменные-отклики ("species"),
+- объекты ("sites")
+- переменные-предикторы (непрерывные в виде векторов, дискретные в виде центроидов)
+
+Биплоты:
+
+- отклики + предикторы
+- объекты + предикторы
+
+
+--- &twocol
+
+## Примеры триплотов
+
+Осторожно, в CCA есть два типа координат объектов:
+
+- WA - "weighted average scores" -  без ограничений переменными среды, но при этом они отличаются от координат полученных в CA
+- LC - "linear combination scores" -  результат множественной регрессии WA-координат по линейным комбинациям переменных среды. Palmer (1993) рекомендовал графики с ними, потому что WA непонятно как интерпретировать - и это по-умолчанию используется в `vegan`
+
+*** =left
+
+```{r tidy = F, fig.width = 4, fig.height=4}
+plot(mite_cca, scaling = 1, main = "scaling 1")
+```
+
+*** =right
+
+```{r tidy = F, fig.width = 4, fig.height=4}
+plot(mite_cca, scaling = 2, main = "scaling 2")
+```
+
+
+--- &twocol
+
+## Отношения между видами и средой (scaling = 2)
+
+*** =left
+
+- Проекция вида под прямым углом на переменную - оптимум вида по этой переменной 
+- Вид вблизи центроида качественной переменной - скорее всего часто встречается на сайтах с такими качествами
+- Расстояния между центроидами и центроидами и объектами __НЕ равны__ $\chi^2$
+
+*** =right
+
+```{r tidy = F, fig.width = 5}
+plot(mite_cca, scaling = 2, 
+     display = c("sp", "cn"), 
+     main = "biplot cca, scaling 2")
+```
+
+---
+
+## Пример интерпретации графика в scaling = 2
+
+
+```{r}
+plot(mite_cca, scaling = 2, display = c("sp", "cn"), main = "biplot cca, scaling 2")
+```
+
+
+--- &twocol
+
+## Отношения между объектами и средой (scaling = 1)
+
+*** =left
+
+- Проекция объекта под прямым углом на колич. переменную - приблизительная позиция объекта вдоль этой переменной 
+- Объект вблизи центроида качественной переменной скорее всего обладает данным качеством
+- Расстояние между центроидами качественных переменных и между центроидами объектов - $\chi^2$
+
+*** =right
+
+```{r tidy = F, fig.width = 5}
+plot(mite_cca, scaling = 1, 
+     display = c("lc", "cn"), 
+     main = "biplot cca, scaling 1")
+```
+
+---
+
+## Пример интерпретации графика в scaling 1
+
+```{r}
+plot(mite_cca, scaling = 1, display = c("lc", "cn"), main = "biplot cca, scaling 1")
+```
+
+--- .segue
+
+## Проверка значимости ординации
+
+---
+
+## Общий тест на значимость ординации
+
+- Тестируем гипотезу о том, что отношения между структурой сообщества и средой значимы - $H _0$: обилие видов в пробах не зависит от значений переменных среды
+- основан на пермутациях: случайно перемешиваем данные и проверяем, насколько редко будет наблюдаться связь сильнее, чем данная
+
+- статистика - сумма всех канонических соб. чисел
+
+---
+
+## Общий тест: влияют ли факторы на зависимые переменные?
+
+### Есть ли связь структуры сообщества со средой?
+
+```{r}
+anova(mite_cca)
+```
+
+> - Структура сообщества связана с условиями среды
+
+---
+
+## Тест факторов, type I эффекты: Какие факторы влияют на зависимые переменные?
+
+> - Структура сообщества клещей зависит от плотности и типа субстрата, от содержания воды и топографии
+- Осторожно, это Type I эффекты. Они зависят от порядка включения факторов в модель!
+
+```{r}
+anova(mite_cca, by="term")
+```
+
+---
+
+## Тест факторов, type III эффекты: Какие факторы влияют на зависимые переменные?
+
+>- Если протестировать каждый из факторов отдельно, при условии, что остальные уже в модели, получится, что тип субстрата не влияет, а влияют остальные факторы.
+
+```{r}
+anova(mite_cca, by="mar")
+```
+
+---
+
+## Тест значимости осей, ограниченных факторами:
+
+- $H _0$: изменение состава сообщества в пробах вдоль данной оси не зависит от переменных среды
+- пермутационный тест: случайно переставляем данные и проверяем, насколько редко данная ось объясняет больше изменчивости чем в исходном анализе. Если редко, то варьирование вдоль оси значимо
+
+>- Структура сообщества значимо меняется вдоль первых 5 канонических осей
+
+```{r}
+anova(mite_cca, by="axis", perm=500)
+```
+
+---
+
+## Ограничения CCA
+
+>- Редкие виды - использовать когда репрезентативная выборка или удалить из анализа
+- Чтобы снизить вес больших численностей нек. видов - логарифмировать
+- Доля объясненной изменчивости (% of total inertia) - аналогично $R^2$ - смещенная оценка. Простых поправок не придумано.
+- Симметричные распределения переменных среды (преобразования)
+- Нельзя включать шумные переменные среды (McCune, 1997)
+- Нельзя трансформацию Хелингера - будет уже не $\chi^2$
+
+---
+
+## Частная ординация
+
+- зависимость от одного набора переменных (предикторов), когда влияние другого (ковариат) исключено. 
+
+Техника: множественная регрессия предикторов от ковариат. Остатки от этой регрессии (то, что от ковариат не зависит) - в CCA в качестве переменных среды.
+
+<div class = "footnote">Legendre & Legendre 1998</div>
+
+---
+
+## Попробуем частную ординацию и пространственный анализ
+
+Общую изменчивость делим на части :
+- связана с переменными среды,
+- с пространственными координатами, 
+- может быть объяснена тем и другим вместе,
+- не объяснена ни тем не другим.
+
+```{r}
+mod <- varpart(mite, ~ SubsDens + WatrCont + Substrate + Topo, ~ x + y, data = cbind(mite.env, mite.xy))
+```
+
+---
+
+## Выделяем компоненты изменчивости
+
+```{r}
+mod
+```
+
+<div class = "footnote">Borcard et al., 1992</div>
+
+---
+
+```{r}
+plot(mod)
+```
+
+---
+
+## Take home messages
+
+>- Канонический корреспондентный анализ позволяет описать, как стуктура изменчивости определяется внешними переменными.
+>- При помощи частного канонического корреспондентного анализа можно разделять изменчивость на несколько компонент.
+
+---
+
+## Дополнительные ресурсы
+
+- Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
+- Jongman, R.H.G., Ter Braak, C.J.F., Van Tongeren, O.F.R. (eds.), 1995. Data analysis in community and landscape ecology. Cambridge University Press
+- Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
+- Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.
+- The Ordination Web Page URL http://ordination.okstate.edu/ (accessed 10.21.13).
+- Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.
