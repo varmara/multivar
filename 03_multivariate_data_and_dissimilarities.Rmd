@@ -36,7 +36,7 @@ options(device = function(file, width = 7, height = 7, ...) {
   })
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3)
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning=FALSE)
 ```
 
 
@@ -136,9 +136,9 @@ scatterplot3d(x = dat$x, y = dat$z, z = dat$y, xlab = "Descriptor 1", ylab = "De
 Существует два основных способа описания.
 
 
-## Способ 1. Геометрическое описание (линейная алгебра). {.columns-2}
+## Способ 1. Геометрическое описание (линейная алгебра) {.smaller .columns-2}
 
-```{r, echo = FALSE, fig.width = 7}
+```{r, echo = FALSE, fig.width = 5, fig.height=5, warning=FALSE}
 dat2 <- data.frame(object = c("Object 1", "Object 2", "Object 3", "Object 4" ), x = c(2, 2, 4, 2.5), y = c(5, 10, 8, 4))
 
 library(ggrepel)
@@ -167,10 +167,10 @@ $$\begin{vmatrix} LV1 \\ LV2 \\ ... \\ LVn \end{vmatrix}$$
 Этот способ описания, с разными вариациями, будет применяться в методах _PCA, CCA, RDA_
 
 
-## Способ 2. Через вычисление матрицы попарных расстояний (Similarity/Dissimilarity matrix) 
+## Способ 2. Через вычисление матрицы попарных расстояний (Similarity/Dissimilarity matrix) {.smaller .columns-2}
 
-*** = left
-```{r, echo = FALSE, fig.width = 7}
+
+```{r, echo = FALSE, fig.width = 5}
 pl6 <- ggplot(dat2, aes(x = x, y = y)) + geom_point(size = 5, color = "red") + theme_bw() + xlim(0, 5) + ylim(0, 11) + geom_text(aes(x = x, y = y+0.5), label = dat2$object) 
 
 for ( i in 1:nrow(dat2)) for (j in i:nrow(dat2)) pl6 <- pl6 + geom_segment(x = dat2$x[i], y = dat2$y[i], xend = dat2$x[j], yend = dat2$y[j], arrow = NULL, size = 1) 
@@ -178,16 +178,12 @@ for ( i in 1:nrow(dat2)) for (j in i:nrow(dat2)) pl6 <- pl6 + geom_segment(x = d
 pl6
 ```
 
-**** = right
-
 В анализ вовлекается матрица попраных расстояний (сходств) между объектами. Эта матрица однозначно описывает взаиморасположение между объектами.  
 
 Этот способ представления взаиморасположения лежит в основе _Иерархического кластерного анализа, MDS, теста Мантела, ANOSIM, PERMANOVA, процедуры BIOENV_
 
 
-## Три способа изображения матрицы расстояний
-
-*** = left
+## Три способа изображения матрицы расстояний {.smaller .columns-2}
 
 ```{r, echo = FALSE}
 round(dist(dat2[,-1], diag = TRUE, upper = TRUE), 1)
@@ -198,7 +194,7 @@ round(dist(dat2[,-1], diag = F, upper = F), 1)
 
 ```
 
-*** = right
+
 
 Количество чисел в треугольной матрице сходства/различия: 
 $$N = \frac{n^2 - n}{2}$$ 
@@ -217,16 +213,16 @@ as.vector(round(dist(dat2[,-1], diag = F, upper = F), 1))
 
 9 признаков 25 объектов:
 
-- Country: Country name
-- RdMeat: Red meat
-- WhMeat: White meat
-- Eggs: Eggs
-- Milk: Milk
-- Fish: Fish
-- Cereal: Cereals
-- Starch: Starchy foods
-- Nuts: Pulses, nuts, and oil-seeds
-- Fr&Veg: Fruits and vegetables 
+- Country: Страна
+- RdMeat: Красное мясо
+- WhMeat: Белое мясо
+- Eggs: Яйца
+- Milk: Молоко
+- Fish: Рыба
+- Cereal: Зерновые культуры
+- Starch: Крахмал-содержащая пища
+- Nuts: Бобовые, орехи и масличные культуры
+- Fr&Veg: Фрукты и овощи 
 
 
 ![Paleo Diet by zsoolt](images/PaleoDiet-zsoolt-Flickr.jpg)
@@ -234,7 +230,7 @@ as.vector(round(dist(dat2[,-1], diag = F, upper = F), 1))
 Paleo Diet by zsoolt on [Flickr](https://flic.kr/p/pPK1nz)
 
 
-## Читаем данные
+## Читаем данные {.smaller}
 
 ```{r}
 protein <- read.table("data/Protein.txt", header = TRUE, sep = "\t")
@@ -244,16 +240,17 @@ head(protein)
 ## Подготовка данных для анализа
 
 Переменные могут быть измерены в разных шкалах  
-+ численность, биомасса и проективное покрытие организмов
-+ температура воды, соленость и концентрация биогенов
-+ Размеры частей тела, количество частей тела, площадь частей тела
+<br>
+- численность, биомасса и проективное покрытие организмов   
+- температура воды, соленость и концентрация биогенов   
+- Размеры частей тела, количество частей тела, площадь частей тела   
 
-Для таких случаев необходима нормализация величин.  
-Этот прием наиболее вжен для геометрического способа представления многомерных данных.
+Для таких случаев необходима стандартизация величин.  
+Этот прием наиболее важен для геометрического способа представления многомерных данных.
 
-$$X_{stand} = \frac{X_i - \bar{X}}{\sigma_x}$$
+$$x_{stand} = \frac{x_i - \bar{x}}{\sigma_x}$$
 
->- Вопрос: Какими свойcтвами обладают нормализованные величины? 
+>- **Вопрос:** Какими свойcтвами обладают стандартизованные величины? 
 - Среднее зачние равно нулю.
 - Среднеквадратичное отклонение равно единице.
 
@@ -262,26 +259,25 @@ $$X_{stand} = \frac{X_i - \bar{X}}{\sigma_x}$$
 
 В ряде случаев (особенно в экологических исследованиях) необходимо перевести абсолютные значения в относительные (доли от суммы или от максимума)
 
-$$X_{rel} = \frac{X_i}{\sum X_i} 100%$$
-$$X_{rel} = \frac{X_i}{max(X_i)} 100%$$
+$$x_{rel} = \frac{x_i}{\sum x_i} \times 100 \%$$   
+
+$$x_{rel} = \frac{x_i}{max(x_i)} \times 100 \%$$
 
 
-## Подготовка данных для анализа
+## Подготовка данных для анализа {.smaller}
 
 Часто возникает ситуация, когда один признак (или несколько прзнаков) имеет существенно более высокие абсолютные значения, чем все остальные.   
 
-*** = left
-```{r, echo = FALSE, fig.width = 7}
+```{r, echo = FALSE, fig.width = 7, fig.height=4}
 
 scatterplot3d(x = protein$Eggs, y = protein$Cereals, z = protein$Fish, scale.y = 5, pch = 21, xlab = "Eggs", ylab = "Cerials", zlab = "Fish")
 
 ```
 
-*** = right
-В такой ситуации необходима _трансформация_ , которая "уравнивает" силу влияния признаков. 
-По силе эффекта трансформирующие функции распределяются так
 
-Отсутствие трансформации $\Rightarrow$ Квадратный корень $\Rightarrow$ Корень четвертой степени $\Rightarrow$ Логарифм $log(X_i +1)$ $\Rightarrow$ Присутствие отсутствие (1, 0)  
+В такой ситуации необходима _трансформация_ , которая "уравнивает" силу влияния признаков.   
+По силе эффекта трансформирующие функции распределяются так:    
+Отсутствие трансформации $\Rightarrow$ Квадратный корень $\Rightarrow$ Корень четвертой степени $\Rightarrow$ Логарифм $log(x_i +1)$ $\Rightarrow$ Присутствие отсутствие (1, 0)  
 
 
 ## Задание: На основе датасета `protein` создайте матрицу, содержащую относительные величины (доли протеина каждого типа в общей количестве потребляемых протеинов)
@@ -303,7 +299,7 @@ head(protein_stand)
 
 Знакомимся с пакетом `{vegan}` (Oksanen et al., 2015)
 
-```{r}
+```{r, echo=FALSE, message=FALSE}
 library (vegan)
 vegdist(protein[, -1], method = "euclidian")
 
@@ -312,7 +308,7 @@ vegdist(protein[, -1], method = "euclidian")
 
 ## Сходства VS Различия
 
-- Сходство (S) достигает максимума, когда объекты обладают идентичными признаками,  
+- Сходство (S) достигает максимума, когда объекты обладают идентичными признаками, 
 различиe (D), наоборот - достигает минимума.
 
 <br/>
@@ -332,7 +328,12 @@ names(dat6) <- dat5$Descriptors
 dat6
 ```
 
-О чем говорит то, что признаки D1, D2, D3, D4, D5 не были отмечены у двух объектов?  
+О чем говорит то, что признаки D1, D2, D3, D4, D5 не были отмечены у двух объектов? 
+<br>
+Вариант 1. Это ничего не означает.   
+ВАриант 2. Отсутствие признака - дополнительное сходство между объектами.
+
+
 От ответа на этот вопрос зависит какой коэффициент выбрать. 
 
 
@@ -348,46 +349,46 @@ dat6
 
 Свойства: 
 
-- Если a = b, D(a, b) = 0  
-- Симметричность D(a, b) = D(b, a)  
+- Если $a = b$, то $D(a, b) = 0$  
+- Симметричность $D(a, b) = D(b, a)$  
 - Справедливо неравество треугольника $D(a,b) + D(b,c) \geq D(a,c)$  
 
-## Наиболее популярные меры расстояния
+## Наиболее популярные меры расстояния {.smaller .columns-2}
 
-*** = left
-Нестандартизованные
+**Нестандартизованные**
 
 - Евклидово расстояние: 
-$$D = \sqrt{\sum(X_{i,j} - X_{i,k})^2}$$
+$$D = \sqrt{\sum(x_{i,j} - x_{i,k})^2}$$
 
 - Расстояние по Манхеттену (Manhattan metric, taxicab metric, city-block metric): 
-$$D = \sum \mid X_{i,j} - X_{i,k} \mid$$
+$$D = \sum \mid x_{i,j} - x_{i,k} \mid$$
 
-*** = right
-Стандартизованные  
+<br>
+<br>
+<br>
+**Стандартизованные**  
 Удобнее так как признаки могут быть измерны в разных шкалах  
 - Расстояние по Канберре (Canberra metric): 
-$$D = \frac{1} {p} \sum \frac {\mid X_{i,j} - X_{i,k} \mid} {X_{i,j}+ X_{i,k}}$$
+$$D = \frac{1} {p} \sum \frac {\mid x_{i,j} - x_{i,k} \mid} {x_{i,j}+ x_{i,k}}$$
 
 - Расстояние $\chi^2$
-$$\chi^2 = \sqrt{\sum\frac{1}{c_i}(X_{i,j} - X_{i,k})^2}$$ 
+$$\chi^2 = \sqrt{\sum\frac{1}{c_i}(x_{i,j} - x_{i,k})^2}$$ 
 
 - Евклидово расстояние, вычисленное по относительным величинам.
 
-_Важно:_ метрики неадекватно оценивают степень различия при большом количестве нулей.
-Очень чувствительны к выбросам.
+_Важно:_ метрики неадекватно оценивают степень различия при большом количестве нулей.Очень чувствительны к выбросам.
 
 
 ## Неметрические коэффициенты сходства/различия (Similarity/Dissimilarity) 
 
 - Корреляция Браве-Пирсона: 
-$$ R = \frac {cov(X, Y)}{\sqrt{\sigma_X^2\sigma_Y^2}} $$  
+$$ R = \frac {cov(X, Y)}{\sqrt{\sigma_x^2\sigma_y^2}} $$  
 
 _Коэффициент Браве-Пирсона варьирует от -1 до 1_  
 _Обычно используется в R анализе_  
 
 - Коэффициент Брея-Куртиса (Bray-Curtis dissimilarity): 
-$$D = \frac{\sum \mid X_{i,j} - X_{i,k} \mid} {\sum X_{i,j} + \sum X_{i,k}}$$ 
+$$D = \frac{\sum \mid x_{i,j} - x_{i,k} \mid} {\sum x_{i,j} + \sum x_{i,k}}$$ 
 
 _Это самый распространенный в экологии коэффициент._ 
 
@@ -396,17 +397,17 @@ _Это самый распространенный в экологии коэф
 
 В основе лежит четырехпольная таблица 
 
-$$\begin{vmatrix} . & + & - \\ + & a & b \\ - & c & d \end{vmatrix}$$
+$$\begin{vmatrix} \, & + & - \\ + & a & b \\ - & c & d \end{vmatrix}$$
 
-- a - сходство объектов по наличию  
+- a - сходство объектов по наличию признака
 - b - различие
 - c - различие
-- d - сходство по отсутствию
+- d - сходство по отсутствию признака
 
 
-## Коэффициенты для бинарных данных  
+## Коэффициенты для бинарных данных  {.columns-2}
 
-*** = left
+
 - Доля несовпадений: 
 $$D = \frac{b+c}{a+b+c}$$ 
 
@@ -417,7 +418,9 @@ $$S = \frac{a}{a+b+c}$$
 $$S = \frac{2a}{2a + b + c}$$ 
 _NB!_ Коэффициент Сёренсена - это коэффициент Брея-Куртиса, вычисленный для значений, оцененных как 1 или 0.
 
-*** = right
+<br>
+<br>
+
 - $\phi$-корреляция Пирсона 
 $$\phi = \frac{ad-bc}{(a+b)(c+d)(a+c)(b+d)}$$ 
 
@@ -430,10 +433,10 @@ _Используется в R-анализе_
 Обобщенный коэффициент, который применяется для случаев, когда одни признаки объекта описаны, как количественные величины, а другие - как бинарные данные (или даже качественные даные).
 
 
-$$ D = \frac{1}{p} \frac{\sum W_i\frac{\mid X_{i,j} - X_{i,k} \mid}{maxX_{i,j} - minX_{i,k}}}{\sum W_i}$$
+$$ D = \frac{1}{p} \frac{\sum W_i\dfrac{\mid x_{i,j} - x_{i,k} \mid}{\max x_{i,j} - \min x_{i,k}}}{\sum W_i}$$
 
-$W_i$ = 0 Если отсутсвует информация o $X_{i,j}$ и/или $X_{i,k}$ отсутствует  
-$W_i$ = 1 Если присутсвует информация как о $X_{i,j}$ так и о $X_{i,k}$
+$W_i$ = 0 Если отсутсвует информация o $x_{i,j}$ и/или $x_{i,k}$ отсутствует  
+$W_i$ = 1 Если присутсвует информация как о $x_{i,j}$ так и о $x_{i,k}$
 
 
 ## Отчего зависит выбор коэффициента? 
@@ -456,7 +459,7 @@ $W_i$ = 1 Если присутсвует информация как о $X_{i,j
 
 ## Задание: отразите графически как взаимосвязаны коэффициент Брея-Куртиса и Евклидово расстояние
 
-## Решение 
+## Решение {.smaller}
 
 ```{r}
 BCD <- as.vector(vegdist(protein[,-1], method = "bray"))
@@ -473,10 +476,14 @@ ggplot(distances, aes(x = Euclid, y = Bray)) + geom_point() + theme_bw()
 
 ## Задание: Постройте гистограмму, отражающую частотное распределение коэффициентов Брея-Куртиса, расчитанных для матрицы `protein`
 
-## Решение 
+## Решение {.smaller .columns-2}
 
-```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-ggplot(distances, aes(x = Bray)) + geom_histogram(binwidth = 0.03, fill = "blue", color = "black") + theme_bw()
+```{r, fig.width = 5, fig.height = 4, fig.align = 'center'}
+ggplot(distances, aes(x = Bray)) + 
+  geom_histogram(binwidth = 0.03, 
+                 fill = "blue", 
+                 color = "black") + 
+  theme_bw()
 ```
 
 Что вы можете сказать о характере взаиморасположения объектов, глядя на это распределение?
@@ -487,7 +494,7 @@ ggplot(distances, aes(x = Bray)) + geom_histogram(binwidth = 0.03, fill = "blue"
 
 ## Диагонализация матрицы расстояний (Метод Кульчинского, Kulczynski, 1928)
  
-```{r, echo = FALSE, fig.width=12, fig.height=6}
+```{r, echo = FALSE, fig.width=12, fig.height=6, message=FALSE}
 library(gplots)
 op <- par(mar = c(3, 1, 0, 0))
 heatmap.2 (as.matrix(vegdist(protein[,-1], method = "bray")), Rowv = F, dendrogram = "none", Colv = FALSE, density.info = "none", key = TRUE, trace = "none", col = colorpanel(3, low = "black", mid = "gray", high = "white"))
@@ -497,7 +504,7 @@ par(op)
 
 ## Диагонализация матрицы расстояний (Метод Кульчинского, Kulczynski, 1928)  
  
-```{r, echo = FALSE, fig.width=12, fig.height=6}
+```{r, echo = FALSE, fig.width=12, fig.height=6, message=FALSE}
 heatmap.2 (as.matrix(vegdist(protein[,-1], method = "bray")), Rowv = T, distfun = vegdist, dendrogram = "none", density.info = "none", key = TRUE, trace = "none", col = colorpanel(3, low = "black", mid = "gray", high = "white"))
 
 ```
@@ -505,7 +512,7 @@ heatmap.2 (as.matrix(vegdist(protein[,-1], method = "bray")), Rowv = T, distfun 
 
 ## Анализ плеяд
 
-```{r, echo = FALSE, fig.align = 'center'}
+```{r, echo = FALSE, fig.align = 'center', fig.width=5}
 plejada <- function (data, method = "bray", Dcrit) {
   # n - число точек
   # p - период
@@ -527,14 +534,14 @@ plejada <- function (data, method = "bray", Dcrit) {
   }
   
   lab <- as.character(1:n)
-  pl <- ggplot(points, aes(x = X, y = Y)) + geom_text(label = lab, size = 10) + theme_void()
+  pl <- ggplot(points, aes(x = X, y = Y)) + geom_text(label = lab, size = 6) + theme_void()
   library(vegan)
   
   dist <- as.matrix(vegdist(data, method = method))
   for ( i in 1:n) {
     for (j in i:n) {
       if (dist[i, j] <= Dcrit) {
-        pl <- pl + geom_segment(x = points$X[i], y = points$Y[i], xend = points$X[j], yend = points$Y[j])
+        pl <- pl + geom_segment(x = points$X[i], y = points$Y[i], xend = points$X[j], yend = points$Y[j], color = "red")
       }
     }
   }
@@ -571,7 +578,7 @@ mds_jac <- metaMDS(dat8, distance = "jaccard", autotransform = FALSE)
 
 ```
 
-```{r, echo = FALSE, fig.height = 8, fig.align = 'center'}
+```{r, echo = FALSE, fig.height = 5, fig.align = 'center'}
 pl_mds1 <- ggplot(data.frame(MDS1 = mds_eucl$points[,1], MDS2 = mds_eucl$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Euclidean")
 
 pl_mds2 <- ggplot(data.frame(MDS1 = mds_manch$points[,1], MDS2 = mds_manch$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Manchattan")
@@ -591,7 +598,7 @@ row.names(protein) <- protein$Country
 mds <- metaMDS(protein [,-1], distance = "euclidean", autotransform = FALSE)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.height = 8}
+```{r, echo = FALSE, fig.align = 'center', fig.height = 5}
 plot(mds,type = "n", main = "Euclidean distance")
 text(mds, display = "sites", cex = 1)
 ```
@@ -605,7 +612,7 @@ mds <- metaMDS(protein [,-1], distance = "bray", autotransform = FALSE)
 
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.height = 8}
+```{r, echo = FALSE, fig.align = 'center', fig.height = 5}
 plot(mds,type = "n", main = "Bray-Curtis")
 text(mds, display = "sites", cex = 1)
 
@@ -614,8 +621,8 @@ text(mds, display = "sites", cex = 1)
 
 ## Summary
 
->- Существует два подхода к анализу многоменых данных: (1) подход, основанный линейной алгебре, (2) подход, основанный на исследовании матриц сходства/различия между объектами.
-- Выбор коэффициентов сходств/различия - непростая задача, решение которой зависит от структуры материала и поставленных задач.Разные коэффициенты потенциально могут давать разные результаты. 
+>- Существует два подхода к анализу многоменых данных: (1) подход, основанный на линейной алгебре, (2) подход, основанный на исследовании матриц сходства/различия между объектами.
+- Выбор коэффициентов сходств/различия - непростая задача, решение которой зависит от структуры материала и поставленных задач. Разные коэффициенты потенциально могут давать разные результаты. 
 - Получить важную информацию о взаиморасположении объектов можно с помощью некоторых простейших методов. 
 
 
@@ -623,7 +630,7 @@ text(mds, display = "sites", cex = 1)
 
 * Legendre P., Legendre L. (1998) Numerical ecology. Second english edition. Elsevier, Amsterdam. (Фундаментальный труд, описывающий большинство методов. Дается исчерпывающее обсуждение разнообразных коэффициентов сходства/различия)
 * Zuur, A. F., Ieno, E. N., Smith, G. M. Analysing Ecological Data. Springer 2007 (Практичеки все то же самое, что в L&L, но написанное простым языком)
-* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth. (Очень доходчиво написанное руководство, дающее общее представление о "механике"" работы многомерных методов)
+* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth. (Очень доходчиво написанное руководство, дающее общее представление о "механике" работы многомерных методов)
 * Миркин Б.М., Розенберг Г.С. Фитоценология. Принципы и методы. М., 1978. (Руководство написано в докомпьютерную эпоху, но простейшие методы изложены очень хорошо)
 * Василевич В.И. Статистические методы в геоботанике. - Л.: Наука, 1969.
 * Дюран Б., Оделл П. Кластерный анализ. М.: Статистика, 1977
