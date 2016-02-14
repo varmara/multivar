@@ -213,10 +213,11 @@ as.vector(round(dist(dat2[,-1], diag = F, upper = F), 1))
 
 9 признаков 25 объектов:
 
+
 - Country: Страна
 - RdMeat: Красное мясо
 - WhMeat: Белое мясо
-- Eggs: Яйца
+<li style="break-before:column;color:red">Eggs: Яйца</li>
 - Milk: Молоко
 - Fish: Рыба
 - Cereal: Зерновые культуры
