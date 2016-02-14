@@ -77,8 +77,8 @@ description: Презентации к курсу Анализ и визуали
 3.Знакомство с многомерными данными.
 
 - [Презентация](pages/03_multivariate_data_and_dissimilarities.html)
-- [Код](https://github.com/varmara/multivar-course/blob/master/03_multivariate_data_and_dissimilarities.R)
-- Данные: [Protein.txt](https://github.com/varmara/multivar-course/blob/master/data/Protein.txt)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/03_multivariate_data_and_dissimilarities.R)
+- Данные: [Protein.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/Protein.txt)
 
 4.Неметрическое многомерное шкалирование (nMDS).
 
