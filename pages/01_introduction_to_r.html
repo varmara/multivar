@@ -51,9 +51,9 @@ code {
   color: inherit;
   background-color: rgba(0, 0, 0, 0.04);
 }
-img {
-  max-width:100%;
-  height: auto;
+img { 
+  max-width:100%; 
+  height: auto; 
 }
 </style>
 <div class="container-fluid main-container">
@@ -85,7 +85,7 @@ img {
 <li>На вкладке Files в одной из рабочих областей RStudio выберите многоточие … -&gt; в открывшемся системном диалоге выбора файлов найдите директорию, в которой лежит ваш код и нажмите OK</li>
 <li>Можно вручную прописать путь к рабочей директории в кавычках в качестве аргумента функции setwd</li>
 </ol>
-<pre class="r"><code>setwd(&quot;~/lect-multivar/Intro&quot;)</code></pre>
+<pre class="r"><code>setwd(&quot;~/lect-linmodr/Intro&quot;)</code></pre>
 </div>
 <div id="--" class="section level1">
 <h1>Как получить помощь</h1>
@@ -234,7 +234,7 @@ rainbow # весь вектор</code></pre>
 <p>Если у вас вдруг слишком короткий вектор в этом задании, то можно склеить новый из двух</p>
 <pre class="r"><code>double_rainbow &lt;- c(rainbow, rainbow)
 double_rainbow</code></pre>
-<pre><code>##  [1] &quot;red&quot;    &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot; &quot;red&quot;
+<pre><code>##  [1] &quot;red&quot;    &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot; &quot;red&quot;   
 ##  [8] &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot;</code></pre>
 <pre class="r"><code>rainbow[3:6] # элементы с 3 по 6</code></pre>
 <pre><code>## [1] &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot;</code></pre>
@@ -288,7 +288,7 @@ snail_colours # это текстовый вектор.</code></pre>
 </ul>
 <p>По умолчанию, R назначает порядок уровней по алфавиту. Можно изменить порядок (см. <code>help(&quot;factor&quot;)</code>). Нам это пригодится позже</p>
 <pre class="r"><code>double_rainbow # текстовый вектор</code></pre>
-<pre><code>##  [1] &quot;red&quot;    &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot; &quot;red&quot;
+<pre><code>##  [1] &quot;red&quot;    &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot; &quot;red&quot;   
 ##  [8] &quot;orange&quot; &quot;yellow&quot; &quot;green&quot;  &quot;blue&quot;   &quot;violet&quot;</code></pre>
 <p>Создаем фактор из текстового вектора и складываем его в переменную</p>
 <pre class="r"><code>f_double_rainbow &lt;- factor(double_rainbow)</code></pre>
