@@ -76,8 +76,7 @@ description: Презентации к курсу Анализ и визуали
 
 3.Знакомство с многомерными данными.
 
-- [Презентация в html5](pages/03_multivariate_data_and_dissimilarities.html); [презентация в pdf](pages/03_multivariate_data_and_dissimilarities.R)
-
+- [Презентация в html5](pages/03_multivariate_data_and_dissimilarities.html); [презентация в pdf](pages/03_multivariate_data_and_dissimilarities.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/03_multivariate_data_and_dissimilarities.R)
 - Данные: [Protein.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/Protein.txt)
 - [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task01.zip)
