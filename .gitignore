@@ -6,5 +6,6 @@ _gh-pages
 */.cache
 */*.RData
 */.Rhistory
+video
 *_exercises
 .Rproj.user
