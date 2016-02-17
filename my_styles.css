@@ -6,6 +6,13 @@
 
 }  */
 
+.col2 {
+-webkit-column-count: 2; /* Chrome, Safari, Opera */
+-moz-column-count: 2; /* Firefox */
+column-count: 2;
+}
+
+
 .footnote {
   position: absolute;
   bottom: 28px;
@@ -63,7 +70,7 @@ slide:not(.segue):not(.prompt) h1{
 
 slide.title-slide h1 {
   letter-spacing: -1px;
-  line-height: 1.5em;
+  line-height: 1.2em;
   margin-top: 10px;
   margin-bottom: 15px;
 /*  color: #193441;*/
@@ -130,6 +137,11 @@ pre {
   line-height: 1.1em;
   margin-bottom: 12px;
   text-align:left;
+    white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 pre code {
   font-size: 0.9em;
@@ -156,7 +168,7 @@ strong {
 }
 
 small {
-  font-size: 0.8em;
+  font-size: 0.75em;
 }
 
 /*</style>*/
