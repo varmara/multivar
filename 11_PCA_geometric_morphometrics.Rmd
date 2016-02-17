@@ -1,41 +1,31 @@
 ---
-title       : Специальные случаи применения анализа главных компонент
-subtitle    : Многомерные методы на R, весна 2014
-author      : Марина Варфоломеева
-job         : Каф. Зоологии беспозвоночных, СПбГУ
-framework   : io2012
-highlighter : highlight.js
-hitheme     : idea
-widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
-mode        : draft # {selfcontained, standalone, draft}
+title: "Специальные случаи применения анализа главных компонент"
+subtitle: "Анализ и визуализация многомерных данных с использованием R"
+author: Марина Варфоломеева, Вадим Хайтов
+presenters: [{
+  name: 'Марина Варфоломеева',
+  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
+  }]
+output:
+ ioslides_presentation:
+  widescreen: true
+  css: my_styles.css
+  logo: course_logo.png
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
-#------
-# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
 # to configure markdown parsing
 options(markdown.extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", "strikethrough", "lax_spacing", "space_headers", "latex_math"))
-#------
 # output options
-options(width = 70, scipen = 6, digits = 3) 
+options(width = 70, scipen = 6, digits = 3)
+
 # to render cyrillics in plots use cairo pdf
 options(device = function(file, width = 7, height = 7, ...) {
   cairo_pdf(tempfile(), width = width, height = height, ...)
   })
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align = 'center', fig.width = 10, fig.height = 6, cache = FALSE, comment="#") 
-
-# this allows for code formatting inline
-knit_hooks$set(inline = function(x) {
-   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
-   x = as.character(x)
-   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
-                                               size='normalsize', 
-                                               highlight = FALSE))
-   h = gsub("([_#$%&])", "\\\\\\1", h)
-   h = gsub('(["\'])', '\\1{}', h)
-   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3)
 ```
 
 ```{r, libs-funs, echo=FALSE}

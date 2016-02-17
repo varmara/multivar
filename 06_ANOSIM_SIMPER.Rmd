@@ -1,15 +1,16 @@
 ---
 title: "Тестирование гипотез на основе многомерных данных: ANOSIM, SIMPER и тест Мантела"
-author: "Вадим Хайтов"
-highlighter: highlight.js
-output: pdf_document
-job: Каф. Зоологии беспозвоночных, СПбГУ
-mode: standalone
-hitheme: idea
-subtitle: Многомерные методы на R, весна 2015
-framework: io2012
-widgets: mathjax
-
+subtitle: "Анализ и визуализация многомерных данных с использованием R"
+author: Вадим Хайтов
+presenters: [{
+  name: 'Вадим Хайтов',
+  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
+  }]
+output:
+ ioslides_presentation:
+  widescreen: true
+  css: my_styles.css
+  logo: course_logo.png
 ---
 
 # Вы сможете
@@ -19,54 +20,20 @@ widgets: mathjax
 + Протестировать гипотезу о наличии в данных некоторого специфичского паттерна с помощью метода модельных матриц.
 
 
-
-
-```{r setup, include = FALSE, cache = FALSE, eval = -3}
-#----------------------------------------------------------------
-# RUN THE FRAGMENT BETWEEN LINES BEFORE COMPILING MARKDOWN
+```{r setup, include = FALSE, cache = FALSE}
 # to configure markdown parsing
-options(markdown.extensions = 
-          c("no_intra_emphasis",# skip markdown embedded in words
-            "tables",           # create HTML tables
-            "fenced_code",      # treat text as verbatim when surrounded with begin and ending lines with three ~ or ' characters.
-            "autolink",         # create HTML links from urls and email addresses.
-            "strikethrough",    # create strikethroughs by surrounding text with ~~.
-            "lax_spacing",      # allow HTML tags inside paragraphs without being surrounded by newlines.
-            "space_headers",    # add a space between header hashes and the header itself.
-            "latex_math"))      # transforms all math equations into syntactically correct MathJax equations.
-#--------------------------------------------------------------
+options(markdown.extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", "strikethrough", "lax_spacing", "space_headers", "latex_math"))
 # output options
-options(width = 90, # set the maximum number of columns on a line
-        scipen = 6, # fixed notation of floating point numbers, unless it is more than scipen digits wider, else - exponential notation
-        digits = 4) # the number of digits to print when printing numeric values
+options(width = 70, scipen = 6, digits = 3)
 
 # to render cyrillics in plots use cairo pdf
 options(device = function(file, width = 7, height = 7, ...) {
   cairo_pdf(tempfile(), width = width, height = height, ...)
   })
-
-# chunk default options
 library(knitr)
-opts_chunk$set(
-#   fig.align='center',  # default figure alignment
-               warnings = FALSE,
-               message = FALSE,
-               fig.width = 10,      # default figure width
-               fig.height = 6)      # default figure height
-
-# this allows for code formatting inline
-knit_hooks$set(inline = function(x) {
-   if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
-   x = as.character(x)
-   h = knitr:::hilight_source(x, 'latex', list(prompt = FALSE, 
-                                               size='normalsize', 
-                                               highlight = FALSE))
-   h = gsub("([_#$%&])", "\\\\\\1", h)
-   h = gsub('(["\'])', '\\1{}', h)
-   gsub('^\\\\begin\\{alltt\\}\\s*|\\\\end\\{alltt\\}\\s*$', '', h)})
-
+# chunk default options
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3)
 ```
-
 --- &twocol
 
 # Вспомним основы
