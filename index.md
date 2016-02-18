@@ -83,10 +83,10 @@ description: Презентации к курсу Анализ и визуали
 
 4.Неметрическое многомерное шкалирование (nMDS).
 
-- <!--[Презентация в html5](pages/04_nMDS.html); [презентация в pdf](pages/04_nMDS.pdf)-->
+- [Презентация в html5](pages/04_nMDS.html); [презентация в pdf](pages/04_nMDS.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/04_nMDS.R)
 - Данные: [dolg_abundance.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/dolg_abundance.txt); [dolg_hydrology.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/dolg_hydrology.txt)
-- [Домашнее задание]<!--(https://github.com/varmara/multivar-course/raw/master/tasks/task01.zip)-->
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task02.zip)
 
 
 5.Анализ связи между наборами данных.
