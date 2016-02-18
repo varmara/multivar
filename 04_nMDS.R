@@ -22,6 +22,10 @@ hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = "
 
 
 # Неметрическое многомерное шкалирование
+# Трансформируем данные
+log_abund <- log(abund[,-1] + 1)
+row.names(log_abund) <- abund$Station
+
 library (vegan)
 ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
 ord
