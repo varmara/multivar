@@ -13,6 +13,9 @@
 abund <- read.table("data/dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
 hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
 
+log_abund <- log(abund[,-1] + 1)
+row.names(log_abund) <- abund[,1]
+
 # ## Задание: Прямая ординация станций в осях Температуры и Солености
 # Постройте диаграмму, отражающую ординацию станций в осях Температуры и Солености.
 # Модифицируйте график так, чтобы была еще видна связь с суммарным обилием видов в пробах.
@@ -24,7 +27,9 @@ hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = "
 # Неметрическое многомерное шкалирование
 library (vegan)
 ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
-ord
+ord$points
+
+ordiplot(ord, display = "sites", type = "t")
 
 ## Графическое представление результатов средствами пакета `vegan`
 ordiplot(ord, display = "sites" )
@@ -35,7 +40,7 @@ ordiplot(ord, display = "sites" )
 # - Постройте график ординации при помощи пакета `ggplot2`
 # - Раскрасьте точки на ординации согласно глубине (данные в `hydrol`)
 
-
+str(ord)
 
 
 ## Задание:
@@ -44,9 +49,17 @@ ordiplot(ord, display = "sites" )
 # - Измерьте линейкой расстояния между точками на ординации
 # - Сравните матрицу коэффициентов Брея-Куртиса и матрицу расстояний между точками на ординации.
 
+obj <- c("S17", "S33", "S37", "S38", "S44", "S59")
 
+
+red_abund <- log_abund[abund$Station %in% obj, ]
+
+ord1 <- metaMDS(red_abund)
+
+plot(ord1, display = "site", type = "t")
 
 ## Взаиморасположение точек на плоскости подобно взаиморасположению точек в многомерном пространстве признаков
+library(ggplot2)
 dist_compare <- data.frame(Bray = as.vector(vegdist(red_abund[, -1])), MDS = as.vector(vegdist(ord1$points, method = "euclidean")))
 ggplot(dist_compare, aes(x = Bray, y = MDS)) + geom_point(size = 4) + xlab("Bray-Curtis dissimilarity") + ylab("Distance between points on ordination")
 
@@ -57,8 +70,9 @@ stressplot(ord1)
 # Постройте диаграмму Шепарда вместе с монотонной регрессией на полном материале по Долгой губе. Найдите величину стресса.
 # Надежна ли такая ординация?
 
+stressplot(metaMDS(log_abund))
 
-
+metaMDS(log_abund)$stress
 
 ## MDS в трехмерном пространстве
 library(scatterplot3d)
@@ -73,6 +87,8 @@ scatterplot3d(x = ord3$points[,1], y = ord3$points[,2], z = ord3$points[,3], xla
 ## Задание:
 # - Постройте ординацию всех станций с использованием Евклидова расстояния
 
+
+ord4 <- metaMDS(log_abund, distance = "eucl", k = 2, trace = FALSE)
 
 
 
