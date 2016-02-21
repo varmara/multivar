@@ -25,6 +25,10 @@ row.names(log_abund) <- abund[,1]
 
 
 # Неметрическое многомерное шкалирование
+# Трансформируем данные
+log_abund <- log(abund[,-1] + 1)
+row.names(log_abund) <- abund$Station
+
 library (vegan)
 ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
 ord$points
