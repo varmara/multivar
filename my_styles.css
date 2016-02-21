@@ -128,14 +128,14 @@ body, td {
 }
 
 code.r{
-  font-size: 12px;
+  font-size: 10px;
   text-align: left;
 }
 pre {
-  font-size: 0.9em;
+  font-size: 0.75em;
   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-  line-height: 1.1em;
-  margin-bottom: 12px;
+  line-height: 1em;
+  margin-bottom: 10px;
   text-align:left;
     white-space: pre-wrap;       /* CSS 3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
@@ -144,17 +144,17 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 pre code {
-  font-size: 0.9em;
+  font-size: 0.75em;
   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-  line-height: 1.1em;
+  line-height: 1em;
   margin-bottom: -18px;
   text-align: left;
   border: 1px solid #ccc;
 }
 code {
-  font-size: 0.9em;
+  font-size: 0.75em;
   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-  line-height: 1.1em;
+  line-height: 1em;
   margin-bottom: -18px;
   text-align:left;
 }
