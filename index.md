@@ -91,9 +91,10 @@ description: Презентации к курсу Анализ и визуали
 
 5.Анализ связи между наборами данных.
 
-- [Презентация в html5]<!--(pages/05_Mantel_correlation-based_methods.html); [презентация в pdf](pages/05_Mantel_correlation-based_methods.pdf); [Видео] -->
+- [Презентация в html5](pages/05_Mantel_correlation-based_methods.html); [презентация в pdf](pages/05_Mantel_correlation-based_methods.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/05_Mantel_correlation-based_methods.R)
-- [Домашнее задание]
+- Данные: [Coordinates.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/Coordinates.txt);
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task03.zip)
 
 6.Тестирование гипотез на основе многомерных данных: ANOSIM, SIMPER и тест Мантела.
 
