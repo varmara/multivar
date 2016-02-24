@@ -6,23 +6,39 @@
 library(vegan)
 library(ggplot2)
 
+
 # Загружаем данные
 data(varespec)
 data(varechem)
 
+head(varespec)
+
+head(varechem)
+
+sum(is.na(varechem))
+sum(is.na(varespec))
+
+
 # Код для построения ординаци в осях nMDS
 
+library(ggplot2)
+veg_ord <- metaMDS(varespec)
+ordiplot(veg_ord, display = "sites")
 
+veg_MDS <- as.data.frame(veg_ord$points)
+
+ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  + geom_point(shape=21, size =4)+ scale_fill_gradient(low = "cyan", high = "darkblue") + theme_bw() + theme(legend.position = "bottom") + labs(fill = "Aluminium concentration") + scale_fill_gradient(high = "red", low = "yellow")
 
 
 
 
 # Применяем функцию envfit()
 env_fit <- envfit(veg_ord, varechem)
+
 env_fit
 
 # Визуализация результатов
-plot(veg_ord, display = "site")
+ordiplot(veg_ord, display = "site")
 plot(env_fit)
 
 
@@ -30,11 +46,13 @@ plot(env_fit)
 env_fit2 <- envfit(veg_ord ~ N, data = varechem)
 plot(veg_ord, display = "site")
 plot(env_fit2, col = "red")
+
 ordisurf(veg_ord, varechem$N,
          add = TRUE, col="blue")
 ordisurf(veg_ord, varechem$Mn,
          add = TRUE, col="green")
-
+env_fit3 <- envfit(veg_ord ~ Mn, data = varechem)
+plot(env_fit3, col = "yellow")
 
 # Задание: Отразите связь ординации растительности со значениями концентрации гумуса.
 
@@ -49,7 +67,11 @@ dist_chem <- vegdist(varechem, method = "euclidean")
 x <- as.vector(dist_com)
 y <- as.vector(dist_chem)
 
-R <- round(cor(x, y, method="spearman"), 3)
+plot(x, y)
+
+
+
+R <- round(cor(x, y, method = "spearman"), 3)
 
 
 xy <- data.frame (x, y)
@@ -73,6 +95,10 @@ dist_geo <- vegdist(geo[, -1], method = "euclidean")
 
 mantel_partial <- mantel.partial(dist_com, dist_chem, dist_geo, method = "pearson", permutations = 9999)
 mantel_partial
+
+ncol(varechem)
+
+
 
 2^ncol(varechem) - 1
 
