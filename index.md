@@ -112,44 +112,63 @@ description: Презентации к курсу Анализ и визуали
 
 8.Кластерный анализ.
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/08_cluster_analysis.html); [презентация в pdf](08_cluster_analysis.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/08_cluster_analysis.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)
+-->
 
 9.Основы матричной алгебры.
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/09_introduction_to_matrix_algebra.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+-->
 
 10.Анализ главных компонент (Principal Component Analysis, PCA).
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/10_PCA.html); [презентация в pdf](pages/10_PCA.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/10_PCA.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+-->
 
 11.Специальные случаи применения анализа главных компонент. Геометрическая морфометрия.
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/11_PCA_geometric_morphometrics.html); [презентация в pdf](pages/11_PCA_geometric_morphometrics.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/11_PCA_geometric_morphometrics.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)
+-->
 
 12.Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент.
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/12_CA_vs_PCA.html); [презентация в pdf](pages/12_CA_vs_PCA.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/12_CA_vs_PCA.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task07.zip)
+-->
 
 13.Анализ избыточности (Redundancy analysis, RDA).
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/13_RDA.html); [презентация в pdf](pages/13_RDA.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/13_RDA.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task08.zip)
+-->
 
 14.Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA).
 
-- [Презентация]
-- [Код]
-- Данные: 
+<!--
+- [Презентация в html5](pages/14_CCA.html); [презентация в pdf](pages/14_CCA.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/14_CCA.R)
+- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task09.zip)
+-->
 
 
