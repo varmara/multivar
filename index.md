@@ -98,15 +98,17 @@ description: Презентации к курсу Анализ и визуали
 
 6.Тестирование гипотез на основе многомерных данных: ANOSIM, SIMPER и тест Мантела.
 
-- [Презентация]
-- [Код]
-- Данные: 
+- [Презентация в html5]<!--(pages/06_ANOSIM_SIMPER.html); [презентация в pdf](pages/06_ANOSIM_SIMPER.pdf)-->
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/06_ANOSIM_SIMPER.R)
+- Данные: [mussel_beds.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/mussel_beds.csv); [ASCAM.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/ASCAM.csv)
+- [Домашнее задание]<!--(https://github.com/varmara/multivar-course/raw/master/tasks/task04.zip)-->
 
-7.Тестирование гипотез на основе многомерных данных: PERMANOVA. 
-
-- [Презентация]
-- [Код]
-- Данные: 
+7.Тестирование гипотез на основе многомерных данных: PERMANOVA. <!--
+- [Презентация в html5](pages/07_perMANOVA.html); [презентация в pdf](pages/07_perMANOVA.pdf)
+- [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/07_perMANOVA.R)
+- Данные: [pesch.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/pesch.csv); [simulated_data.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/simulated_data.csv)
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task05.zip)
+-->
 
 8.Кластерный анализ.
 
