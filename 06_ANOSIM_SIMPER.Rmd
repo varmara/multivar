@@ -78,7 +78,7 @@ ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
 
 ##Задание {.columns-2}
 
-```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+```{r dynam-1, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 library(vegan)
 log_com <- log(com[,-c(1:3)] + 1)
 vor2_log_com <- log_com[com$Bank == "Vor2",]
@@ -88,7 +88,7 @@ vor2_log_ascam <- log_ascam[ascam$Bank == "Vor2",]
 mds_vor2_ascam <- as.data.frame(metaMDS(vor2_log_ascam, distance = "euclid" )$points)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5, fig.width=5}
+```{r dynam-2, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5, fig.width=5}
 library(ggplot2)
 library(gridExtra)
 theme_set(theme_bw())
@@ -108,11 +108,25 @@ Hint 1. Прологарифмируйте данные.
 
 Hint 2. Примените наиболее подходящий коэффициет для оценки расстояний между объектами.
 
+## Решение
+
+### Ординация
+
+```{r dynam-1, echo=TRUE, eval=FALSE}
+```
+
+## Решение
+
+### График ординации
+
+```{r dynam-2, echo=TRUE, eval=FALSE}
+```
+
 ## Градиентная модельная матрица
 
 Это матрица Евклидовых расстояний между временными точками. 
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
 gradient_model 
 ```
