@@ -98,10 +98,10 @@ description: Презентации к курсу Анализ и визуали
 
 6.Тестирование гипотез на основе многомерных данных: ANOSIM, SIMPER и тест Мантела.
 
-- [Презентация в html5]<!--(pages/06_ANOSIM_SIMPER.html); [презентация в pdf](pages/06_ANOSIM_SIMPER.pdf)-->
+- [Презентация в html5](pages/06_ANOSIM_SIMPER.html); [презентация в pdf](pages/06_ANOSIM_SIMPER.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/06_ANOSIM_SIMPER.R)
 - Данные: [mussel_beds.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/mussel_beds.csv); [ASCAM.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/ASCAM.csv)
-- [Домашнее задание]<!--(https://github.com/varmara/multivar-course/raw/master/tasks/task04.zip)-->
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task04.zip)
 
 7.Тестирование гипотез на основе многомерных данных: PERMANOVA. <!--
 - [Презентация в html5](pages/07_perMANOVA.html); [презентация в pdf](pages/07_perMANOVA.pdf)
