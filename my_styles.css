@@ -123,9 +123,22 @@ slide:not(.segue):not(.prompt) h3{
 
 /* Format code and body */
 
-body, td {
+body{
    font-size: 1.1em;
 }
+
+table.rmdtable td, table th {
+    font-size: 18px;
+    padding: 0.25em 0.25em;
+    padding-top: 0.25em;
+    padding-right: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 0.25em;
+}
+
+table.rmdtable tr:nth-child(odd) {background-color: white}
+table.rmdtable tr:nth-child(even){background-color: #f2f2f2}
+
 
 code.r{
   font-size: 10px;
