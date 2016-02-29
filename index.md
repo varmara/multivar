@@ -105,10 +105,10 @@ description: Презентации к курсу Анализ и визуали
 
 7.Тестирование гипотез на основе многомерных данных: PERMANOVA. 
 
-- [Презентация в html5]<!--(pages/07_perMANOVA.html); [презентация в pdf](pages/07_perMANOVA.pdf)-->
+- [Презентация в html5](pages/07_perMANOVA.html); [презентация в pdf](pages/07_perMANOVA.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/07_perMANOVA.R)
 - Данные: [pesch.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/pesch.csv); [simulated_data.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/simulated_data.csv)
-- [Домашнее задание]<!--(https://github.com/varmara/multivar-course/raw/master/tasks/task05.zip)-->
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task05.zip)
 
 8.Кластерный анализ.
 
