@@ -427,13 +427,13 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) + geom_point(size =
 
 <div class="columns-2">
 
-__MANOVA (Евклидово расстояние)__
+MANOVA (Евклидово расстояние)
 
 <img src="images/MANOVA.png" height="260" alt="MANOVA">
 
 <small>Anderson, 2001</small>
 
-__PERMANOVA (любой коэффициент сходства-различия)__
+PERMANOVA (любой коэффициент)
 
 <img src="images/distances-permanova.png" height="260" alt="PERMANOVA">
 
