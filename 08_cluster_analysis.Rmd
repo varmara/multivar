@@ -46,7 +46,7 @@ options(device = function(file, width = 7, height = 7, ...) {
   })
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align = 'center', tidy = FALSE, fig.width = 7, fig.height = 3, cache = TRUE)
+opts_chunk$set(fig.align = 'center', tidy = FALSE, fig.width = 10, fig.height = 5, cache = TRUE)
 ```
 
 # Кластерный анализ
@@ -80,7 +80,7 @@ opts_chunk$set(fig.align = 'center', tidy = FALSE, fig.width = 7, fig.height = 3
 - A --- волки из Арктики (10 самцов, 6 самок)
 - L --- волки из Скалистых гор (6 самцов, 3 самки)
 
-```{r}
+```{r, message=FALSE}
 library(candisc)
 data("Wolves")
 ```
@@ -88,6 +88,7 @@ data("Wolves")
 ## Знакомимся с данными
 
 ```{r}
+dim(Wolves)
 colnames(Wolves)
 head(rownames(Wolves))
 any(is.na(Wolves))
@@ -103,6 +104,9 @@ data("iris")
 ## Знакомимся с данными
 
 ```{r}
+dim(iris)
+colnames(iris)
+head(rownames(iris))
 # Делаем осмысленные имена строк
 Species <- substr(iris$Species, 0, 2)
 rownames(iris) <- make.unique(Species)
@@ -129,7 +133,7 @@ library(ggplot2)
 s_w <- scale(Wolves[, 4:ncol(Wolves)]) ## стандартизируем
 ord_w <- metaMDS(comm = s_w, distance = "euclidean", autotransform = FALSE)
 dfr_w <- data.frame(ord_w$points, Group = Wolves$group)
-gg_w <- ggplot(dfr_w, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = factor(Group)))
+gg_w <- ggplot(dfr_w, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = Group))
 ```
 
 ## Решение: Волки
@@ -229,7 +233,7 @@ grid.arrange(gg_single + ggtitle("Метод ближайшего соседа")
 
 <div class="columns-2">
 
-```{r, echo=FALSE, fig.width=4.5}
+```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
 gg_single
 ```
 
@@ -245,6 +249,12 @@ gg_single
   - часто получаются цепочки кластеров (объекты присоединяются как бы по-одному)
 - Хорош для выявления градиентов
 
+## Как работает метод ближайшего соседа
+
+<img src="images/Min_Link_Clustering.jpg" alt="Single link clustering" height=450px>
+<img src="images/Min_Link_Dendogramm.jpg" alt="Single link dendrogram" width=260px>
+
+<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
 
 ## Метод отдаленного соседа
 
@@ -252,7 +262,7 @@ gg_single
 
 <div class="columns-2">
 
-```{r, echo=FALSE, fig.width=4.5}
+```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
 gg_complete
 ```
 
@@ -265,6 +275,13 @@ gg_complete
 
 - На дендрограмме образуется много отдельных некрупных групп
 - Хорош для поиска дискретных групп в данных
+
+## Как работает метод отдаленного соседа
+
+<img src="images/Max_Link_Clustering.jpg" alt="Complete link clustering" height=450px>
+<img src="images/Max_Link_Dendogramm.jpg" alt="Complete link dendrogram" width=260px>
+
+<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
 
 ## Метод невзвешенного попарного среднего
 
@@ -282,9 +299,16 @@ gg_average
 ### Особенности:
 - UPGMA и WUPGMС иногда могут приводить к инверсиям на дендрограммах
 
-![Инверсии на дендрограммах](img/clust-revert.png)
+![Инверсии на дендрограммах](images/clust-revert.png)
 
-<div class = "footnote">из Borcard et al., 2011</div>
+<div class="footnote">из Borcard et al., 2011</div>
+
+## Как работает метод среднегруппового расстояния
+
+<img src="images/Group_Average_Clustering.jpg" alt="UPGMA clustering" height=450px>
+<img src="images/Group_Average_Dendogramm.jpg" alt="UPGMA dendrogram" width=260px>
+
+<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
 
 ## Метод Варда
 
@@ -292,7 +316,7 @@ gg_average
 
 <div class="columns-2">
 
-```{r, echo=FALSE, fig.width=4.5, fig.height=2.5}
+```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
 gg_ward
 ```
 
@@ -435,43 +459,106 @@ cor(d, as.dist(c_w2))
 
 Какой метод дает лучший результат?
 
-# Количество кластеров
+# Качество и количество кластеров
 
 ## На каком уровне нужно делить дендрограмму на кластеры?
 
 - Можно субъективно, на любом выбранном уровне. Главное, чтобы кластеры были осмысленными и интерпретируемыми.
 - Можно выбрать, глядя на распределение расстояний ветвления
-- Можно оценить вероятность разделения на кластеры при помощи бутстрепа
+- Можно оценить стабильность кластеризации при помощи бутстрепа и выбрать оптимальное число кластеров.
 
-## 
+## Стабильность кластеров
 
-# Поддержка ветвей
+На хорошей кластеризации кластеры должны воспроизводиться.
 
-## Бутстреп
+Оптимальное число кластеров можно определить рассчитывая меру нестабильности для каждой из выборок бутстрепа (Fang and Wang (2012))
+
+Много раз берем по 2 выборки бутстрепом, и оцениваем стабильность.
+
+```{r}
+library(fpc)
+nsel <- nselectboot(d, B = 1000, clustermethod = hclustCBI, seed = 9646, method = "average", krange=3:11)
+```
+
+## Оптимальное число кластеров --- с минимальным значением нестабильности
+
+```{r fig.height}
+nsel$kopt # оптимальное число кластеров
+nsel$stabk # средние значения нестабильности
+```
+
+## Визуализируем значения нестабильности
+
+Чтобы легче было выбирать, и чтобы понять, что происходит, изобразим значения нестабильности на графике
+
+```{r}
+plot(1:11, nsel$stabk)
+# nsel$stab # матрица с результатами бутстрепа
+```
+
+## Ширина силуэта
+
+Ширина силуэта --- мера степени принадлежности объекта к кластеру. Это среднее расстояние от данного объекта до других объектов из того же кластера, в сравнении с аналогичной величиной для ближайшего кластера.
+
+Чем больше, тем лучше
+
+## Оценим ширину силуэта для 3 или 6 кластеров
+
+```{r}
+complete3 <- cutree(hclust(d), 3)
+qual3<- cluster.stats(d, complete3)
+qual3$clus.avg.silwidths
+
+complete6 <- cutree(hclust(d), 6)
+qual6<- cluster.stats(d, complete6)
+qual6$clus.avg.silwidths
+
+mean(qual3$clus.avg.silwidths); mean(qual6$clus.avg.silwidths)
+```
+
+## Бутстреп поддержка ветвей
+
+"An approximately unbiased test of phylogenetic tree selection" (Shimodaria, 2002)
+
+Этот тест использует специальный вариант бутстрепа --- multiscale bootstrap. Мы не просто многократно берем бутстреп-выборки и оцениваем для них вероятность получения топологий (BP p-value), эти выборки еще и будут с разным числом объектов. По изменению BP при разных объемах выборки можно вычислить AU (approximately unbiased p-value). 
 
 ```{r}
 library(pvclust)
-```
-```{r}
-# итераций должно быть 1000 и больше
-# здесь мало для скорости
+# итераций должно быть 1000 и больше, здесь мало для скорости
 set.seed(42)
-cl_boot <- pvclust(scale(t(fossumc)), method.hclust = "average", nboot = 50, method.dist = "euclidean")
+cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, method.dist = "euclidean")
 ```
 
-##
+## Дерево с величинами поддержки
+
+AU --- approximately unbiased p-values (красный),
+BP --- bootstrap p-values (зеленый)
 
 ```{r fig.width=10, fig.height=6}
 plot(cl_boot)
-pvrect(cl_boot)
+# pvrect(cl_boot) # достоверные ветвления
+```
+
+## Для диагностики качества оценок AU
+
+График стандартных ошибок для AU p-value нужен, чтобы оценить точность оценки самих AU. Чем больше было бутстреп-итераций, тем точнее будет оценка.
+
+```{r}
+seplot(cl_boot, cex = 0.5)
+# print(cl_boot) # все значения
 ```
 
 # Сопоставление деревьев: Танглграммы
 
+## Танглграмма
 
-```{r}
+Два дерева (с непохожим ветвлением) выравнивают, вращая случайным образом ветви вокруг оснований. Итеративный алгоритм. Картина каждый раз разная.
+
+```{r tang, eval=FALSE}
 set.seed(395)
 untang_w <- untangle_step_rotate_2side(den_compl, den_w2, print_times = F)
+
+# танглграмма
 tanglegram(untang_w[[1]], untang_w[[2]],
            highlight_distinct_edges = FALSE,
            common_subtrees_color_lines = F,
@@ -479,14 +566,17 @@ tanglegram(untang_w[[1]], untang_w[[2]],
            main_left = "Left tree",
            main_right = "Right tree",
            columns_width = c(8, 1, 8),
-           margin_top = 3.2,
-           margin_bottom = 2.5,
-           margin_inner = 4,
-           margin_outer = 0.5,
-           lwd = 1.2, edge.lwd = 1.2,
-           lab.cex = 1, cex_main = 1, cex_sub = 1, sub = "")
-
+           margin_top = 3.2, margin_bottom = 2.5,
+           margin_inner = 4, margin_outer = 0.5,
+           lwd = 1.2, edge.lwd = 1.2, 
+           lab.cex = 1, cex_main = 1)
 ```
+
+## Танглграмма
+
+```{r tang, eval=TRUE, echo=FALSE}
+```
+
 
 ## Задание
 
@@ -496,7 +586,7 @@ tanglegram(untang_w[[1]], untang_w[[2]],
 
 ## И небольшая демонстрация - дерево по генетическим данным
 
-```{r, cache=TRUE, fig.height = 6, cache=TRUE}
+```{r, cache=TRUE, fig.height = 4.5, cache=TRUE}
 webpage <-"http://evolution.genetics.washington.edu/book/primates.dna"
 primates.dna <- read.dna(webpage)
 d_pri <- dist.dna(primates.dna)
@@ -509,9 +599,9 @@ axisPhylo()
 
 ## Take home messages
 
--
--
--
+- Результат кластеризации зависит не только от выбора коэффициента, но и от выбора алгоритма.
+- Качество кластеризации можно оценить разными способами.
+- Кластеризации, полученные разными методами, можно сравнить на танглграммах.
 
 ## Дополнительные ресурсы
 
@@ -519,13 +609,13 @@ axisPhylo()
 - Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
 - Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.
 
-##
+## И еще ресурсы
 
 Как работает UPGMA можно посмотреть здесь:
 
 - http://www.southampton.ac.uk/~re1u06/teaching/upgma/
 
-Как считать поддержку ветвей:
+Как считать поддержку ветвей (пакет + статья):
 
 - pvclust: An R package for hierarchical clustering with p-values [WWW Document], n.d. URL http://www.sigmath.es.osaka-u.ac.jp/shimo-lab/prog/pvclust/ (accessed 11.7.14).
 

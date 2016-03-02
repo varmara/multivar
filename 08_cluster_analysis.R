@@ -1,0 +1,178 @@
+# ---
+# title: "Кластерный анализ"
+# subtitle: "Анализ и визуализация многомерных данных с использованием R"
+# author: Марина Варфоломеева, Вадим Хайтов
+# ---
+
+# install.packages(c("candisc", "ape", "dendextend", "fpc", "pvclust"))
+
+## Пример: Волки
+# Морфометрия черепов у волков в Скалистых горах и в Арктике (Jolicoeur, 1959)
+library(candisc)
+data("Wolves")
+
+## Знакомимся с данными
+dim(Wolves)
+colnames(Wolves)
+head(rownames(Wolves))
+any(is.na(Wolves))
+table(Wolves$group)
+
+## Пример: Ирисы
+data("iris")
+
+## Знакомимся с данными
+dim(iris)
+colnames(iris)
+head(rownames(iris))
+# Делаем осмысленные имена строк
+Species <- substr(iris$Species, 0, 2)
+rownames(iris) <- make.unique(Species)
+# Делаем случайную выборку для этой демонстрации
+set.seed(191231)
+ids <- sample(nrow(iris), 50)
+siris <- iris[ids, ]
+
+
+## Задание:
+# - Постройте ординацию nMDS данных о морфометрии волков и ирисов
+# - Оцените качество ординации
+# - Обоснуйте выбор коэффициента
+# - Раскрасьте точки на ординации волков в зависимости от географического происхождения (`group`), а на ординации ирисов --- от вида (`Species`)
+
+# Кластерный анализ в R
+# Нам понадобится матрица расстояний
+d <- dist(x = s_w, method = "euclidean")
+# Пакеты для визуализации кластеризации
+library(ape)
+library(dendextend)
+
+## Метод ближайшего соседа в R
+hc_single <- hclust(d, method = "single")
+## Визуализируем при помощи базовой графики
+plot(hc_single)
+## Визуализируем средствами ape
+ph_single <- as.phylo(hc_single)
+plot(ph_single, type = "phylogram", cex = 0.7)
+axisPhylo()
+## Визуализируем средствами dendextend
+den_single <- as.dendrogram(hc_single)
+plot(den_single)
+
+## Метод отдаленного соседа в R
+hc_compl <- hclust(d, method = "complete")
+ph_compl <- as.phylo(hc_compl)
+plot(ph_compl, type = "phylogram", cex = 0.7)
+axisPhylo()
+## Визуализируем дерево, полученное методом отдаленного соседа, средствами `dendextend`
+den_compl <- as.dendrogram(hc_compl)
+plot(den_compl)
+
+
+## Метод невзвешенного попарного среднего в R
+hc_avg <- hclust(d, method = "average")
+ph_avg <- as.phylo(hc_avg)
+plot(ph_avg, type = "phylogram", cex = 0.7)
+axisPhylo()
+## Визуализируем дерево, полученное методом невзвешенного попарного среднего, средствами `dendextend`
+den_avg <- as.dendrogram(hc_avg)
+plot(den_avg)
+
+
+## Метод Варда в R
+hc_w2 <-hclust(d, method = "ward.D2")
+ph_w2 <- as.phylo(hc_w2)
+plot(ph_w2, type = "phylogram", cex = 0.7)
+axisPhylo()
+## Визуализируем дерево, полученное методом Варда, средствами `dendextend`
+den_w2 <- as.dendrogram(hc_w2)
+plot(den_w2)
+
+
+## Кофенетическая корреляция
+c_single <- cophenetic(ph_single)
+c_compl <- cophenetic(ph_compl)
+c_avg <- cophenetic(ph_avg)
+c_w2 <- cophenetic(ph_w2)
+
+cor(d, as.dist(c_single))
+cor(d, as.dist(c_compl))
+cor(d, as.dist(c_avg))
+cor(d, as.dist(c_w2))
+
+## Задание:
+# Оцените для данных об ирисах при помощи кофенетической корреляции качество кластеризаций, полученных разными методами.
+# Какой метод дает лучший результат?
+
+
+
+
+# Качество и количество кластеров
+## Стабильность кластеров
+library(fpc)
+nsel <- nselectboot(d, B = 1000, clustermethod = hclustCBI, seed = 9646, method = "average", krange=3:11)
+
+## Оптимальное число кластеров --- с минимальным значением нестабильности
+nsel$kopt # оптимальное число кластеров
+nsel$stabk # средние значения нестабильности
+
+## Визуализируем значения нестабильности
+plot(1:11, nsel$stabk)
+# nsel$stab # матрица с результатами бутстрепа
+
+## Ширина силуэта
+## Оценим ширину силуэта для 3 или 6 кластеров
+complete3 <- cutree(hclust(d), 3)
+qual3<- cluster.stats(d, complete3)
+qual3$clus.avg.silwidths
+
+complete6 <- cutree(hclust(d), 6)
+qual6<- cluster.stats(d, complete6)
+qual6$clus.avg.silwidths
+
+mean(qual3$clus.avg.silwidths); mean(qual6$clus.avg.silwidths)
+
+## Бутстреп поддержка ветвей
+library(pvclust)
+# итераций должно быть 1000 и больше, здесь мало для скорости
+set.seed(42)
+cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, method.dist = "euclidean")
+plot(cl_boot)
+# pvrect(cl_boot) # достоверные ветвления
+
+## Для диагностики качества оценок AU
+seplot(cl_boot, cex = 0.5)
+# print(cl_boot) # все значения
+
+# Сопоставление деревьев: Танглграммы
+set.seed(395)
+untang_w <- untangle_step_rotate_2side(den_compl, den_w2, print_times = F)
+
+# танглграмма
+tanglegram(untang_w[[1]], untang_w[[2]],
+           highlight_distinct_edges = FALSE,
+           common_subtrees_color_lines = F,
+           main = "Tanglegram",
+           main_left = "Left tree",
+           main_right = "Right tree",
+           columns_width = c(8, 1, 8),
+           margin_top = 3.2, margin_bottom = 2.5,
+           margin_inner = 4, margin_outer = 0.5,
+           lwd = 1.2, edge.lwd = 1.2,
+           lab.cex = 1, cex_main = 1)
+
+
+## Задание
+# Постройте танглграмму для данных о морфометрии ирисов из дендрограмм, полученных методом ближайшего соседа и методом Варда.
+
+
+
+
+## И небольшая демонстрация - дерево по генетическим данным
+webpage <-"http://evolution.genetics.washington.edu/book/primates.dna"
+primates.dna <- read.dna(webpage)
+d_pri <- dist.dna(primates.dna)
+hc_pri <- hclust(d_pri, method = "average")
+ph_pri <- as.phylo(hc_pri)
+plot(ph_pri)
+axisPhylo()
