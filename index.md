@@ -115,11 +115,10 @@ description: Презентации к курсу Анализ и визуали
 
 8.Кластерный анализ.
 
-- [Презентация в html5]<!--(pages/08_cluster_analysis.html); [презентация в pdf](08_cluster_analysis.pdf)-->
+- [Презентация в html5](pages/08_cluster_analysis.html); [презентация в pdf](08_cluster_analysis.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/08_cluster_analysis.R)
 - Данные: ---
-- [Домашнее задание]<!--(https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)
--->
+- [Домашнее задание] Задания не будет, доделывайте то, что есть. Следущее будет после геометрической морфометрии (11).
 
 9.Основы матричной алгебры.
 
