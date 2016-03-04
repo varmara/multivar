@@ -115,7 +115,7 @@ description: Презентации к курсу Анализ и визуали
 
 8.Кластерный анализ.
 
-- [Презентация в html5](pages/08_cluster_analysis.html); [презентация в pdf](08_cluster_analysis.pdf)
+- [Презентация в html5](pages/08_cluster_analysis.html); [презентация в pdf](08_cluster_analysis.pdf); [видео](https://www.youtube.com/playlist?list=PL_m3ZHlVDNooSDNNFG03t6PxNFNHy382l)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/08_cluster_analysis.R)
 - Данные: ---
 - [Домашнее задание] Задания не будет, доделывайте то, что есть. Следущее будет после геометрической морфометрии (11).
