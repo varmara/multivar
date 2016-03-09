@@ -19,8 +19,6 @@ description: Презентации к курсу Анализ и визуали
 9:00--10:45 по понедельникам на каф. ЗБП, начиная с 15 февраля  
 + N дополнительных четвергов на каф. ЗП или в 143-й ауд. в 9:00--10:45, а именно 18 и 25 февраля, 3 и 10 марта.
 
-Внимание! В понедельник 7 марта занятий не будет --- выходной.
-
 #### Office hours: 
 
 11:00--14:00 по понедельникам
@@ -122,11 +120,9 @@ description: Презентации к курсу Анализ и визуали
 
 9.Основы матричной алгебры.
 
-<!--
 - [Презентация в html5](pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/09_introduction_to_matrix_algebra.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
--->
+- Данные: [face.rda](https://raw.githubusercontent.com/varmara/multivar-course/master/data/face.rda)
 
 10.Анализ главных компонент (Principal Component Analysis, PCA).
 
