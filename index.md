@@ -120,7 +120,9 @@ description: Презентации к курсу Анализ и визуали
 
 9.Основы матричной алгебры.
 
-- [Презентация в html5](pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
+- [Презентация в html5]
+<!--(pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
+-->
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/09_introduction_to_matrix_algebra.R)
 - Данные: [face.rda](https://raw.githubusercontent.com/varmara/multivar-course/master/data/face.rda)
 
