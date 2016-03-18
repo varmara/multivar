@@ -120,19 +120,15 @@ description: Презентации к курсу Анализ и визуали
 
 9.Основы матричной алгебры.
 
-- [Презентация в html5]
-<!--(pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
--->
+- [Презентация в html5](pages/09_introduction_to_matrix_algebra.html); [презентация в pdf](pages/09_introduction_to_matrix_algebra.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/09_introduction_to_matrix_algebra.R)
 - Данные: [face.rda](https://raw.githubusercontent.com/varmara/multivar-course/master/data/face.rda)
 
 10.Анализ главных компонент (Principal Component Analysis, PCA).
 
-<!--
 - [Презентация в html5](pages/10_PCA.html); [презентация в pdf](pages/10_PCA.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/10_PCA.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
--->
+- Данные: [jellyfish.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/jellyfish.csv); [protein.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/protein.csv)
 
 11.Специальные случаи применения анализа главных компонент. Геометрическая морфометрия.
 
