@@ -133,9 +133,10 @@ description: Презентации к курсу Анализ и визуали
 11.Специальные случаи применения анализа главных компонент. Геометрическая морфометрия.
 
 <!--
-- [Презентация в html5](pages/11_PCA_geometric_morphometrics.html); [презентация в pdf](pages/11_PCA_geometric_morphometrics.pdf)
+- [Презентация в html5](pages/11_PCA_geometric_morphometrics.html); [презентация в pdf](pages/11_PCA_geometric_morphometrics.pdf)-->
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/11_PCA_geometric_morphometrics.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- Данные: [turtles.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/turtles.txt)
+<!--
 - [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)
 -->
 
