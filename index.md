@@ -132,13 +132,10 @@ description: Презентации к курсу Анализ и визуали
 
 11.Специальные случаи применения анализа главных компонент. Геометрическая морфометрия.
 
-<!--
-- [Презентация в html5](pages/11_PCA_geometric_morphometrics.html); [презентация в pdf](pages/11_PCA_geometric_morphometrics.pdf)-->
+- [Презентация в html5](pages/11_PCA_geometric_morphometrics.html); [презентация в pdf](pages/11_PCA_geometric_morphometrics.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/11_PCA_geometric_morphometrics.R)
 - Данные: [turtles.txt](https://raw.githubusercontent.com/varmara/multivar-course/master/data/turtles.txt)
-
-<!--
-- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)-->
+- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task06.zip)
 
 12.Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент.
 
