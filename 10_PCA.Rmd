@@ -93,7 +93,7 @@ A <- matrix(c( 0,  0, 10,
                40, 0, 0  ), ncol = 3)
 ```
 
-Свойство ортогональной матрицы: По главной диагонали произведения $\textbf{A}\textbf{A}'$ будут располагаться длины векторов (столбцов) 
+Свойство ортогональной матрицы: По главной диагонали произведения $\textbf{A}\textbf{A}'$ будут располагаться квадраты длин векторов (столбцов) 
 
 ```{r}
 A %*% t(A)
@@ -129,7 +129,7 @@ t(normA)
 ```
 
 ##Каноническая форма матрицы ассоциации {.smaller}
-Обычно в биологических исслдеованиях признаки объектов взаимозависимы. То есть между признаками есть ненулевая корреляция.
+Обычно в биологических исследованиях признаки объектов взаимозависимы. То есть между признаками есть ненулевая корреляция.
 
 Однако часто нам необходимо описать наши объекты в терминах *независимых* переменных. То есть вместо $p$ взаимозависимых признаков получить $p$ взамонезависимых признаков, корреляция между которыми равна нулю. 
 
@@ -262,7 +262,7 @@ Cat's shadow by Marina del Castell on [Flickr](https://flic.kr/p/ebe5UF)
 - создание комплексных признаков для других анализов
 
 
-## Описание связи нескольких переменных - построение матрицы ассоциации {.smaller .columns-2}
+## Описание связи нескольких переменных - построение матрицы ассоциации 
 
 - Ковариация - мера совместного варьирования двух признаков
 
@@ -296,13 +296,19 @@ dats <- lapply(corrs, getBiCop, n = 20, x = rnorm(20, sd = 1.7))
 
 g_covr <- lapply(1:length(dats), function(i) ggplot(data = dats[[i]], aes(x = X, y = Y)) + geom_point(alpha = 0.7, colour = "steelblue") + coord_equal(xlim = c(-7, 7), ylim = c(-7, 7))+ theme(axis.text = element_blank(), axis.ticks = element_blank(), plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "mm"), axis.ticks.margin = unit(0, "mm"), panel.margin = unit(0.5, "mm")) + annotate(geom = "text", x = 0, y = 6, label = paste("cov =", round(cov(dats[[i]]$X, dats[[i]]$Y), 2)), size = 8) + annotate(geom = "text", x = 0, y = -6, label = paste("r =", round(cor(dats[[i]]$X, dats[[i]]$Y), 2)), size = 8))
 
-grid.arrange(g_covr[[1]], g_covr[[2]], g_covr[[3]], g_covr[[4]], g_covr[[5]], nrow = 1)
 ```
 
 - Корреляция Пирсона - стандартизованная ковариация
 
 $Cor(X, Y) = \frac {Cov(X, Y)}{SD_X SD_Y}$,    
 $- 1 < Cor(X, Y) < 1$
+
+
+##Ковариация и корреляция
+```{r, echo=FALSE, fig.height=5}
+grid.arrange(g_covr[[1]], g_covr[[2]], g_covr[[3]], g_covr[[4]],  nrow = 2)
+```
+
 
 ## Ковариация зависит от масштаба шкалы
 
@@ -393,13 +399,14 @@ p_raw <- ggplot(jelly, aes(x = width, y = length)) +
   coord_equal()
 ```
 
-```{r, echo = FALSE}
-head(jelly, 10)
-```
-
 
 ```{r, echo=FALSE, fig.width=6}
 p_raw
+```
+
+
+```{r, echo = FALSE}
+head(jelly, 10)
 ```
 
 ## Центрируем исходные данные {.columns-2}
@@ -421,14 +428,14 @@ p_centered <- ggplot(jelly, aes(x = c_width, y = c_length)) +
 ```
 
 
-```{r echo=FALSE}
-head(jelly[, c(1, 4:5)], 10)
-```
-
 ```{r echo=FALSE, fig.width=6}
 p_centered + ggtitle("Центр координат сместился")
 ```
 
+
+```{r echo=FALSE}
+head(jelly[, c(1, 4:5)], 10)
+```
 
 ## Находим новые оси с помощью собственных векторов и собственных чисел {.columns-2}
 
@@ -455,6 +462,10 @@ p_futureax <- ggplot(jelly, aes(x = c_width, y = c_length)) +
   geom_segment(aes(x = 0, y = 0, xend = eigen_vectors[1, 2], yend = eigen_vectors[2,2]), colour = "red", size = 2)
 ```
 
+```{r echo=FALSE, fig.width=6}
+p_futureax + ggtitle("Новые оси")
+```
+
 Матрица ковариаций:
 ```{r echo=FALSE}
 Covar
@@ -471,21 +482,18 @@ eigen_values
 eigen_vectors
 ```
 
-```{r echo=FALSE, fig.width=6}
-p_futureax + ggtitle("Новые оси")
-```
 
-
-## Пересчитываем координаты точек в новом пространстве {.columns-2}
+## Пересчитываем координаты точек в новом пространстве
 
 ```{r echo=FALSE, fig.width=6}
-p_futureax
+p_futureax + ggtitle("До поворота осей")
 # p_futureax + 
 #   geom_line(aes(x = c_width, y = predict(lm(c_length ~ c_width))), colour = "red", size = 1) + 
 #   geom_line(aes(x = predict(lm(c_width ~ c_length)), y = c_length), colour = "steelblue", size = 1)
 ```
 
-До поворота осей
+
+## Пересчитываем координаты точек в новом пространстве
 
 ```{r echo=FALSE, fig.width=6, message=FALSE}
 # row_feature_vec <- t(eigen_vectors)
@@ -505,7 +513,7 @@ p_rotated <- ggplot(fincoord, aes(x = PC1, y = PC2)) +
   geom_vline(xintercept = 0) + 
   coord_equal(ratio = 1, ylim = c(-10, 10))
 
-p_rotated
+p_rotated + ggtitle("После поворота осей")
 
 
 # Можно добыть данные обратно
@@ -522,7 +530,7 @@ p_rotated
 # p_rotated + geom_segment(data = jelly_vars, aes(x = 0, y = 0, xend = PC1, yend = PC2, label = rownames(jelly_vars))) + coord_equal(xlim = c(-3.5, 4.5), ylim = c(-1, 1))
 ```
 
-После поворота осей
+
 
 ## Все то же самое с техникой SVD
 
@@ -533,7 +541,14 @@ V <- SVD$v
 D <- SVD$d
 ```
 
-## Сравним результаты {.smaller .columns-2}
+## Сравним результаты {.columns-2}
+Новые координаты в PCA и "реконструированные" значения в SVD
+
+```{r, echo=FALSE}
+qplot(fincoord$PC1, U %*% diag(D) [,1], geom = "point") + labs(x="PC1")
+```
+
+
 Собственные вектора, вычисленные по матрице ковариации 
 ```{r, echo=FALSE}
 eigen_vectors
@@ -544,11 +559,6 @@ eigen_vectors
 V
 ```
 
-Новые координаты в PCA и "реконструированные" значения в SVD
-
-```{r, echo=FALSE}
-qplot(fincoord$PC1, U %*% diag(D) [,1], geom = "point") + labs(x="PC1")
-```
 
 ## PCA и  SVD
 
@@ -577,7 +587,7 @@ Paleo Diet by zsoolt on [Flickr](https://flic.kr/p/pPK1nz)
 <div class = "footnote">Данные из Weber, 1973</div>
 
 
-## Открываем данные
+## Открываем данные {.smaller}
 
 ```{r, echo=FALSE}
 #library(XLConnect, quietly = TRUE)
@@ -607,7 +617,7 @@ plot(ord_nmds, display = "site", type = "t", cex = 0.8)
 plot(ef)
 ```
 
-## Те же данные после применения PCA
+## Проведем исследование тех же данных с помощью PCA
 
 ```{r, message=FALSE, eval = FALSE}
 library(vegan)
@@ -756,16 +766,16 @@ kable(df)
 
 ## Можно нарисовать график факторных нагрузок {.columns-2 .smaller}
 
+```{r, fig.width=6}
+biplot(prot_pca, display = "species", scaling = 2)
+```
+
 
 ```{r}
 scores(prot_pca, display = "species", 
        choices = c(1, 2, 3), scaling = 2)
 ```
 
-
-```{r, fig.width=6}
-biplot(prot_pca, display = "species", scaling = 2)
-```
 
 ## График факторных нагрузок в ggplot
 
@@ -794,18 +804,19 @@ p_load
 
 Факторные координаты отражают положение объектов в пространстве главных компонент
 
+```{r, fig.height=6, fig.width=6}
+biplot(prot_pca, display = "sites")
+```
+
+
 ```{r}
 # Значения факторов (= факторные координаты)
 head(scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 ```
 
-```{r, fig.height=6, fig.width=6}
-biplot(prot_pca, display = "sites")
-```
-
 ## График ординации в ggplot
 
-```{r, fig.height=5, echo=FALSE}
+```{r, fig.height=7, echo=FALSE}
 df_scores <- data.frame(protein[, 1:2],
   scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 
@@ -824,16 +835,17 @@ grid.arrange(p_load, p_scores, ncol = 2, widths = c(0.42, 0.58))
 ```
 
 
-## В данном случае, результаты PCA похожи на nMDS {.olumns-2}
+## В данном случае, результаты PCA похожи на nMDS {.columns-2}
 
 ```{r, compare-nmds, warning=FALSE, echo = FALSE, fig.height=8, fig.width=14, echo=FALSE, message=FALSE, results='hide'}
 nMDS <- ggplot(as.data.frame(metaMDS(protein[, -c(1:2)])$points), aes(x=MDS1, y=MDS2)) + geom_point(aes(color = protein$region))
 
 ```
 
-```{r, echo = FALSE, fig.height=8}
+```{r, echo = FALSE, fig.height=5, fig.width=5}
 
-grid.arrange(p_scores, nMDS, nrow = 2)
+p_scores + guides(color=FALSE)
+nMDS + guides(color=FALSE)
 ```
 
 
