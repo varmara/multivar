@@ -387,20 +387,16 @@ on [Flickr](https://flic.kr/p/nWikVp)
 
 ## Двумерные исходные данные {.columns-2}
 
-```{r echo = FALSE}
+```{r echo = FALSE, fig.width=5}
 jelly <- read.delim("data/jellyfish.csv")
 library(ggplot2)
-theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
+theme_set(theme_bw(base_size = 16) + theme(legend.key = element_blank()))
 update_geom_defaults("point", list(shape = 19, size = 4))
 p_raw <- ggplot(jelly, aes(x = width, y = length)) + 
   geom_point() + 
   geom_hline(yintercept = 0) + 
   geom_vline(xintercept = 0) + 
   coord_equal()
-```
-
-
-```{r, echo=FALSE, fig.width=6}
 p_raw
 ```
 
@@ -411,7 +407,7 @@ head(jelly, 10)
 
 ## Центрируем исходные данные {.columns-2}
 
-```{r echo = FALSE}
+```{r echo = FALSE, fig.width=5}
 jelly$c_width <- jelly$width - mean(jelly$width)
 jelly$c_length <- jelly$length - mean(jelly$length)
 jelly <- jelly[order(jelly$c_width), ]
@@ -425,10 +421,6 @@ p_centered <- ggplot(jelly, aes(x = c_width, y = c_length)) +
   geom_hline(yintercept = 0) + 
   geom_vline(xintercept = 0) + 
   coord_equal()
-```
-
-
-```{r echo=FALSE, fig.width=6}
 p_centered + ggtitle("Центр координат сместился")
 ```
 
@@ -439,7 +431,7 @@ head(jelly[, c(1, 4:5)], 10)
 
 ## Находим новые оси с помощью собственных векторов и собственных чисел {.columns-2}
 
-```{r echo = FALSE}
+```{r echo = FALSE, fig.width=5}
 #covariance and new axes
 Covar <- cov(jelly[, c("c_width", "c_length")])
 eigen_values <- eigen(Covar)$values
@@ -460,9 +452,7 @@ p_futureax <- ggplot(jelly, aes(x = c_width, y = c_length)) +
   coord_equal() +
   geom_segment(aes(x = 0, y = 0, xend = eigen_vectors[1, 1], yend = eigen_vectors[2,1]), colour = "red", size = 2) + 
   geom_segment(aes(x = 0, y = 0, xend = eigen_vectors[1, 2], yend = eigen_vectors[2,2]), colour = "red", size = 2)
-```
 
-```{r echo=FALSE, fig.width=6}
 p_futureax + ggtitle("Новые оси")
 ```
 
@@ -485,7 +475,7 @@ eigen_vectors
 
 ## Пересчитываем координаты точек в новом пространстве
 
-```{r echo=FALSE, fig.width=6}
+```{r echo=FALSE, fig.width=5}
 p_futureax + ggtitle("До поворота осей")
 # p_futureax + 
 #   geom_line(aes(x = c_width, y = predict(lm(c_length ~ c_width))), colour = "red", size = 1) + 
@@ -495,7 +485,7 @@ p_futureax + ggtitle("До поворота осей")
 
 ## Пересчитываем координаты точек в новом пространстве
 
-```{r echo=FALSE, fig.width=6, message=FALSE}
+```{r echo=FALSE, fig.width=5, message=FALSE}
 # row_feature_vec <- t(eigen_vectors)
 # row_data_centered <- t(jelly[, 4:5])
 # findat <- row_feature_vec %*% row_data_centered
@@ -766,7 +756,7 @@ kable(df)
 
 ## Можно нарисовать график факторных нагрузок {.columns-2 .smaller}
 
-```{r, fig.width=6}
+```{r, fig.width=5}
 biplot(prot_pca, display = "species", scaling = 2)
 ```
 
@@ -804,7 +794,7 @@ p_load
 
 Факторные координаты отражают положение объектов в пространстве главных компонент
 
-```{r, fig.height=6, fig.width=6}
+```{r, fig.height=5, fig.width=5}
 biplot(prot_pca, display = "sites")
 ```
 
@@ -816,7 +806,7 @@ head(scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 
 ## График ординации в ggplot
 
-```{r, fig.height=7, echo=FALSE}
+```{r, fig.height=5, fig.width=7, echo=FALSE}
 df_scores <- data.frame(protein[, 1:2],
   scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 
@@ -831,7 +821,7 @@ p_scores
 
 ```{r, warning=FALSE, fig.width=10, echo=FALSE}
 library(gridExtra)
-grid.arrange(p_load, p_scores, ncol = 2, widths = c(0.42, 0.58))
+grid.arrange(p_load, p_scores, ncol = 2, widths = c(0.40, 0.60))
 ```
 
 
@@ -843,7 +833,6 @@ nMDS <- ggplot(as.data.frame(metaMDS(protein[, -c(1:2)])$points), aes(x=MDS1, y=
 ```
 
 ```{r, echo = FALSE, fig.height=5, fig.width=5}
-
 p_scores + guides(color=FALSE)
 nMDS + guides(color=FALSE)
 ```
@@ -923,15 +912,15 @@ TukeyHSD(aov(mod))
 
 ## Summary
 
->- Применение метода главных компонент (PCA):
-  - снижение размерности данных
-  - исследование связей между переменными
-  - построение ординации объектов
-  - создание комплексных переменных
-> - Терминология:
-  - Собственные числа - вклад компонент в общую изменчивость
-  - Факторные нагрузки - корреляции исходных переменных с компонентами - используются для интерпретации
-  - Значения факторов - новые координаты объектов в пространстве уменьшенной размерности
+- Применение метода главных компонент (PCA):
+    - снижение размерности данных
+    - исследование связей между переменными
+    - построение ординации объектов
+    - создание комплексных переменных
+- Терминология:
+    - Собственные числа - вклад компонент в общую изменчивость
+    - Факторные нагрузки - корреляции исходных переменных с компонентами - используются для интерпретации
+    - Значения факторов - новые координаты объектов в пространстве уменьшенной размерности
 
 
 
