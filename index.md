@@ -139,10 +139,10 @@ description: Презентации к курсу Анализ и визуали
 
 12.Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент.
 
-<!--
 - [Презентация в html5](pages/12_CA_vs_PCA.html); [презентация в pdf](pages/12_CA_vs_PCA.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/12_CA_vs_PCA.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+- Данные: [macnally.xlsx](https://raw.githubusercontent.com/varmara/multivar-course/master/data/macnally.xlsx); [bolger1.csv](https://raw.githubusercontent.com/varmara/multivar-course/master/data/bolger1.csv)
+<!--
 - [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task07.zip)
 -->
 
