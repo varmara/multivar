@@ -148,8 +148,9 @@ description: Презентации к курсу Анализ и визуали
 
 <!--
 - [Презентация в html5](pages/13_RDA.html); [презентация в pdf](pages/13_RDA.pdf)
+-->
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/13_RDA.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
+<!--
 - [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task08.zip)
 -->
 
