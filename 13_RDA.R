@@ -22,6 +22,8 @@ head(gen, 3)
 env_geo <- cbind(butterfly$envir, butterfly$xy)
 head(env_geo, 3)
 
+dim(gen)
+dim(env_geo)
 
 ## RDA в vegan
 library(vegan)
@@ -57,23 +59,18 @@ anova(bf_rda, by = "axis")
 # Выбор оптимальной модели
 m1 <-rda(gen ~ Altitude + Precipitation + Temp_Max + Temp_Min, data = env_geo)
 m0 <- rda(gen ~ 1, data = env_geo)
-m <- ordistep(m0, scope = formula(m1))
+set.seed(999)
+m <- ordistep(m0, scope = formula(m1), permutations = 9999)
 m$anova
 
 
 
 # Частный анализ избыточности и компоненты объясненной инерции
 ## Делаем частный RDA: зависимость генетической структуры от среды с учетом географического положения
-bf_prda_1 <- rda(gen ~ Altitude + Precipitation + Temp_Max + Temp_Min + Condition(x + y), data = env_geo)
+bf_prda_1 <- rda(gen ~ Temp_Min + Condition(x + y), data = env_geo)
 anova(bf_prda_1) ## Пермутационный тест
 ## График ординации
 plot(bf_prda_1, main = "Partial RDA")
-
-
-## Задание
-# Проверьте значимость частного RDA, описывающего зависимость генетической структуры от среды с учетом географического положения
-
-
 
 
 
@@ -82,16 +79,17 @@ showvarparts(2)
 
 
 
-bf_prda_2 <- rda(gen ~ x + y + Condition(Altitude + Precipitation + Temp_Max + Temp_Min), data = env_geo)
-bf_rda_full <- rda(gen ~ x + y + Altitude + Precipitation + Temp_Max + Temp_Min, data = env_geo)
+bf_prda_2 <- rda(gen ~ x + y + Condition(Temp_Min), data = env_geo)
+bf_rda_full <- rda(gen ~ x + y + Temp_Min, data = env_geo)
 
 # ## Задание: Найдите компоненты инерции
 # 1. изменчивость, потенциально объяснимую средой и географией
 # 2. изменчивость, связанную только со средой, но не с географией
 # 3. изменчивость, связанную только с географией, но не со средой
 # 4. изменчивость, объясненную одновременно средой и географией
-### Подсказка
-# Смотрите на результаты разных RDA
+### Подсказка: Смотрите на результаты разных RDA
+
+
 
 
 ## Компоненты изменчивости - сводим результаты вместе
