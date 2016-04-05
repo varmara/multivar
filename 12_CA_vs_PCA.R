@@ -12,15 +12,19 @@ str(birds)
 
 
 ## Задание: Проведите анализ главных компонент
+library(vegan)
+birds_pca <- rda(birds[, -c(1,2)], scale = T )
 
+eig <- eigenvals(birds_pca)
 
-
-
+biplot(birds_pca, scaling = 2, display = "sites")
+biplot(birds_pca, scaling = 2, display = "species")
 
 
 
 # расстояние Хеллингера (Hellinger distance)
 birds_h <- decostand(birds[ , -c(1, 2)], "hellinger")
+
 # хордальное расстояние (chord distance)
 birds_ch <- decostand(birds[ , -c(1, 2)], "norm")
 
@@ -31,8 +35,17 @@ birds_ch <- decostand(birds[ , -c(1, 2)], "norm")
 # - Исчез ли "эффект подковы" после трансформации?
 # - Изменилась ли группировка объектов?
 
+birds_ch_pca <- rda(birds_ch, scale = T)
+eigenvals(birds_ch_pca)
+biplot(birds_ch_pca, scaling=2, display = "sites")
+biplot(birds_ch_pca, scaling=2, display = "species")
+
+plot(procrustes(birds_ch_pca, birds_pca))
 
 
+birds_h_pca <- rda(birds_h, scale = T)
+eigenvals(birds_h_pca)
+biplot(birds_h_pca, scaling=2, display = "sites")
 
 
 
@@ -56,11 +69,18 @@ rats <- read.csv("data/bolger1.csv")
 # - Используйте хордальное расстояние
 # - Нарисуйте биплот расстояний
 
+rats_pca <- rda(rats[, -c(1,2)], scale = T)
+
+biplot(rats_pca, scaling = 2, display = "sites")
+summary(rats_pca)
+
 
 
 ## Корреспондентный анализ данных про крыс
 rats_ca <- cca(rats[ , -c(1, 2)])
 summary(rats_ca)
+
+
 
 
 ## Сколько общей инерции объясняют первые две главных оси?
@@ -73,6 +93,7 @@ summary(rats_ca)
 ## Биплот расстояний
 plot(rats_ca, scaling = 1)
 
+screeplot(rats_ca, bstick = T)
 
 ## Создаем функцию, чтобы быстрее рисовать цветные графики
 col_ord_plot <- function(ord, scaling = 1, colvec = NULL, colfac, pch = 21, lab.cex = 1, leg.cex = 0.9, leg.pos = "bottom", ncol = 1, display.labs = TRUE, display.legend = TRUE, ...){
@@ -93,14 +114,14 @@ col_ord_plot <- function(ord, scaling = 1, colvec = NULL, colfac, pch = 21, lab.
   }
 }
 
-
 ## График PCA
-col_ord_plot(ord = rats_ch_pca, colvec = c("steelblue", "red2"),
-             colfac = rats$type, leg.pos = "topleft", main = "PCA, хордальное расстояние")
+col_ord_plot(ord = rats_pca, colvec = c("steelblue", "red2"),    colfac = rats$TYPE, main = "PCA, хордальное расстояние")
 
 ## График CA
-col_ord_plot(ord = rats_ca, colvec = c("steelblue", "red2"),
-             colfac = rats$type, leg.pos = "topleft", main = "CA")
+col_ord_plot(ord = rats_ca, colvec = c("steelblue", "red2"),  colfac = rats$TYPE, leg.pos = "topleft", main = "CA")
+
+
+
 
 
 
@@ -108,4 +129,26 @@ col_ord_plot(ord = rats_ca, colvec = c("steelblue", "red2"),
 # - исчез ли эффект подковы?
 
 
+birds_ca <- cca(birds[, -c(1,2)])
+str(birds)
+birds$HABITAT <- factor(birds$HABITAT)
 
+birds_mds <- metaMDS(birds[, -c(1,2)], distance = "bray")
+
+col_ord_plot(ord = birds_ca,  colfac = birds$HABITAT, leg.pos = "topleft", main = "CA", display.labs = F)
+
+col_ord_plot(ord = birds_mds,  colfac = birds$HABITAT, leg.pos = "topleft", main = "CA", display.labs = F)
+
+
+plot(procrustes(birds_mds, birds_ca))
+
+plot(procrustes(birds_mds, birds_pca))
+
+
+length(eigenvals(birds_pca))
+
+length((birds_ca))
+
+summary(birds_ca)
+
+ncol(birds[, -c(1,2)])
