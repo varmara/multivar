@@ -14,11 +14,11 @@ B <- t(A)
 
 
 ##Сложение матриц
-Large <- data.frame(Sp1 = round(rnorm(5, 10, 2)), Sp2 = round(rnorm(5, 10, 3)), Sp3 = round(rnorm(5, 10, 2))) 
+Large <- data.frame(Sp1 = round(rnorm(5, 10, 2)), Sp2 = round(rnorm(5, 10, 3)), Sp3 = round(rnorm(5, 10, 2)))
 
 rownames(Large) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
 
-Small <- data.frame(Sp1 = round(rnorm(5, 50, 5)), Sp2 = round(rnorm(5, 50, 5)), Sp3 = round(rnorm(5, 50, 5))) 
+Small <- data.frame(Sp1 = round(rnorm(5, 50, 5)), Sp2 = round(rnorm(5, 50, 5)), Sp3 = round(rnorm(5, 50, 5)))
 
 rownames(Small) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
 
@@ -65,12 +65,12 @@ Pop <- data.frame(Age, T1)
 Lesl <- matrix(
 c( 0,  0,   1,   2,   2,   0,   0,
   0.6, 0,   0,   0,   0,   0,   0,
-   0,  0.7, 0,   0,   0,   0,   0, 
+   0,  0.7, 0,   0,   0,   0,   0,
    0,  0,   0.8, 0,   0,   0,   0,
    0,  0,   0,   0.7, 0,   0,   0,
    0,  0,   0,   0,   0.6, 0,   0,
    0, 0,    0,   0,   0,  0.2, 0  ),
-byrow = T, 
+byrow = T,
 ncol = 7)
 
 # Последовательно преображуем демографические вектора с помощью матрицы Лесли
@@ -131,7 +131,7 @@ det(X)
 solve(X)
 
 
-## Получаем единичную матрицу 
+## Получаем единичную матрицу
 round(solve(X) %*% X )
 
 ## Решаем систему линейных уравнений
@@ -153,7 +153,10 @@ X <- data.frame(Int = 1, x = cars$speed)
 X <- as.matrix(X)
 
 y <- cars$dist
-solve(t(X) %*% X) %*% (t(X) %*%y)
+betas <- solve(t(X) %*% X) %*% (t(X) %*%y)
+
+plot(X %*% betas, fitted(Mod))
+
 
 
 ## SVD
@@ -162,22 +165,22 @@ B <- matrix(round(runif(50, 1, 5))  , byrow = T, ncol=5) #Некоторая м�
 SVD <- svd(B) #Сингулярное Разложение матрицы B с помощью функции svd()
 V <- SVD$v #"Вспомогательная" матрица - левые сингулярные вектора
 D <- SVD$d #Вектор сингулярных чисел
-U <- SVD$u #"Вспомогательная" матрица - правые сингулярные вектора 
+U <- SVD$u #"Вспомогательная" матрица - правые сингулярные вектора
 
 #Получаем исходную матрицу из трех "вспомогательных"
-U %*% diag(D) %*% t(V) 
+U %*% diag(D) %*% t(V)
 
 
 # Код для поиска редуцированной матрицы
 
- 
+
 
 
 #  Подобие исходной и редуцированной матрицы
 library(ggplot2)
-Dat <- data.frame(Init = rep(as.vector(B), 4), SingValue = rep(2:5, each = length(as.vector(B))), Calc = c(as.vector((U[,1:2] %*% diag(D[1:2]) %*% t(V[,1:2]))), as.vector((U[,1:3] %*% diag(D[1:3]) %*% t(V[,1:3]))), as.vector((U[,1:4] %*% diag(D[1:4]) %*% t(V[,1:4]))), as.vector((U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5]))))) 
+Dat <- data.frame(Init = rep(as.vector(B), 4), SingValue = rep(2:5, each = length(as.vector(B))), Calc = c(as.vector((U[,1:2] %*% diag(D[1:2]) %*% t(V[,1:2]))), as.vector((U[,1:3] %*% diag(D[1:3]) %*% t(V[,1:3]))), as.vector((U[,1:4] %*% diag(D[1:4]) %*% t(V[,1:4]))), as.vector((U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5])))))
 
-ggplot(Dat, aes(x = Init, y = Calc)) + geom_point(size = 2) + labs(x = "значения в исходной матрицы", y = "значения в редуцированной матрице") + facet_wrap(~SingValue) + geom_abline(slope = 1)  
+ggplot(Dat, aes(x = Init, y = Calc)) + geom_point(size = 2) + labs(x = "значения в исходной матрицы", y = "значения в редуцированной матрице") + facet_wrap(~SingValue) + geom_abline(slope = 1)
 
 
 ## Пример с SVD для обработки изображений
@@ -198,7 +201,7 @@ gg_face <- function(x) {
 gg_face(faceData)
 
 
-## Проводим SVD для матрицы faceData  
+## Проводим SVD для матрицы faceData
 SVD_face <- svd(faceData)
 
 U <- SVD_face$u
