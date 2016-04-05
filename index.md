@@ -146,15 +146,8 @@ description: Презентации к курсу Анализ и визуали
 
 13.Анализ избыточности (Redundancy analysis, RDA).
 
-<!--
 - [Презентация в html5](pages/13_RDA.html); [презентация в pdf](pages/13_RDA.pdf)
--->
-
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/13_RDA.R)
-
-<!--
-- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task08.zip)
--->
 
 14.Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA).
 
