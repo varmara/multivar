@@ -151,11 +151,8 @@ description: Презентации к курсу Анализ и визуали
 
 14.Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA).
 
-<!--
 - [Презентация в html5](pages/14_CCA.html); [презентация в pdf](pages/14_CCA.pdf)
 - [Код](https://raw.githubusercontent.com/varmara/multivar-course/master/14_CCA.R)
-- Данные: [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX); [XXXXX](https://raw.githubusercontent.com/varmara/multivar-course/master/data/XXXXX)
-- [Домашнее задание](https://github.com/varmara/multivar-course/raw/master/tasks/task09.zip)
--->
-
+- [Доп презентация](pages/CA_CCA_calculation_extra_presentation.html)
+- [Код к доп презентации](https://raw.githubusercontent.com/varmara/multivar-course/master/CA_CCA_calculation.R)
 
