@@ -1,0 +1,31 @@
+---
+title: Презентации и данные
+---
+
+## 1. Знакомство с многомерными данными. nMDS, envfit, ordisurf
+
+```{r eval=FALSE}
+install.packages("vegan")
+```
+
+- Презентация [html](01_1_multivariate_data_and_dissimilarities.html) | [pdf](01_1_multivariate_data_and_dissimilarities.pdf)
+- [код R](01_1_multivariate_data_and_dissimilarities.R)
+<!-- - Данные: -->
+<!--     - [IQ_brain.csv](data/IQ_brain.csv) -->
+
+## 2. ANOSIM, SIMPER, тест Мантела
+
+## 3. PERMANOVA
+
+## 4. Кластерный анализ
+
+## 5. Основы матричной алгебры. SVD.
+
+## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
+
+## 7. Анализ избыточности (Redundancy analysis, RDA)
+
+## 8. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
+
+## 9. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA)
+

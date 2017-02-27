@@ -1,15 +1,7 @@
-_gh-pages
 *_cache
 *_files
-*/figure
-*/cache
-*/.cache
-*/*.RData
-*/.Rhistory
+.RData
 .Rhistory
 .Rdata
 video
-*_exercises
 .Rproj.user
-.Rhistory
-hw
