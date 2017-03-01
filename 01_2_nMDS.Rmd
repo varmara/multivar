@@ -153,7 +153,7 @@ row.names(log_abund) <- abund$Station
 Шаг 2. Вычисление матрицы сходства/различия между объектами.   
 Из дидактических соображений возьмем матрицу Евклидовых расстояний. 
 
-```{r}
+```{r, message=F}
 library(vegan)
 E_dist <- vegdist(log_abund, method = "euclidean")
 # E_dist
@@ -317,7 +317,7 @@ ggplot(ord_MDS, aes(x = MDS1, y = MDS2)) + geom_point(aes(fill = hydrol$Depth), 
 3. Облако точек в осях MDS можно вращать, перемещать, зеркально отражать. Суть ординации от этого не изменится.
 
 
-# Как работает неметрическое многомерное шкалирование
+# Как работает неметрическое многомерное шкалирование?
 
 ## Задание: 
 
@@ -341,9 +341,9 @@ ord1 <- metaMDS(red_abund, distance = "bray")
 ordiplot(ord1, display = "sites", type = "text")
 ```
 
-## Решение
+## Решение {.columns-2}
 
-```{r, fig.height=5, purl=FALSE}
+```{r, fig.height=4, fig.width=4, purl=FALSE}
 ggplot(data.frame(ord1$points), aes(x = MDS1, y = MDS2)) + geom_point() + geom_text(aes(label = row.names(ord1$points)), vjust = -0.5)
 vegdist(red_abund[])
 ```
@@ -533,6 +533,105 @@ plot(procrust)
 text(procrust, adj = 1, cex = 0.6)
 ```
 
+<<<<<<< HEAD
+#Выявление связи ординации с "внешним" набором данных
+
+## Постановка проблемы
+
+Мы имеем набор объектов, охарактеризованных двумя сопряженным наборами переменных
+
+- Обилия видов ($M$ видов $\times$ $N$ описаний) и параметры среды ($K$ параметров $\times$ $N$ описаний) 
+- Морфометрические показатели ($M$ признаков $\times$ $N$ объектов) и генетические признаки (Экспрессия $K$ генов $\times$ $N$ объектов)
+- Признаки  хозяина ($M$ признаков $\times$ $N$ объектов) и признки паразита ($K$ признаков $\times$ $N$ объектов) 
+
+
+## Ординация растительности на пастбищах северных оленей {.smaller .columns-2}
+
+Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry Pinus sylvestris forests. Journal of Vegetation Science 6, 523–530.
+
+<img src="images/Vare et al 1995 map.png" style="height:330px;">
+
+<small>из Väre, Ohtonen & Oksanen (1995)</small>
+
+```{r, message=FALSE}
+library(vegan)
+data(varespec)
+data(varechem)
+```
+
+Два набора данных:
+
+- `varespec` - Описание растительности (обилия отдельных видов)
+- `varechem` - Параметры среды на участках (Концентрации веществ)
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+
+# Выявление связи ординации объектов и значений конкретных факторов 
+
+
+## Задание
+1. Постройте ординацию описаний растительности в осях MDS.  
+2. Вычислите величину стресса  
+3. Раскрасьте точки в соответствии с концентрацией Al    
+
+Hint. В качестве меры различия используйте коэффициент Брея-Куртиса
+
+
+
+## Решение {.columns-2 .smaller}
+```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, results=F}
+veg_ord <- metaMDS(varespec)
+veg_MDS <- as.data.frame(veg_ord$points)
+
+```
+
+```{r, fig.height=5, fig.width=5, message=FALSE}
+library(ggplot2)
+ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  + 
+  geom_point(shape=21, size =4)+ 
+  theme_bw() + 
+  theme(legend.position = "bottom") + 
+  labs(fill = "Aluminium concentration") + 
+  scale_fill_gradient(high = "red", low = "yellow")
+
+```
+
+
+## Анализ связи с переменными c помощью функции envfit() {.columns-2}
+
+```{r}
+env_fit <- envfit(veg_ord, varechem)
+env_fit
+```
+
+В основе работы функции лежит регрессионный анализ
+
+>- Колонки `MDS1` и `MDS2` содержат косинусы углов (пропорциональны коэффициентам частной корреляции)    
+>- `r2` - $R^2$ из регресионного анализа     
+>- `Pr(>r)` - Пермутационная оценка статистической значимости      
+
+
+## Визуализация результатов
+
+```{r, fig.height=4.5, fig.width=4.5}
+plot(veg_ord, display = "site")
+plot(env_fit)
+```
+
+
+## Анализ связи с переменными c помощью функции ordisurf() {.columns-2 .smaller}
+
+```{r, e-fit, echo=FALSE, results='hide', fig.height=5 , fig.width=5}
+env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
+plot(veg_ord, display = "site")
+plot(env_fit2, col = "red")
+ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
+ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
+```
+
+```{r, e-fit, echo=TRUE, eval=FALSE}
+=======
 #Результатов ординации и связь с "внешним" набором данных
 
 ## Постановка проблемы
@@ -593,7 +692,31 @@ ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  + geom_point(shape
 ```{r}
 env_fit <- envfit(veg_ord, varechem)
 env_fit
+>>>>>>> 174fad68f38955f7991ddf83a4d9bc0503dae1aa
 ```
+В основе работы функции лежит анализ обобщенных аддитивных моделей (General Additive Model)
+
+> Применяется, когда зависимость нелинейна
+> Изолинии характеризуют уровень значения фактора для данной области ординации объектов
+
+# Самостоятельная работа
+
+##Данные 
+Во всех примерах необходимо 
+1. Разобраться с данными.
+2. Построить ординацию объектов (описаний, проб и т.п.).
+3. Визуализировать связь между полученной ординацией и параметрами среды.
+4. Сделать выводы о наиболее важных факторах.
+
+**Источники данных**  
+1. Обилие полихет-трубкостроителей на литорали Белого моря (оригинальные данные В.М.Хайтова)  
+2. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, представленные в пакете `ade4`)   
+3. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), представленные в пакете `vegan`)
+
+
+
+
+
 
 В основе работы функции лежит регрессионный анализ
 

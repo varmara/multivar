@@ -22,7 +22,6 @@
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -177,6 +176,7 @@ $(document).ready(function () {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
@@ -202,7 +202,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
@@ -261,9 +261,8 @@ div.tocify {
 }
 
 .tocify-subheader .tocify-item {
-  font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
+  font-size: 0.9em;
+  padding-left: 5px;
 }
 
 .tocify .list-group-item {
@@ -275,6 +274,7 @@ div.tocify {
 }
 .tocify-subheader .tocify-item {
   font-size: 0.95em;
+  padding-left: 10px;
 }
 
 </style>
@@ -333,11 +333,27 @@ div.tocify {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</code></pre></div>
 <ul>
 <li>Презентация <a href="01_1_multivariate_data_and_dissimilarities.html">html</a> | <a href="01_1_multivariate_data_and_dissimilarities.pdf">pdf</a></li>
-<li><a href="01_1_multivariate_data_and_dissimilarities.R">код R</a> <!-- - Данные: --> <!--     - [IQ_brain.csv](data/IQ_brain.csv) --></li>
+<li><a href="01_1_multivariate_data_and_dissimilarities.R">код R</a></li>
+<li><p>Данные <a href="data/Protein.txt">Protein.txt</a></p></li>
+<li>Презентация <a href="01_2_nMDS.html">html</a></li>
+<li><a href="01_2_nMDS.R">код R</a></li>
+<li><p>Данные <a href="data/dolg_abundance.txt">dolg_abundance.txt</a> | <a href="data/dolg_hydrology.txt">dolg_hydrology.txt</a></p></li>
 </ul>
+<p><strong>данные для самостоятельной работы</strong><br />
+- Обилие полихет на литорали Белого моря <a href="data/Polychaetes_species.csv">Polychaetes_species.csv</a> | параметры среды <a href="data/Polychaeta_env.csv">Polychaeta_env.csv</a><br />
+- растительные сообщества во франции La Mafragh (Annaba, Algérie) <a href="data/mafragh_species.csv">mafragh_species.csv</a> | параметры среды <a href="data/mafragh_env.csv">mafragh_env.csv</a><br />
+- Деревья на острове Barro Colorado <a href="data/BCI_species.csv">BCI_species.csv</a> | параметры среды <a href="data/BCI_env.csv">BCI_env.csv</a></p>
+<!-- - Данные: -->
+<!--     - [IQ_brain.csv](data/IQ_brain.csv) -->
 </div>
-<div id="anosim-simper--" class="section level2">
-<h2>2. ANOSIM, SIMPER, тест Мантела</h2>
+<div id="--anosim-simper" class="section level2">
+<h2>2. Тест Мантела, ANOSIM, SIMPER</h2>
+<!-- - Презентация [html](02_2_Mantel_correlation-based_methods.html)  -->
+<!-- - [код R](02_2_Mantel_correlation-based_methods.R) -->
+<!-- - Данные [Coordinates.txt](data/Coordinates.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+<!-- - Презентация [html](02_1_ANOSIM_SIMPER.html)  -->
+<!-- - [код R](02_1_ANOSIM_SIMPER.R) -->
+<!-- - Данные [mussel_beds.csv](data/mussel_beds.csv)  -->
 </div>
 <div id="permanova" class="section level2">
 <h2>3. PERMANOVA</h2>
@@ -374,11 +390,8 @@ div.tocify {
 <script>
 
 // add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
 $(document).ready(function () {
-  bootstrapStylePandocTables();
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
 
 

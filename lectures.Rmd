@@ -10,10 +10,36 @@ install.packages("vegan")
 
 - Презентация [html](01_1_multivariate_data_and_dissimilarities.html) | [pdf](01_1_multivariate_data_and_dissimilarities.pdf)
 - [код R](01_1_multivariate_data_and_dissimilarities.R)
+- Данные [Protein.txt](data/Protein.txt) 
+
+- Презентация [html](01_2_nMDS.html) 
+- [код R](01_2_nMDS.R)
+- Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt)
+
+**данные для самостоятельной работы**   
+- Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)   
+- растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)   
+- Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)   
+
+
+ 
+
+
 <!-- - Данные: -->
 <!--     - [IQ_brain.csv](data/IQ_brain.csv) -->
 
-## 2. ANOSIM, SIMPER, тест Мантела
+## 2. Тест Мантела, ANOSIM, SIMPER
+
+<!-- - Презентация [html](02_2_Mantel_correlation-based_methods.html)  -->
+<!-- - [код R](02_2_Mantel_correlation-based_methods.R) -->
+<!-- - Данные [Coordinates.txt](data/Coordinates.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+
+
+<!-- - Презентация [html](02_1_ANOSIM_SIMPER.html)  -->
+<!-- - [код R](02_1_ANOSIM_SIMPER.R) -->
+<!-- - Данные [mussel_beds.csv](data/mussel_beds.csv)  -->
+
+
 
 ## 3. PERMANOVA
 
