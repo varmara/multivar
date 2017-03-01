@@ -84,32 +84,6 @@ ord3 <- metaMDS(log_abund, k = 3, trace = FALSE)
 scatterplot3d(x = ord3$points[,1], y = ord3$points[,2], z = ord3$points[,3], xlab = "MDS 1", ylab = "MDS 2", zlab = "MDS 3")
 
 
-
-
-# Сравнение ординаций
-
-## Задание:
-# - Постройте ординацию всех станций с использованием Евклидова расстояния
-
-
-ord4 <- metaMDS(log_abund, distance = "eucl", k = 2, trace = FALSE)
-
-
-
-## Насколько похожи ординации, полученные при использовании коэффициента Брея-Куртиса и Евклидова расстояния?
-op <- par(mfrow = c(1, 2))
-ordiplot(ord, display = "site", type = "text", main = "Bray-Curtis")
-ordiplot(ord4, display = "site", type = "text", main = "Euclidean")
-par(op)
-
-
-
-## Прокурстово преобразование
-procrust <- procrustes(ord, ord4)
-plot(procrust)
-text(procrust, adj = 1, cex = 0.6)
-
-
 # Трактовка результатов ординации
 th <- theme( panel.background = element_rect(fill = "white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_blank(), legend.position = "bottom")
 
