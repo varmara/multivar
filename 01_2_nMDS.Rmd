@@ -335,12 +335,8 @@ ordiplot(ord1, display = "sites", type = "text")
 ```{r, fig.height=4, fig.width=4, purl=FALSE}
 ggplot(data.frame(ord1$points), aes(x = MDS1, y = MDS2)) + 
   geom_point() + 
-<<<<<<< HEAD
   geom_text(aes(label = 
                   row.names(ord1$points)), vjust = -0.5)
-=======
-  geom_text(aes(label = row.names(ord1$points)), vjust = -0.5)
->>>>>>> f09cb7858b2a658467e8455cd083dddf0268169c
 vegdist(red_abund[])
 ```
 
