@@ -31,7 +31,7 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 ```
 
 
-# Общая характеристика многомерных методов 
+# Часть 1. Общая характеристика многомерных методов 
 
 ## Почему нужны многомерные методы?
 
@@ -197,7 +197,7 @@ as.vector(round(dist(dat2[,-1], diag = F, upper = F), 1))
 ```
 
 
-# Меры сходства и различия между объектами (Resemblance coefficients)
+# Часть 2. Меры сходства и различия между объектами (Resemblance coefficients)
 
 ## Кто что ест? Потребление белка разного происхождения в Европе {.columns-2}
 
@@ -455,7 +455,21 @@ $W_i$ = 1 Если присутсвует информация как о $x_{i,j
 4. От взглядов исследователя на природу сходства/различия между объектами.
 5. От типа анализа (R или Q)
 
-## Многие показатели взаимосвязаны и, часто, взаимозаменяемы
+## На практике для Q-анализа (в экологии и смежных дисцилинах)
+
+Для количественных данных:
+
+- Если мало нулей (данные, описывающие параметры среды), то Евклидово расстояние 
+- Если много нулей (данные, описывающие обилия организмов) коэффициент Брея-Куртиса или Говера
+
+Для бинарных данных
+- Коэффициенты Сёренсена или Жаккара
+
+## Задание:
+
+Отразите графически как взаимосвязаны коэффициент Брея-Куртиса и Евклидово расстояние
+
+## Решение
 
 ```{r}
 BCD <- as.vector(vegdist(protein[,-1], method = "bray"))
@@ -467,11 +481,158 @@ ggplot(distances, aes(x = Euclid, y = Bray)) + geom_point() + theme_bw()
 
 
 
+# Часть 3. Простейшие методы анализа матриц сходства/различия
+
+
+## Задание:
+
+Постройте гистограмму, отражающую частотное распределение коэффициентов Брея-Куртиса, расчитанных для матрицы `protein`
+
+## Решение {.columns-2}
+
+```{r, fig.width = 5, fig.height = 4, fig.align = 'center'}
+ggplot(distances, aes(x = Bray)) + 
+  geom_histogram(binwidth = 0.03, 
+                 fill = "blue", 
+                 color = "black") + 
+  theme_bw()
+```
+
+Что вы можете сказать о характере взаиморасположения объектов, глядя на это распределение?
+
+>- Частотное распределение коэффициентов указывает на наличие двух совокупностей расстояний: большие (межгрупповые) и маленькие (внутригрупповые).
+>- Точки в n-мерном пространстве признаков, вероятно, формируют группы.
+
+
+## Диагонализация матрицы расстояний (Метод Кульчинского, Kulczynski, 1928)
+ 
+```{r, echo = FALSE, fig.width=10, fig.height=5, message=FALSE}
+library(gplots)
+op <- par(mar = c(3, 1, 0, 0))
+heatmap.2 (as.matrix(vegdist(protein[,-1], method = "bray")), Rowv = F, dendrogram = "none", Colv = FALSE, density.info = "none", key = TRUE, trace = "none", col = colorpanel(3, low = "black", mid = "gray", high = "white"))
+par(op)
+``` 
+
+
+## Диагонализация матрицы расстояний (Метод Кульчинского, Kulczynski, 1928)  
+ 
+```{r, echo = FALSE, fig.width=10, fig.height=5, message=FALSE}
+heatmap.2 (as.matrix(vegdist(protein[,-1], method = "bray")), Rowv = T, distfun = vegdist, dendrogram = "none", density.info = "none", key = TRUE, trace = "none", col = colorpanel(3, low = "black", mid = "gray", high = "white"))
+
+```
+
+
+## Анализ плеяд
+
+```{r, echo = FALSE, fig.align = 'center', fig.width=4, fig.height = 3}
+plejada <- function (data, method = "bray", Dcrit) {
+  # n - число точек
+  # p - период
+  library(ggplot2)
+  p <- n <- nrow(data)
+  factor <- points <- data.frame(X = c(1:n), Y = c(1:n))
+  k <- 0
+  for (i in 1:n){
+    factor$X[i] <- (i-1)/p - k
+    if ((i/p - trunc(i/p)) == 0) {
+      k <- k + 1
+    }
+  }
+  factor$Y <- factor$X
+  
+  for (i in 1:n){
+    points$X[i] <- cos(2*pi*factor$X[i])
+    points$Y[i] <- sin(2*pi*factor$Y[i])
+  }
+  
+  lab <- as.character(1:n)
+  pl <- ggplot(points, aes(x = X, y = Y)) + geom_text(label = lab, size = 6) + theme_void()
+  library(vegan)
+  
+  dist <- as.matrix(vegdist(data, method = method))
+  for ( i in 1:n) {
+    for (j in i:n) {
+      if (dist[i, j] <= Dcrit) {
+        pl <- pl + geom_segment(x = points$X[i], y = points$Y[i], xend = points$X[j], yend = points$Y[j], color = "red")
+      }
+    }
+  }
+  pl
+}
+
+
+plejada (protein [, -1], Dcrit = 0.1)
+
+plejada(data = protein [, -1], Dcrit = 0.15)
+```
+
+
+# Часть 4. Ординация в пространстве со сниженной размерностью (первое знакомство)
+
+
+## Разные коэффициенты могут давать разные результаты 
+
+```{r, echo = FALSE, results = 'hide', warning = FALSE}
+
+dat7 <- data.frame(X = c(0, 0, 0, 4, 5, 6, 7, 8, 9, 10), Y = c(1, 2, 3, 4, 0, 0, 0,8, 9, 10 ), Z = c(0, 0, 0, 0, 0, 0, 7, 8, 9, 10))
+
+mds_eucl <- metaMDS(dat7, distance = "euclidean", autotransform = FALSE)
+mds_bray <- metaMDS(dat7, distance = "bray", autotransform = FALSE)
+mds_manch <- metaMDS(dat7, distance = "manhattan", autotransform = FALSE)
+
+dat8 <- data.frame(X = c(0, 0, 0, 1, 1, 1, 1, 1, 1, 1), Y = c(1, 1, 1, 1, 0, 0, 0,1, 1, 1 ), Z = c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1))
+
+
+mds_jac <- metaMDS(dat8, distance = "jaccard", autotransform = FALSE)
+
+```
+
+```{r, echo = FALSE, fig.height = 5, fig.align = 'center'}
+pl_mds1 <- ggplot(data.frame(MDS1 = mds_eucl$points[,1], MDS2 = mds_eucl$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Euclidean")
+
+pl_mds2 <- ggplot(data.frame(MDS1 = mds_manch$points[,1], MDS2 = mds_manch$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Manchattan")
+
+pl_mds3 <- ggplot(data.frame(MDS1 = mds_bray$points[,1], MDS2 = mds_bray$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Bray-Curtis")
+
+pl_mds4 <- ggplot(data.frame(MDS1 = mds_jac$points[,1], MDS2 = mds_jac$points[,2]), aes(x = MDS1, y = MDS2)) + geom_point(size = 4) + theme_bw() + ggtitle("Jaccard")
+
+grid.arrange(pl_mds1, pl_mds2 , pl_mds3 , pl_mds4, ncol = 2)
+```
+
+
+## Евклидово расстояние
+
+```{r, echo = FALSE, results = 'hide'}
+row.names(protein) <- protein$Country
+mds <- metaMDS(protein [,-1], distance = "euclidean", autotransform = FALSE)
+```
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 5}
+plot(mds,type = "n", main = "Euclidean distance")
+text(mds, display = "sites", cex = 1)
+```
+
+
+## Коэффициент Брея-Куртиса
+
+```{r, echo = FALSE, results = 'hide'}
+mds <- metaMDS(protein [,-1], distance = "bray", autotransform = FALSE)
+# points(mds, display = "sites")
+
+```
+
+```{r, echo = FALSE, fig.align = 'center', fig.height = 5}
+plot(mds,type = "n", main = "Bray-Curtis")
+text(mds, display = "sites", cex = 1)
+
+```
+
+
 ## Summary
 
 >- Существует два подхода к анализу многоменых данных:
-    -  подход, основанный на линейной алгебре,
-    -  подход, основанный на исследовании матриц сходства/различия между объектами.
+    - (1) подход, основанный на линейной алгебре,
+    - (2) подход, основанный на исследовании матриц сходства/различия между объектами.
 - Выбор коэффициентов сходств/различия - непростая задача, решение которой зависит от структуры материала и поставленных задач. Разные коэффициенты потенциально могут давать разные результаты. 
 - Получить важную информацию о взаиморасположении объектов можно с помощью некоторых простейших методов. 
 
