@@ -10,33 +10,67 @@
 ## Пример: Сообщества бентоса акватории Долгой губы (о. Б. Соловецкий, Белое море)
 # Нинбург, 1990; Хайтов и др., 2013
 
-abund <- read.table("data/dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
-hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
+abund <- read.table("dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
+hydrol <- read.table("dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
 
 log_abund <- log(abund[,-1] + 1)
+
 row.names(log_abund) <- abund[,1]
 
 # ## Задание: Прямая ординация станций в осях Температуры и Солености
 # Постройте диаграмму, отражающую ординацию станций в осях Температуры и Солености.
 # Модифицируйте график так, чтобы была еще видна связь с суммарным обилием видов в пробах.
 
+tot_abund <- apply(abund[,-1], 1, FUN = sum)
+
+ggplot(hydrol, aes(x = Temp, y = Sal, size = tot_abund)) + geom_point()
 
 
-
-
-# Неметрическое многомерное шкалирование
+  # Неметрическое многомерное шкалирование
 # Трансформируем данные
 log_abund <- log(abund[,-1] + 1)
 row.names(log_abund) <- abund$Station
 
 library (vegan)
-ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
+
+ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты 
+
+
+ordiplot(ord, display = "sites")
+
+
+ordiplot(ord, display = "species", type = "t")
+
+
+
+
+str(ord)
+
+
+
+# сохраняются в объекте ord
 ord$points
 
-ordiplot(ord, display = "sites", type = "t")
+ordiplot(ord, display = "species", type = "t")
 
 ## Графическое представление результатов средствами пакета `vegan`
 ordiplot(ord, display = "sites" )
+
+
+str(ord)
+
+ord$points
+
+points <- as.data.frame(ord$points)
+
+
+ggplot(points, aes(x = MDS1, y = MDS2, color = hydrol$Sal)) + geom_point(size = 4) + scale_color_gradient(low = "yellow", high = "red")
+
+
+
+stressplot(ord)
+
+
 # text(ord) #Можно добавить обозначения сайтов (объектов)
 
 # ## Задание: Графическое представление результатов средствами `ggplot2`
@@ -44,9 +78,63 @@ ordiplot(ord, display = "sites" )
 # - Постройте график ординации при помощи пакета `ggplot2`
 # - Раскрасьте точки на ординации согласно глубине (данные в `hydrol`)
 
+
+
+str(ord)
+ord$stress
+
+ord1 <- metaMDS(abund[,-1])
+ord1$stress
+
+
+ggplot(points, aes(x = MDS1, y = MDS2, color = hydrol$Temp)) + geom_point()
+
+stressplot(ord)
+
 str(ord)
 
+ord$stress
 
+
+
+env_fit <- envfit(ord, hydrol[ ,-1], na.rm = T )
+
+plot(ord, display = "sites")
+plot(env_fit, col = "blue")
+
+
+
+
+
+env <- envfit(ord, hydrol[,-1], na.rm = T )
+
+plot(ord, display = "sites")
+plot(env)
+
+
+plot(ord, display = "sites")
+
+ordisurf(ord, hydrol$Depth, add = TRUE, col="blue")
+
+
+
+plot(ord, display = "sites")
+
+ordisurf(ord, hydrol$Sal, add = TRUE, col="blue")
+ordisurf(ord, hydrol$Depth, add = TRUE, col="green")
+ordisurf(ord, hydrol$Temp, add = TRUE, col="red")
+
+
+
+plot(ord, display = "sites")
+
+ordisurf(ord, hydrol$Temp, add = TRUE, col="blue")
+
+
+
+ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
+ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
+`
 ## Задание:
 # - Создайте датафрейм, содержащий исходные данные (без логарифмирования) только по сайтам S17, S33, S37, S38, S44, S59.
 # - Постройте ординацию этих объектов с использованием в качестве меры различия коэффициент Брея-Куртиса.
@@ -97,3 +185,80 @@ pl9 <- ggplot(data.frame(ord$points), aes(x = MDS1, y = MDS2, fill = hydrol$Wate
 
 library(gridExtra)
 grid.arrange(pl6, pl7, pl8, pl9, ncol = 2)
+
+
+
+#########################
+pol <- read.table("data/Polychaetes_species.csv", header = TRUE, sep = ";")
+str(pol)
+
+polenv <- read.table("data/Polychaeta_env.csv", header = TRUE, sep = ";")
+
+
+
+
+logpol <- log(pol[, -c(1:3)] + 1)
+
+logpol <- logpol[apply(logpol, 1, sum) >0, ]
+
+envpol <- polenv[apply(logpol, 1, sum) >0, ]
+
+
+poldist <- vegdist(logpol)
+
+pol_ord <- metaMDS(poldist)
+
+
+plot(pol_ord, display = "sites")
+
+envpol <-
+
+
+
+hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Растительные сообщества Франции
+plant <- read.csv("mafragh_species.csv")
+env <- read.csv("mafragh_env.csv")
+
+
+str(plant)
+plant <- plant[, -1]
+
+
+
+
+library(vegan)
+ord_plant <- metaMDS(plant)
+
+
+plot(ord_plant, display = "sites")
+
+env_plant <- envfit(ord_plant, env[,-1])
+
+
+plot(ord_plant, display = "sites")
+plot(env_plant)
+
+plot(ord_plant, display = "sites")
+ordisurf(ord_plant, env$Elevation)
+plot(env_plant)
+
+
+
+
+
+

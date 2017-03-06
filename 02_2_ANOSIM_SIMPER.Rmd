@@ -1,0 +1,451 @@
+---
+title: "Модельные матрицы, ANOSIM и SIMPER"
+subtitle: "Анализ и визуализация многомерных данных с использованием R"
+author: Вадим Хайтов, Марина Варфоломеева
+presenters: [{
+    name: 'Вадим Хайтов',
+    company: 'Каф. Зоологии беспозвоночных, СПбГУ',
+    }]
+output:
+ ioslides_presentation:
+  widescreen: true
+  css: assets/my_styles.css
+  logo: assets/Linmod_logo.png
+---
+
+## Вы сможете
+
+- Протестировать гипотезу о наличии в данных некоторого специфичского паттерна, используя метод модельных матриц.  
+- Протестировать гипотезу о различиях между дискретными группами многомерных данных с помощью теста ANOSIM  
+- Выявить переменные, вносящие наибольший вклад в формирование различий между группами, применив процедуру SIMPER  
+
+```{r setup, include = FALSE, cache = FALSE, purl = FALSE}
+# output options
+options(width = 70, scipen = 6, digits = 3)
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+```
+
+## Вспомним основы {.columns-2 }
+
+<img src="images/underwood.png" width="450" height="450" alt="Underwood, 1997">
+       
+
+Этапы работы с гипотезами (Underwood, 1997)
+
+Формулировка биологической гипотезы  
+
+Численное выражение биологической гипотезы ($H$)  
+
+Формулировка альтернативной гипотезы ($H_0$ - нулевой гипотезы)  
+
+Тестирование нулевой гипотезы  
+
+
+Если $H_0$ ложна, то признаем, что верна $H$ и, следовательно, биологическую гипотезу можно рассматривать как истинное утверждение  
+
+Если $H_0$ истинна, то…  
+
+
+# Тестирование гипотезы о соответствии ожидаемому паттерну: метод модельных матриц
+
+## Пример: Динамика сообществ мидиевых банок {.columns-2}
+
+Существуют ли направленные многолетние изменения в размерной структуре поселений мидий и в структуре сообщества (Khaitov, 2013)?
+
+```{r, echo=TRUE}
+com <- read.csv("data/mussel_beds.csv", sep=';', header = T)
+ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
+```
+
+`com` --- усреденные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).  
+
+`ascam` --- (averaged size class abundance matrix) средние плотноси поселения мидий разных размеров (`r ncol(ascam[, -c(1:2)])`] размерных классов) 
+
+<img src="images/musselbed.png" width="450" height="350" alt="Мидиевая банка">
+
+
+##Задание {.columns-2}
+
+```{r dynam-1, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(vegan)
+log_com <- log(com[,-c(1:3)] + 1)
+vor2_log_com <- log_com[com$Bank == "Vor2",]
+log_ascam <- log(ascam[, -c(1:2)]+1)
+mds_vor2_com <- as.data.frame(metaMDS(vor2_log_com)$points)
+vor2_log_ascam <- log_ascam[ascam$Bank == "Vor2",]
+mds_vor2_ascam <- as.data.frame(metaMDS(vor2_log_ascam, distance = "euclid" )$points)
+```
+
+```{r dynam-2, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5, fig.width=5}
+library(ggplot2)
+library(gridExtra)
+theme_set(theme_bw())
+
+Pl1 <- ggplot(mds_vor2_com, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика сообщества")
+
+Pl2 <- ggplot(mds_vor2_ascam, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика размерной структуры")
+
+grid.arrange(Pl1, Pl2)
+```
+
+Рассмотрите многолетние изменения структуры сообщества и размерной структуры мидий на мидиевой банке Vor2
+
+Постройте рисунок, аналогичный приведенному на приведенном слайде
+
+Hint 1. Прологарифмируйте данные.
+
+Hint 2. Примените наиболее подходящий коэффициет для оценки расстояний между объектами.
+
+## Решение
+
+### Ординация
+
+```{r dynam-1, echo=TRUE, eval=FALSE}
+```
+
+## Решение
+
+### График ординации
+
+```{r dynam-2, echo=TRUE, eval=FALSE}
+```
+
+## Градиентная модельная матрица
+
+Это матрица Евклидовых расстояний между временными точками. 
+
+```{r, warning=FALSE}
+gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
+gradient_model 
+```
+
+
+## Тестируем гипотезу о наличии градиента
+
+Протестируем гипотезу о наличии временного градиента с помощью теста Мантела
+
+```{r}
+dist_vor2_com <- vegdist(vor2_log_com, method = "bray")
+dist_vor2_ascam <- vegdist(vor2_log_ascam, method = "euclidean")
+```
+
+### 1) Наличие градиента в структуре сообщества
+
+```{r}
+mantel(dist_vor2_com, gradient_model)
+```
+
+## Тестируем гипотезу о наличии градиента
+
+### 2) Наличие градиента в размерной структуре мидий
+
+```{r}
+mantel(dist_vor2_ascam, gradient_model)
+```
+
+## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
+
+### Не самое правильное решение
+
+```{r}
+mantel(dist_vor2_com, dist_vor2_ascam)
+```
+
+## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
+
+### Более корректное решение
+
+```{r}
+mantel.partial(dist_vor2_com, dist_vor2_ascam, gradient_model)
+```
+
+## Могут быть и более сложные модельные матрицы {.columns-2}
+
+Проверим, нет ли в динамике размерной структуры мидий на банке Vor2 циклических изменений, которые предсказываются некоторыми моделями динамики плотных поселений (Наумов, 2006; Khaitov, Lentsman, 2016)
+
+```{r, echo=FALSE, fig.height=4, fig.width=4}
+cycmod <- function(x){
+  points <- data.frame(X=c(1:x), Y=c(1:x))
+  for (i in 1:x) {
+    points$X[i] <- cos(2*pi*(i-1)/x)
+    points$Y[i] <- sin(2*pi*(i-1)/x)
+  }
+  return(points)
+}
+
+qplot(cycmod(nrow(mds_vor2_ascam))$X, cycmod(nrow(mds_vor2_ascam))$Y, xlab="X", ylab="Y", geom = "point", size = 4)  
+```
+
+Циклическая модельная матрица 
+
+```{r, echo=FALSE}
+cycl_model <- round(vegdist(cycmod(nrow(mds_vor2_ascam)), method = "euclidean"))
+cycl_model
+```
+
+## Выявляется ли циклическая составляющая в динамике размерной структуры?
+
+```{r}
+mantel(dist_vor2_ascam, cycl_model)
+```
+
+Циклическая составляющая есть, но...
+
+## Более корректная оценка
+
+```{r}
+mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
+```
+
+Мы не можем говорить о наличии столь длительного цикла.
+
+При данной длине временного ряда нельзя отличить цикл с большим периодом от направленного изменения. 
+
+Можно обсуждать только циклы с периодом не более половины длины временного ряда.
+
+
+# ANOSIM: Analysis Of Similarity
+
+## Задание
+
+- Постройте ординацию всех описаний датасета `com` (логарифмированные данные) в осях nMDS на основе матрицы Брея-Куртиса
+- Раскрасьте разными цветами точки, относящиеся к двум разным группам: "Large-dominated" и "Small-dominated"
+
+
+## Решение
+
+```{r}
+library(vegan)
+library(ggplot2)
+ord_log_com <- metaMDS(log_com, distance = "bray", k=2)
+MDS <- data.frame(ord_log_com$points)
+```
+
+## Решение
+
+Обратите внимание, здесь есть две группы расстояний между точками
+
+```{r, fig.width=10, fig.height=4}
+ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Mussel_size)) + geom_point(shape = 21, size = 4) + scale_fill_manual(values = c("red", "blue")) + labs(fill = "Mussel size structure type") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
+```
+
+## Расстояния между объектами {.columns-2}
+
+### 1. Внутригрупповые расстояния 
+
+![Within group distance](images/witnin group distances.png)
+
+<br />
+
+### 2. Межгрупповые расстояния
+
+![between group distance](images/Between groups distances.png)
+
+
+## Ранги расстояний
+
+Для работы удобно (но не обязательно!) перейти от исходных расстояний между объектами, к их рангам.
+
+Обозначим внутригрупповые расстояния (ранги), как $r_w$, а межгрупповые, как $r_b$.
+
+Вычислим  
+
+* средние значения внутригрупповых рангов расстояний $R_w$
+* средние значения межгрупповых рангов расстояний $R_b$
+
+
+## R - статистика
+
+На основе полученных значений можно построить статистику (Clarke, 1988, 1993)
+
+$$R_{global} = \frac{R_b-R_w}{n(n-1)/4}$$
+
+Эта статистика распределена в интервале -1 < $R_{global}$ < 1
+
+Статистическая значимость этой величины оценивается пермутационным методом
+
+
+## Процедура ANOSIM в пакете `vegan`
+
+```{r}
+com_anosim <- anosim(log_com, 
+           grouping = com$Mussel_size, 
+           permutations = 999, 
+           distance = "bray")
+```
+
+
+## Задание
+
+Изучите структуру объекта `com_anosim` и постройте частотное распределение значений $R_{global}$, полученных при каждом акте пермутации
+
+## Решение
+
+```{r r-global, eval=FALSE}
+anosim_perm <- data.frame(perm = com_anosim$perm)
+anosim_perm[(com_anosim$permutations + 1), 1] <- com_anosim$statistic
+ggplot(anosim_perm, aes(x = perm)) + geom_histogram(binwidth = 0.01, color = "black", fill = "blue") + geom_vline(xintercept = com_anosim$statistic, linetype = 2)
+```
+
+## Результаты оценки статистики $R_{global}$ при пермутациях
+
+```{r r-global, eval=TRUE, echo=FALSE}
+```
+
+## Результаты процедуры ANOSIM
+
+```{r}
+summary(com_anosim)
+```
+
+## Ограничения (Assumptions) для применения ANOSIM
+
+### 1) Внутригрупповые расстояния (ранги) должны иметь приблизительно равные медианы и пределы варьирования.
+
+Для проверки этого допущения надо сравнить распределения внутригрупповых и межгрупповых расстояний (рангов)
+
+Распределение расстояний имеет следующий вид
+
+```{r fig.width=5, fig.height=3.5, warning=FALSE}
+plot(com_anosim, main = "Dissimilarity ranks \n between and within classes")
+```
+
+## ANOSIM позволяет сравнивать одновременно и несколько групп
+
+НО! Есть одно очень важное ограничение: 
+
+### 2) Попарные сравненения групп можно осуществлять только если было показано, что $R_{global}$ достоверно.
+
+Если это условие выполнено, то можно проводить попарные сравнения
+
+### Пример
+
+Пусть у нас есть три группы объектов: A, B, C.  
+Можно вычислить $R_{A vs B}$, $R_{A vs C}$, $R_{B vs C}$.
+
+
+Но при больших объемах выборки даже незначительные различия будут достоверны. Важно обращать внимание не только на оценку статистической значимости, но и на значения R! 
+
+NB! Для сравнения нескольких групп многомерных объектов, есть более мощное средство - PERMANOVA 
+
+
+## Задание
+
++ Постройте ординацию в осях nMDS, раскрасив точки в разные цвета в зависимости от номера мидиевой банки
++ Проверьте гипотезу о различиях в структуре сообществ на разных банках
++ Проверьте условия применимости ANOSIM
++ Проведите попарное сравнение всех банок
+
+
+## Решение
+
+### График ординации
+
+```{r fig.height = 4, fig.width=5}
+ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Bank)) + geom_point(shape = 21, size = 4) + scale_fill_manual(values = c("red", "blue", "green")) + labs(fill = "Mussel beds") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
+```
+
+## Решение
+
+### Проверка гипотезы о различиях в структуре сообществ на разных банках
+
+```{r}
+bed_anosim <- anosim(log_com, grouping = com$Bank,permutations = 999, distance = "bray")
+bed_anosim
+```
+
+## Решение
+
+### Условия применимости
+
+```{r}
+plot(bed_anosim)
+```
+
+## Решение
+
+### Попарные сравнения Vor2 vs Vor4
+
+```{r}
+# Vor2 vs Vor4
+anosim(log_com [com$Bank %in% c("Vor2", "Vor4"),], 
+    grouping = com$Bank[com$Bank %in% c("Vor2", "Vor4")])
+```
+
+## Попарные сравнения Vor2 vs Vor5
+
+```{r}
+# Vor2 vs Vor5
+anosim(log_com[com$Bank %in% c("Vor2", "Vor5"),], grouping = com$Bank[com$Bank %in% c("Vor2", "Vor5")])
+```
+
+## Попарные сравнения Vor4 vs Vor5
+
+```{r}
+# Vor4 vs Vor5
+anosim(log_com [com$Bank %in% c("Vor4", "Vor5"),], grouping = com$Bank[com$Bank %in% c("Vor4", "Vor5")])
+```
+
+## Проблема малых выборок
+
+Мощность ANOSIM невелика.
+
+При малых выборках пермутационная оценка уровня значимости может не выявить достоверных различий, даже при очень высоком значении R.
+
+## Модельные матрицы и ANOSIM
+
+При проверке гиптезы о значимости различий между группами можно использовать тест Мантела. В этой ситуации модельная матрица будет содержать 0, если расстояние внутригрупповое, и 1 если рсстояние межгрупповое. 
+
+```{r}
+m <- vegdist(as.numeric(com$Bank), method = "euclidean") 
+mm <- m
+mm[m > 0] <- 1
+mm[m == 0] <- 0
+mantel(vegdist(log_com), mm, method = "pearson")
+```
+
+Значения теста Мантела будут очень близки к $R_{global}$
+
+
+# SIMPER: Similarity Percentages
+
+## Какие признаки зависимой матрицы вносят наибольший вклад в формирование различий между группами?
+
+```{r, R.options=list(width = 80)}
+log_com_simper <- simper(log_com, group = com$Mussel_size, permutations = 999)
+summary (log_com_simper)
+```
+
+## Оценка вклада в формирование различий
+
+$$Contr_i = \frac{|{y_{i,j}-y_{i,k}}|}{\sum{(y_{i,j}-y_{i,k})}}$$
+
+Величины $Contr_i$ далее усредняются для всех межгрупповых пар 
+
+$sd$ - среднеквадратичное отклонение
+
+Отношение $Contr_i / sd$ характеризует дискриминирующую силу переменной
+
+## Задание
+
+Выявитие виды, отвечающие за различия в сообществах разых банок
+
+## Решение
+
+```{r R.options=list(width = 80)}
+summary(simper(log_com, group = com$Bank, permutations = 999 ))
+```
+
+## Summary
+
++ Можно формулировать гипотезу о существовании некоторого паттерна. Паттерн можно описать модельной матрицей. Проверка соответствия паттерну производится с помощью теста Мантела. 
++ ANOSIM --- простейший вариант сравнения нескольких групп объектов, охарактеризованных по многим признакам.
++ С помощью процедуры SIMPER можно оценить вклад отдельных переменных в формирование различий между группами. 
+
+
+## Что почитать
+
+* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth.
+* Legendre P., Legendre L. (2012) Numerical ecology. Second english edition. Elsevier, Amsterdam.
