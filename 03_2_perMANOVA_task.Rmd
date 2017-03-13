@@ -1,17 +1,13 @@
 ---
 title: "Задания для самостоятельной работе по теме perMANOVA"
-output:
-  html_document:
-    self_contained: true
 ---
-
 
 ```{r setup, include = FALSE, cache = FALSE, purl = FALSE}
 # output options
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
 ```
 
 ## Влияние выпаса скота на зообентос рек о.Тасмания
