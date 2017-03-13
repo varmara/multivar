@@ -2,10 +2,6 @@
 title: "Тестирование гипотез на основе многомерных данных: PERMANOVA"
 subtitle: "Анализ и визуализация многомерных данных с использованием R"
 author: Марина Варфоломеева, Вадим Хайтов
-presenters: [{
-  name: 'Марина Варфоломеева',
-  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
-  }]
 output:
  ioslides_presentation:
   widescreen: true
@@ -67,7 +63,7 @@ $\alpha _{familywise} = \alpha _{per\,comparison} \cdot N _{comparisons}$
 
 В таблице даны значения $\alpha _{familywise}$ для разного числа сравнений, если $\alpha _{per\,comparison} = 0.05$:
 
-```{r results='asis', echo=FALSE}
+```{r results='asis', echo=FALSE, purl=FALSE}
 x <- 2:5
 ncomb <- choose(x, 2)
 FWER <- 0.05 * ncomb
@@ -91,7 +87,7 @@ $\alpha_{per\,comparison} = \alpha _{familywise}/N$, где _N_ - количес
 
 В таблице даны значения $\alpha _{per\,comparison}$ после поправки Бонферрони, сохраняющие $\alpha _{familywise} = 0.05$:
 
-```{r results='asis', echo=FALSE}
+```{r results='asis', echo=FALSE, purl=FALSE}
 x <- 2:6
 ncomb <- choose(x, 2)
 APC <- 0.05 / ncomb
@@ -121,10 +117,10 @@ $\hat{p_{j}} = min\{adjustment_j \cdot p_{j}, 1\}$
 
 ## Пример поправки Хольма-Бонферрони
 
-В таблице ниже даны результаты нескольких сравнений. С помощью поправки Хольма Бонферрони для каждого из p-values мы получим свой порог значимости: 
+В таблице ниже даны результаты нескольких сравнений. С помощью поправки Хольма Бонферрони для каждой доверительной вероятности $p_j$ мы получим свое скорректированное значение $\hat{p_{j}}$. 
 
 
-```{r echo=FALSE, message=FALSE, results='asis'}
+```{r echo=FALSE, message=FALSE, results='asis', purl=FALSE}
 n <- 5
 alph <- 0.05
 dat <- data.frame(
@@ -135,8 +131,8 @@ dat$adj <- n - dat$rank + 1
 dat$p_adj <- pmin(dat$adj * dat$p_val, 1)
 dat$h0 <- ifelse(dat$p_adj <= alph, "Да", "Нет")
 frst_neg <- match("Нет", dat$h0)
-dat$h0[(frst_neg + 1)] <- "и дальше везде сохраняем $H_0$"
-dat$h0[(frst_neg + 2):nrow(dat)] <- ""
+dat$h0[frst_neg] <- "Нет, и дальше везде сохраняем $H_0$"
+dat$h0[(frst_neg + 1):nrow(dat)] <- ""
 colnames(dat) <- c("Ранг ($j$)", "$\\mathbf{p_{j}}$", "$Поправка$",  "$\\mathbf{\\hat{p_{j}}}$", "Отвергаем $H_0$?")
 
 library(knitr)
@@ -169,7 +165,7 @@ kable(dat, format = "markdown")
 
 $SS_{total} = SS_{between} + SS_{within}$
 
-```{r echo = FALSE, warning=FALSE, fig.width = 10, fig.height=4, message=FALSE}
+```{r echo = FALSE, warning=FALSE, fig.width = 10, fig.height=4, message=FALSE, purl=FALSE}
 library(ggplot2)
 theme_set(theme_bw())
 library(plyr)
@@ -225,7 +221,7 @@ grid.arrange(gg_anova_total, gg_anova_factor, gg_anova_error, ncol = 3, widths =
 Если межгрупповая изменчивость равна внутригрупповой, то _F_ принадлежит _F_-распределению с двумя параметрами $df_{between} = a - 1$ и $df_{within} = N - a$, где _a_ --- число классов, _N_ --- общее количество объектов в анализе.
 
 
-```{r, echo=FALSE, fig.height=2.5}
+```{r, echo=FALSE, fig.height=2.5, purl=FALSE}
 library(ggplot2)
 theme_set(theme_bw())
 df_f <- data.frame(x = seq(0, 5, 0.01), y = df(seq(0, 5, 0.01), 3, 36))
@@ -393,7 +389,7 @@ head(pesch)
 
 Поскольку измеренные признаки варьируют в разных масштабах целесообразно провести лгарифмирование данных
 
-```{r}
+```{r purl=FALSE}
 options(digits = 4)
 log_pesch <- pesch
 log_pesch[, 3:ncol(pesch)] <- log(pesch[, 3:ncol(pesch)] +1)
@@ -402,7 +398,7 @@ head(log_pesch)
 
 ## Решение
 
-```{r ord-pesch, message=FALSE}
+```{r ord-pesch, message=FALSE, purl=FALSE}
 library(ggplot2)
 library(vegan)
 theme_set(theme_bw())
@@ -414,7 +410,7 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) + geom_point(size =
 
 ## Различаются ли виды песчанок по набору поведенческих признаков?
 
-```{r ord-pesch, echo=FALSE, message=FALSE}
+```{r ord-pesch, echo=FALSE, message=FALSE, purl=FALSE}
 ```
 
 >- Мы можем проверить это при помощи PERMANOVA
@@ -503,7 +499,7 @@ permanova_pesch
 
 ## Результаты PERMANOVA
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 permanova_pesch
 pvalue <- permanova_pesch$aov.tab$`Pr(>F)`[1]
 ```
@@ -534,7 +530,7 @@ PCO_pesch <- betadisper(dist_pesch, log_pesch$Species)
 
 ## Объект, возвращаемый `betadisper()`, позволяет также нарисовать наши объекты в пространстве PCO 
 
-```{r, echo=FALSE, fig.height=5}
+```{r fig.height=4.5}
 plot(PCO_pesch)
 ```
 
@@ -559,7 +555,7 @@ boxplot(PCO_pesch)
 
 ## Post hoc тесты в perMANOVA
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 library(ggplot2)
 #dist_pesch <- vegdist(log_pesch[,3:ncol(pesch)], method = "euclidian")
 mds_pesch <- metaMDS(log_pesch[,3:ncol(pesch)], distance = "euclidian", trace = FALSE)
@@ -569,7 +565,7 @@ pl_pesch <- ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species))
 pl_pesch + geom_point(size = 5)
 ```
 
-На приведенной ординации видно, что точки, соответствующие Монгольским песчанкам сегрегированы от остальных.
+На приведенной ординации видно, что точки, соответствующие Монгольским песчанкам расположены отдельно от остальных.
 
 Для выявления попарных различий нужны попарные сравнения.
 
@@ -641,7 +637,7 @@ p.adjust(p_vals, method = "holm")
 
 <!-- Один из вариантов ответа --- процедура SIMPER -->
 
-<!-- ```{r} -->
+<!-- ```{r purl=FALSE} -->
 <!-- simper_pesch <- simper(log_pesch[, 3:9], log_pesch$Species, permutations = 999) -->
 <!-- summary(simper_pesch) -->
 <!-- ``` -->
@@ -690,7 +686,7 @@ nested_pesch
 
 ## Решение
 
-```{r}
+```{r purl=FALSE}
 com <- read.csv("data/simulated_data.csv", sep = ',', header = T)
 
 # Ошибочный дизай

@@ -1,0 +1,99 @@
+---
+title: "Задания для самостоятельной работе по теме perMANOVA"
+output:
+ ioslides_presentation:
+  widescreen: true
+  css: assets/my_styles.css
+  logo: assets/Linmod_logo.png
+---
+
+
+```{r setup, include = FALSE, cache = FALSE, purl = FALSE}
+# output options
+options(width = 70, scipen = 6, digits = 3)
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+```
+
+## Влияние выпаса скота на зообентос рек о.Тасмания
+
+Из-за сельскохозяйственной деятельности поступление грунта и питательных веществ в реки увеличивается. Влияние, которое оказывают эти факторы сложно оценить по-отдельности без специальных экспериментов. Полевые наблюдения за сообществами макробентоса рек можно рассматривать как результат "естественного многолетнего эксперимента", который оценивает влияние сельского хозяйства вцелом.
+
+<a data-flickr-embed="true" data-footer="true"  href="https://www.flickr.com/photos/riversdale_estate/23857418673" title="Riversdale Estate Vineyard - vineyard panorama"><img src="https://c1.staticflickr.com/2/1547/23857418673_486462c2df_n.jpg" width="320" height="240" alt="Riversdale Estate Vineyard - vineyard panorama" style="display: block;margin: auto;"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+Чтобы проверить, как выпас скота в масштабах территории водосбора влияет на население дна рек, летом 2008--9 и 2009-10 были взяты пробы бентоса и измерены различные характеристики среды в 27 речных сайтах в северной Тасмании. Данные в файле `Grazing_Magierowski_et_al_2015.xls`: лист "env" --- характеристики среды; лист "fauna" --- фауна. 
+
+```{r include=FALSE}
+library(readxl)
+coord <- read_excel("data/Grazing_Magierowski_et_al_2015.xls", sheet = "coord")
+centroid <- colMeans(coord[, c("lon", "lat")])
+# Get the Google basemap
+library(ggmap, quietly = TRUE)
+my_map <- get_map(location = c(lon = centroid[1], lat = centroid[2]), color = "color", source = "google", maptype = "satellite", zoom = 7)
+map_small <- ggmap(my_map) +
+  geom_point(aes(x = lon, y = lat),
+             data = coord, shape = 19,
+             colour = "orange") +
+  xlim(144.7, 148.3) + ylim(-41.9, -40.5) +
+  labs(x = "Longitude", y = "Latitude", title = "Tasmania")
+```
+
+```{r echo=FALSE, warning=FALSE}
+map_small
+```
+
+__Задание 1__. При помощи perMANOVA проверьте, меняется ли фауна в реках Тасмании в зависимости от уровня выпаса скота в зоне водосбора (переменная `GrazingRank`).
+
+`GrazingRank` --- доля территории водосбора, занятой выпасом скота (Low --- 0-10%; Medium -- 10-50%; Severe >50%)
+
+
+
+__Источник__: Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a
+gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B.
+ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.
+
+
+## Гематология сонных ящериц _Tiliqua rugosa_ 
+
+Физиологическое состояние живых существ часто используют для оценки качества среды. Делать такого рода измерения дешевле и проще на модельных объектах. Сонная ящерица _Tiliqua rugosa_ --- широко распространенный вид в южной Австралии. В частности, в районе Мюррей Мали, который является территорией интенсивного земледелия и скотоводства. Гематологические характеристики _Tiliqua rugosa_ можно использовать для оценки качества среды.
+
+<div style="text-align: center;">
+<p><a href="https://commons.wikimedia.org/wiki/File:Shingleback-sa.jpg#/media/File:Shingleback-sa.jpg"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Shingleback-sa.jpg" alt="Shingleback-sa.jpg" height="116" width="220" style="display: block;margin: auto;width: 40%;"></a><br>By <a href="//commons.wikimedia.org/wiki/User:Benjamint444" title="User:Benjamint444">Benjamint444</a> - <span class="int-own-work" lang="en" xml:lang="en">Own work</span>, <a href="http://www.gnu.org/licenses/old-licenses/fdl-1.2.html" title="GNU Free Documentation License 1.2">GFDL 1.2</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=26543118">Link</a></p>
+</div>
+
+Данные о гематологии ящериц собирали с сентября по ноябрь 2010 года в нескольких сайтах с разной степенью антропогенной модификации ландшафта (данные в файле `Sleepy lizard.xlsx`, лист "data").
+
+В немодифицированном ландшафте (`Treatment` 1) пробы собраны в одном районе исследования BS0 (`Landscape.ID` 1). В сильно модифицированном ландшафте (`Treatment` 2) пробы собраны в трех разных районах (`Landscape.ID` 1 --- LS1, 3 --- LS2, 5 --- LS3).
+
+Только в сильно модифицированном ландшафте в каждом из районов сайты были разделены на группы в зависимости от типа местообитания (`Habitat`: остатки естественной растительности, посадки лебеды, поля с зерновыми культурами или под паром) и от степени связи с участками естественной растительности (`Connectivity`: низкая --- < 63%, средняя --- 63-88%, высокая --- 88%; полностью связанные участки).
+
+У ящериц измеряли различные характеристики крови, из которых вам понадобятся:
+
+- `Tot_WBC` --- общее число белых кровяных клеток
+- `Het_ABS` --- общее число гетерофилов
+- `Lym_ABS` --- общее число лимфоцитов
+- `H:L Ratio` --- соотношение гетерофилов и лимфоцитов
+- `Mon_ABS` --- число моноцитов
+- `OthG_ABS` --- число прочих гранулоцитов
+
+Известно, что гематологическая картина у ящериц зависит в том числе от общего физиологического состояния, которое косвенно можно оценить при помощи индекса, описывающего размеры тела, вернее, отклонение от обычных размеров (переменная `LBSI` --- Linear Body Size Index, остаток от RMA-регрессии логарифма массы от логарифма длины тела).
+
+![](images/Sleepy lizards.png)
+
+Упрощенные варианты анализа:
+
+__Задание 1__: Различается ли состав крови ящериц из немодифицированного и сильно модифицированного ландшафтов? 
+
+__Задание 2__: Проверьте, различается ли состав крови ящериц в разных местообитаниях в сильно модифицированном ландшафте
+
+__Задание 3__: Проверьте, влияет ли степень связности на состав крови ящериц из сильно модифицированного ландшафта.
+
+"Правильный", наиболее полный вариант:
+
+__Задание 4__: Влияют ли на состав крови ящериц из сильно модифицированного ландшафта тип местообитания и степень связности.
+
+__Источник__: Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua
+rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal,
+rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research
+Organisation. Accessed 03 Mar 2017.
