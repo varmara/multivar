@@ -21,10 +21,10 @@ install.packages("vegan")
 - Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)  
 *Оригинальные данные В. М. Хайтова*   
 
-- растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)   
+- растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)  
 Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* 
 
-- Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)   
+- Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)  
 Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.*
 
 ## 2. Тест Мантела, ANOSIM, SIMPER
@@ -40,10 +40,10 @@ install.packages("vegan")
 
 **Данные для самостоятельной работы**
 
-- Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv) 
+- Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv)  
 Данные из работы *Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308*   
 
-- Сообщества макробентоса в друзах мидий [mussel_patches.csv](data/mussel_patches.csv) 
+- Сообщества макробентоса в друзах мидий [mussel_patches.csv](data/mussel_patches.csv)  
 Данные из работы *Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами  Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.*   
 
 ## 3. PERMANOVA
@@ -60,10 +60,10 @@ install.packages("readxl")
 
 [Пояснения к датасетам и задание](03_2_perMANOVA_task.html)
 
-- Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)
+- Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)  
 *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.*
 
-- Гематология сонных ящериц _Tiliqua rugosa_ [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx) 
+- Гематология сонных ящериц _Tiliqua rugosa_ [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx)  
 *Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.*
 
 
