@@ -1,10 +1,5 @@
 ---
 title: "Задания для самостоятельной работе по теме perMANOVA"
-output:
- ioslides_presentation:
-  widescreen: true
-  css: assets/my_styles.css
-  logo: assets/Linmod_logo.png
 ---
 
 
@@ -13,14 +8,14 @@ output:
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+opts_chunk$set(tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
 ```
 
 ## Влияние выпаса скота на зообентос рек о.Тасмания
 
 Из-за сельскохозяйственной деятельности поступление грунта и питательных веществ в реки увеличивается. Влияние, которое оказывают эти факторы сложно оценить по-отдельности без специальных экспериментов. Полевые наблюдения за сообществами макробентоса рек можно рассматривать как результат "естественного многолетнего эксперимента", который оценивает влияние сельского хозяйства вцелом.
 
-<a data-flickr-embed="true" data-footer="true"  href="https://www.flickr.com/photos/riversdale_estate/23857418673" title="Riversdale Estate Vineyard - vineyard panorama"><img src="https://c1.staticflickr.com/2/1547/23857418673_486462c2df_n.jpg" width="320" height="240" alt="Riversdale Estate Vineyard - vineyard panorama" style="display: block;margin: auto;"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+<a data-flickr-embed="true" href="https://www.flickr.com/photos/riversdale_estate/23857418673" title="Riversdale Estate Vineyard - vineyard panorama"><img src="https://c1.staticflickr.com/2/1547/23857418673_486462c2df_n.jpg" width="320" height="240" alt="Riversdale Estate Vineyard - vineyard panorama" style="display: block;margin: auto;"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
 
 Чтобы проверить, как выпас скота в масштабах территории водосбора влияет на население дна рек, летом 2008--9 и 2009-10 были взяты пробы бентоса и измерены различные характеристики среды в 27 речных сайтах в северной Тасмании. Данные в файле `Grazing_Magierowski_et_al_2015.xls`: лист "env" --- характеристики среды; лист "fauna" --- фауна. 
 
