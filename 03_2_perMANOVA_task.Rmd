@@ -1,5 +1,8 @@
 ---
 title: "Задания для самостоятельной работе по теме perMANOVA"
+output:
+  html_document:
+    self_contained: true
 ---
 
 

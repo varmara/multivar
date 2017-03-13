@@ -1,5 +1,5 @@
 *_cache
-*_files
+_files
 .RData
 .Rhistory
 .Rdata
