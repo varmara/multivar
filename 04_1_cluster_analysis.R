@@ -108,35 +108,18 @@ cor(d, as.dist(c_w2))
 
 
 # Качество и количество кластеров
-## Стабильность кластеров
-library(fpc)
-nsel <- nselectboot(d, B = 1000, clustermethod = hclustCBI, seed = 9646, method = "average", krange=3:11)
-
-## Оптимальное число кластеров --- с минимальным значением нестабильности
-nsel$kopt # оптимальное число кластеров
-nsel$stabk # средние значения нестабильности
-
-## Визуализируем значения нестабильности
-plot(1:11, nsel$stabk)
-# nsel$stab # матрица с результатами бутстрепа
 
 ## Ширина силуэта
-## Оценим ширину силуэта для 3 или 6 кластеров
-complete3 <- cutree(hclust(d), 3)
-qual3<- cluster.stats(d, complete3)
-qual3$clus.avg.silwidths
+## Оценим ширину силуэта для 3 кластеров
+library(cluster)
+complete3 <- cutree(tree = hc_avg, k = 3)
+plot(silhouette(x = complete3, dist = d))
 
-complete6 <- cutree(hclust(d), 6)
-qual6<- cluster.stats(d, complete6)
-qual6$clus.avg.silwidths
-
-mean(qual3$clus.avg.silwidths); mean(qual6$clus.avg.silwidths)
 
 ## Бутстреп поддержка ветвей
 library(pvclust)
-# итераций должно быть 1000 и больше, здесь мало для скорости
-set.seed(42)
-cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, method.dist = "euclidean")
+# итераций должно быть 10000 и больше, здесь мало для скорости
+cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, method.dist = "euclidean", parallel = TRUE, iseed = 42)
 plot(cl_boot)
 # pvrect(cl_boot) # достоверные ветвления
 
