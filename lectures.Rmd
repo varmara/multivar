@@ -69,6 +69,11 @@ install.packages("readxl")
 
 ## 4. Кластерный анализ
 
+```{r eval=FALSE}
+install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
+```
+
+
 ## 5. Основы матричной алгебры. SVD.
 
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
