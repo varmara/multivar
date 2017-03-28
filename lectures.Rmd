@@ -82,6 +82,31 @@ install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
 
 ## 5. Основы матричной алгебры. SVD.
 
+```{r eval=FALSE}
+install.packages("jpeg")
+```
+
+
+- Презентация [html](05_1_introduction_to_matrix_algebra.html)
+- [код R](05_1_introduction_to_matrix_algebra.R)
+- Данные [Матрица](data/face.rda) 
+
+
+**Данные для самостоятельной работы**
+
+- Первый набор из трех матриц 
+
+[u1](data/u1.csv)  
+[v1](data/v1.csv)
+[d1](data/d1.csv) 
+
+- Второй набор из трех матриц 
+
+[u2](data/u2.csv)  
+[v2](data/v2.csv)
+[d2](data/d2.csv) 
+
+
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
 
 ## 7. Анализ избыточности (Redundancy analysis, RDA)
