@@ -210,5 +210,6 @@ V <- SVD_face$v
 
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
-gg_face(reduction(4))
+
+gg_face(U[,1:6] %*% diag(D[1:6]) %*% t(V[, 1:6]))
 
