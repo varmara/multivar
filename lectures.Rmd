@@ -92,19 +92,7 @@ install.packages("jpeg")
 - Данные [Матрица](data/face.rda) 
 
 
-**Данные для самостоятельной работы**
-
-- Первый набор из трех матриц 
-
-[u1](data/u1.csv)  
-[v1](data/v1.csv)
-[d1](data/d1.csv) 
-
-- Второй набор из трех матриц 
-
-[u2](data/u2.csv)  
-[v2](data/v2.csv)
-[d2](data/d2.csv) 
+[**Данные для самостоятельной работы**](05_1_matrix_algebra_task.html)
 
 
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
