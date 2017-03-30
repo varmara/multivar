@@ -9,7 +9,7 @@
 # Транспонирование матриц
 A <- matrix(1:12, ncol = 3)
 
-B <- t(A)
+
 
 
 
@@ -28,31 +28,30 @@ Large
 Small
 
 ## Сложение двух матриц
-Large + Small
 
-## Простое умножение
-A * 4
 
-## Простое умножение на вектор
-A * c(10, 11, 12, 13)
+## Простое умножение A на число
+
+
+
+## Простое умножение на вектор A на вектор c(10, 11, 12, 13)
 
 
 ## Пример простого умножениея матрицы на вектор
 Rpocessed_portion <- c(1, 1, 1/2, 1/3, 1/4)
 Processed_Factor <- 1/Rpocessed_portion
 
-Small * Processed_Factor
+
 
 ## Находим номализованный вектор
 Vec <- 1:5
+
 
 
 ## Скалярное произвеение векторов
 
 N <- c(20, 40, 32, 45, 80, 50, 10)
 Fert <- c( 0,  0,   1,   2,   2,   0,   0)
-
-t(N) %*% (Fert)
 
 
 
@@ -74,49 +73,20 @@ byrow = T,
 ncol = 7)
 
 # Последовательно преображуем демографические вектора с помощью матрицы Лесли
-Pop$T2 <- as.vector( Lesl %*% (Pop$T1 ))
-Pop$T3 <- as.vector( Lesl %*% (Pop$T2 ))
-Pop$T4 <- as.vector( Lesl %*% (Pop$T3 ))
-Pop$T5 <- as.vector( Lesl %*% (Pop$T4 ))
-Pop$T6 <- as.vector( Lesl %*% (Pop$T5 ))
-Pop$T7 <- as.vector( Lesl %*% (Pop$T6 ))
-Pop$T8 <- as.vector( Lesl %*% (Pop$T7 ))
-Pop$T9 <- as.vector( Lesl %*% (Pop$T8 ))
-Pop$T10 <- as.vector( Lesl %*% (Pop$T9 ))
+#Найдите демографический вектор для T=3
 
 
-## Визуализация
-library(ggplot2)
-library(reshape)
-Pop2 <- melt(Pop)
-ggplot(Pop2, aes(x=Age, y = value)) + geom_bar(stat = "identity") + facet_wrap(~variable, ncol = 2) + labs(x = "Возраст", y = "Число особей")
 
 ## Свойства матричных произведений
 B <- matrix(1:24, ncol = 4)
 C <- matrix(1:12, ncol = 3)
 
-B %*% C
+# Найдите произведение B на C и C на B
 
-C %*% B
 
-C %*% t(C)
 
-t(C) %*% C
+# Найдите произведение С на C' и C' на С
 
-B <- matrix(1:9, ncol = 3)
-C <- matrix(11:19, ncol = 3)
-
-B %*%  C
-
-C %*% B
-
-t(B %*% C)
-
-t(C) %*% t(B)
-
-B %*% t(B)
-
-t(B) %*% B
 
 
 ## Инверсия матрицы
@@ -124,15 +94,18 @@ t(B) %*% B
 X <- matrix(c(seq(1, 8),10), nrow = 3, byrow = T)
 
 
-## Определитель матрицы
-det(X)
+## Определитель матрицы X
 
-## Инверсия матрицы
-solve(X)
+
+
+
+## Инверсия матрицы X
+
 
 
 ## Получаем единичную матрицу
-round(solve(X) %*% X )
+
+
 
 ## Решаем систему линейных уравнений
 Coef <- matrix(c(1 , 2 , 3 ,
@@ -140,25 +113,25 @@ Coef <- matrix(c(1 , 2 , 3 ,
          7 , 8 , 10), byrow = T, ncol = 3)
 Val <- c(2,4,10)
 
-solve(Coef) %*% Val
+
 
 
 ## Подбираем коэффициенты линейной регрессии вручную
 data(cars)
-Mod <- lm(dist ~ speed, data = cars)
-coefficients(Mod)
 
-## ------------------------------------------------------------------------
+## Модельная матрица
 X <- data.frame(Int = 1, x = cars$speed)
 X <- as.matrix(X)
 
 y <- cars$dist
-betas <- solve(t(X) %*% X) %*% (t(X) %*%y)
 
-plot(X %*% betas, fitted(Mod))
-
+# Находим кожффициенты betas
 
 
+
+
+
+###################################
 ## SVD
 set.seed(12345)
 B <- matrix(round(runif(50, 1, 5))  , byrow = T, ncol=5) #Некоторая матрица
