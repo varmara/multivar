@@ -95,7 +95,7 @@ install.packages("jpeg")
 [**Данные для самостоятельной работы**](05_1_matrix_algebra_task.html)
 
 
-## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
+## 6. Анализ главных компонент (Principal Component Analysis, PCA)
 
 - Презентация [html](06_1_PCA.html)
 - [код R](06_1_PCA.R)
