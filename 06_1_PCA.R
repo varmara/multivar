@@ -1,205 +1,151 @@
-###########################
-#Метод главных компонент
-#
-#В. Хайтов, М.Варфоломеева
-###########################
+#' ---
+#' title: "Анализ главных компонент"
+#' subtitle: "Анализ и визуализация многомерных данных с использованием R"
+#' author: Марина Варфоломеева, Вадим Хайтов
 
-library(ggplot2)
-library(grid)
-library(gridExtra)
+#' Данные о размерах медуз _Catostylus mosaicus_ (Lunn & McNeil 1991). Медузы собраны в реке Хоксбери (Новый Южный Уэльс, Австралия): часть --- на острове Дангар, другая --- в заливе Саламандер.
 
-theme_set(theme_bw(base_size = 10) + theme(legend.key = element_blank()))
-update_geom_defaults("point", list(shape = 19, size = 4))
+#' ## Сделаем PCA вручную
 
-## Ортогональня матрица
-A <- matrix(c( 0,  0, 10,
-               0,  5, 0,
-               40, 0, 0  ), ncol = 3)
-A %*% t(A)
-
-normA <-  matrix(c( 0,  0, 1,
-                    0,  1, 0,
-                    1,  0, 0  ), ncol = 3)
-
-
-# Проверяем свойство ортогональной матрицы
-solve(normA)
-
-t(normA)
-
-
-## Собственные числа
-set.seed(12345)
-# Создаем некоторую матрицу
-Dat <- data.frame(Sp1 = round(rnorm(7, 150, 5)), Sp2 = round(rnorm(7, 150, 5)), Sp3 = round(rnorm(7, 150, 5)), Sp4 = round(rnorm(7, 150, 5)), Sp5 = round(rnorm(7, 150, 5)) )
-rownames(Dat) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5", "Sample6", "Sample7" )
-
-Dat
-
-# Стандартизируем значения
-X <- scale(Dat)
-
-A <- round(cor(Dat), 2)
-
-round(t(X) %*% X / (nrow(X) - 1), 2)
-
-
-EIG <- eigen(A)
-L <- EIG$values #Вектор собственных чисел
-V <- EIG$vectors #Матрица собственных векторов
-
-diag(L)
-
-t(V)
-
-solve(V)
-
-round(t(V) - solve(V)) #Свойство ортонормальных матриц
-
-A
-
-
-round(V %*% diag(L) %*% t(V), 2) #В точности матрица A
-
-
-
-
-
-#Работаем с реальными данными
 jelly <- read.delim("data/jellyfish.csv")
 
-head(jelly, 10)
+X_raw <- jelly[, 2:3]
+
+gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) +
+  geom_point(size = 2) +
+  coord_equal()
+gg
+
+#' ## Центрируем исходные данные
+X <- scale(X_raw, center = TRUE, scale = FALSE)
+
+# График центрированных данных
+gg_centered <- gg %+% as.data.frame(X) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  coord_equal() +
+  ggtitle("Центрированные данные")
+gg_centered
+
+#' ## PCA
+A <- cov(X)    # Матрица ковариаций
+E <- eigen(A)  # Спектральное разложение
+E$vectors      # Собственные векторы
+E$values       # Собственные числа
+
+# Доля объясненной изменчивости
+E$values/sum(E$values)
+# Координаты точек в новом пространстве
+Y <- X %*% E$vectors
+
+#' ## Главные компоненты в исходном пространстве
+# Коэф. угла наклона новых осей в старом пространстве
+slope_1 <- E$vectors[1, 1] / E$vectors[2, 1]
+slope_2 <- E$vectors[1, 2] / E$vectors[2, 2]
+
+gg_centered +
+  geom_abline(slope = slope_1, intercept = 0,
+              linetype = "dashed",
+              colour = "orangered", size = 1) +
+  geom_abline(slope = slope_2, intercept = 0,
+              linetype = "dashed",
+              colour = "violet", size = 1)
 
 
-library(ggplot2)
-theme_set(theme_bw(base_size = 20) + theme(legend.key = element_blank()))
-update_geom_defaults("point", list(shape = 19, size = 4))
-p_raw <- ggplot(jelly, aes(x = width, y = length)) +   geom_point() +   geom_hline(yintercept = 0) +   geom_vline(xintercept = 0) +   coord_equal()
-
-p_raw
-
-
-## Центрируем данные
-
-jelly$c_width <- jelly$width - mean(jelly$width)
-jelly$c_length <- jelly$length - mean(jelly$length)
-jelly <- jelly[order(jelly$c_width), ]
-
-p_centered <- ggplot(jelly, aes(x = c_width, y = c_length)) +   geom_point() +   geom_hline(yintercept = 0) +   geom_vline(xintercept = 0) +  coord_equal()
-
-p_centered + ggtitle("Центр координат сместился")
-
-head(jelly[, c(1, 4:5)], 10)
-
-Covar <- cov(jelly[, c("c_width", "c_length")])
-eigen_values <- eigen(Covar)$values
-eigen_vectors <- eigen(Covar)$vectors
-t(eigen_vectors)
-solve(eigen_vectors)
+#' ## Ординация точек в пространстве главных компонент
+gg_rotated <- gg %+% as.data.frame(Y) +
+  aes(x = V1, y = V2) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  coord_equal(ylim = c(-10, 10)) +
+  labs(title = "После вращения", x = "PC1", y = "PC2")
+gg_rotated
 
 
-#НАходим кординаты в новых осях
+#' # Восстановление исходных данных и их редукция
 
-fincoord <- as.matrix(jelly[,4:5]) %*% eigen_vectors
+#' ## Восстанавливаем __полные__ исходные данные
+X_back_full <- X %*% E$vectors %*% t(E$vectors)
 
-fincoord <- as.data.frame(fincoord)
+gg_back_full <- gg_centered %+%
+  as.data.frame(X_back_full) +
+  aes(x = V1, y = V2) +
+  labs(x = "width", y = "length")
 
-colnames(fincoord) <- c("PC1", "PC2")
+plot_grid(gg_centered,
+          gg_back_full + ggtitle("Восстановленные"),
+          align = "h")
 
+#' ## Восстанавливаем __неполные__ исходные данные
+X_back_pc1 <- X %*% E$vectors[, 1] %*% t(E$vectors[, 1])
 
-p_rotated <- ggplot(fincoord, aes(x = PC1, y = PC2)) +   geom_point() +     geom_hline(yintercept = 0) +    geom_vline(xintercept = 0) +   coord_equal(ratio = 1, ylim = c(-10, 10))
+gg_back_pc1 <- gg_centered %+% as.data.frame(X_back_pc1) +
+  aes(x = V1, y = V2) +
+  labs(x = "width", y = "length")
 
-p_rotated + ggtitle("После поворота осей")
-
-round(cor(fincoord), 2) #Новые оси не коррелируют
-
-
-
-## SVD
-
-SVD <-svd(jelly[,4:5])
-U <- SVD$u
-V <- SVD$v
-D <- SVD$d
-
-##############################
-# Все одинаково! PCA - это частный случай SVD
-#############################
-
-qplot(fincoord$PC1, U %*% diag(D) [,1], geom = "point") + labs(x="PC1")
-
-eigen_vectors
-
-V
+plot_grid(gg_centered,
+          gg_back_full + ggtitle("Восстановленные"),
+          gg_back_pc1 + ggtitle("Редуцированные"),
+          nrow = 1, align = "h")
 
 
-## Анализ многомерных данных
+#' # Действительно многомерные данные
+#' ## Пример: Потребление белков в странах Европы с разными видами продуктов питания
+# Данные из Weber, 1973
+
 protein <- read.table(file="data/protein.csv", sep="\t", dec=".", header=TRUE)
 protein$region <- factor(protein$region)
 rownames(protein) <- protein$country
 head(protein)
 
-## Ваш код для построения орлинации MDS
+#' ## Задание
+#'
+#' - Постройте ординацию стран при помощи nMDS с использованием евклидова расстояния
+#' - Постройте график ординации
+#' - Нанесите при помощи envfit векторы изменения исходных переменных
+#'
+#' ## Решение
+
+
+
+#' # PCA: сколько компонент нужно оставить?
+
 library(vegan)
-
-ord_nmds <- metaMDS(protein[, 3:ncol(protein)], distance = "euclidean", trace = 0)
-
-plot(ord_nmds, display = "site", type = "t", cex = 0.8)
-
-
-ef <- envfit(ord_nmds, protein[, 3:ncol(protein)])
-
-plot(ord_nmds, display = "site", type = "t", cex = 0.8)
-plot(ef)
-
-
-
-## Проводим PCA
-prcomp(protein[, -c(1, 2)])
-
-A <- cor(protein[, -c(1, 2)])
-
-eigen(A)$values
-
-
 prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
-
 summary(prot_pca)
 
 
-EV <- eigenvals(prot_pca) # собственные числа
 
-EV/sum(EV)
+#' ## Сколько компонент нужно оставить, если мы хотим редуцировать данные?
 
+#' ## График собственных чисел
 
+eigenvals(prot_pca) # собственные числа
 bstick(prot_pca) # ожидаемое по Brocken Stick Model
 
 screeplot(prot_pca, type = "lines", bstick = TRUE) # график собственных чисел
 
-# Данные для ggplot
-eig <- data.frame(pc = factor(1:length(eigenvals(prot_pca))),
-           eigenval = as.vector(eigenvals(prot_pca)),
-           bstick = bstick(prot_pca))
-# График
-eig_p_kaiser <- ggplot(eig, aes(x = pc, y = eigenval)) +
-  geom_line(aes(group = 1), colour = "red") + geom_point(colour = "red") +
-  geom_hline(yintercept = mean(eigenvals(prot_pca)), colour = "gray70") +
-  labs(x = "Компоненты", y = "Собственные числа")
 
-# график с brocken stick model
-eig_p_bstick <- eig_p_kaiser +
-  geom_line(aes(x = pc, y = bstick, group = 1)) +
-  geom_point(aes(x = pc, y = bstick))
+#' # Интерпретация компонент
 
-eig_p_bstick
+scores(prot_pca, display = "species",
+       choices = c(1, 2, 3), scaling = 0)
 
 
 
+#' # Графики факторных нагрузок и ординации
+
+op <- par(mfrow = c(1, 2))
+# График факторных нагрузок
 biplot(prot_pca, display = "species", scaling = 2)
+# График факторных координат
+biplot(prot_pca, display = "sites")
+par(op)
 
-biplot(prot_pca, display = "species", scaling = 1)
 
+#' ## Те же самые графики можно построить в ggplot
 
+# График факторных нагрузок в ggplot
 df_load <- as.data.frame(scores(prot_pca, display = "species",
                                 choices = c(1, 2, 3), scaling = 2))
 # поправки для размещения подписей
@@ -207,64 +153,59 @@ df_load$hjust[df_load$PC1 >= 0] <- -0.1
 df_load$hjust[df_load$PC1 < 0] <- 1
 df_load$vjust[df_load$PC2 >= 0] <- -0.1
 df_load$vjust[df_load$PC2 < 0] <- 1
-
-
-
 library(grid) # для стрелочек
 ar <- arrow(length = unit(0.25, "cm"))
 
 p_load <- ggplot(df_load) +
   geom_text(aes(x = PC1, y = PC2, label = rownames(df_load)),
-            size = 5, vjust = df_load$vjust, hjust = df_load$hjust) +
+            size = 3, vjust = df_load$vjust, hjust = df_load$hjust) +
   geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC2),
                colour = "grey40", arrow = ar) +
   coord_equal(xlim = c(-1.9, 1.9), ylim = c(-1.9, 1.9))
-p_load
 
 
-biplot(prot_pca, display = "sites")
-
-# Значения факторов (= факторные координаты)
-head(scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
-
+## График ординации в ggplot
 df_scores <- data.frame(protein[, 1:2],
   scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 
-round(cor(df_scores$PC3, df_scores$PC2 ), 2)
+p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) +
+  geom_text(aes(label = country)) +
+  coord_equal(xlim = c(-1.2, 1.2), ylim = c(-1.2, 1.2))
 
 
-
-p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) + geom_point() +
-  geom_text(aes(label = country), hjust = 1, vjust = -1) +
-  coord_equal(xlim = c(-1.4, 1.4), ylim = c(-1.4, 1.4))
-p_scores
-
-grid.arrange(p_load, p_scores, ncol = 2, widths = c(0.42, 0.58))
+plot_grid(p_load, p_scores, align = "h",
+          rel_widths = c(0.36, 0.64))
+#
 
 
-##Используем комплексную переменную для ANOVA
+#' # Создание комплексных переменных при помощи PCA
 
-# Значения факторов (= факторные координаты)
+
 df <- data.frame(region = protein$region,
   scores(prot_pca, display = "sites", choices = c(1, 2, 3), scaling = 1))
 mod <- lm(PC1 ~ region, data = df)
 anova(mod)
 
-mod_diag <- fortify(mod)
 
-library(gridExtra)
+#' ## Проверка условий применимости дисперсионного анализа
+
+mod_diag <- fortify(mod)
 res_p <- ggplot(data = mod_diag, aes(x = .fitted, y = .stdresid)) + geom_point(aes(size = .cooksd)) + geom_hline(yintercept = 0) + geom_smooth(method="loess", se=FALSE)
 mean_val <- mean(mod_diag$.stdresid)
 sd_val <- sd(mod_diag$.stdresid)
 norm_p <- ggplot(mod_diag, aes(sample = .stdresid)) + geom_point(stat = "qq") + geom_abline(intercept = mean_val, slope = sd_val)
 grid.arrange(res_p, norm_p, ncol = 2, widths = c(0.55, 0.45))
 
-## Рисуем средние для каждого региона
+
+
+#' ## График значений первой компоненты по регионам
+
 df$region <- reorder(df$region, df$PC1, FUN=mean)
 ggplot(df, aes(x = region, y = PC1, colour = region)) +
   stat_summary(geom = "pointrange", fun.data = "mean_cl_boot", size = 1) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1))
 
-## Постхоки
-TukeyHSD(aov(mod))
 
+#' ## Пост-хок тест
+
+TukeyHSD(aov(mod))

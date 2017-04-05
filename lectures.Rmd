@@ -97,6 +97,15 @@ install.packages("jpeg")
 
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA). PCA в геометрической морфометрии
 
+- Презентация [html](06_1_PCA.html)
+- [код R](06_1_PCA.R)
+- Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv)
+
+**Данные для самостоятельной работы**
+
+- Канадские волки --- Wolves{candisc}
+- Ирисы --- iris{datasets}
+
 ## 7. Анализ избыточности (Redundancy analysis, RDA)
 
 ## 8. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
