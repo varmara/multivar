@@ -11,6 +11,7 @@ jelly <- read.delim("data/jellyfish.csv")
 
 X_raw <- jelly[, 2:3]
 
+library(ggplot2)
 gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) +
   geom_point(size = 2) +
   coord_equal()
@@ -83,6 +84,7 @@ gg_back_pc1 <- gg_centered %+% as.data.frame(X_back_pc1) +
   aes(x = V1, y = V2) +
   labs(x = "width", y = "length")
 
+library(cowplot)
 plot_grid(gg_centered,
           gg_back_full + ggtitle("Восстановленные"),
           gg_back_pc1 + ggtitle("Редуцированные"),
@@ -111,7 +113,7 @@ head(protein)
 #' # PCA: сколько компонент нужно оставить?
 
 library(vegan)
-prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
+prot_pca <- rda(protein[, -c(1, 2)], scale = FALSE)
 summary(prot_pca)
 
 
