@@ -160,7 +160,8 @@ $$\mathbf{Y} = \mathbf{X}\mathbf{P}$$
 
 Как нам выбрать $\mathbf{P}$?
 
->- Пусть $\mathbf{A} = cov(X) = \frac{1}{n - 1} \mathbf{X}\mathbf{X'}$ (т.е. это симметричная квадратная матрица, для нее должно существовать спектральное разложение $\mathbf{A} = \mathbf{E \Lambda E'}$).
+>- Если исходные данные $\mathbf{X}$ центрированы, то  $\mathbf{A} = cov(X) = \frac{1}{n - 1} \mathbf{X}\mathbf{X'}$ --- это симметричная квадратная матрица.
+>- Для симметричных квадратных матриц должно существовать спектральное разложение $\mathbf{A} = \mathbf{E \Lambda E'}$.
 >- __Если использовать $\mathbf{P} = \mathbf{E}$ --- матрицу собственных векторов для $\mathbf{A}$, то ковариационная матрица $cov(\mathbf{X}\mathbf{P})$ будет обладать нужными нам свойствами__.
 
 ## Как работает PCA?
@@ -259,7 +260,7 @@ gg_rotated
 ## Медузы упорядочились по размеру
 
 ```{r echo=FALSE, fig.width=9, message=FALSE}
-p_rotated + 
+gg_rotated + 
   aes(colour = jelly$location) + 
   scale_color_brewer("Location", palette = "Set1")
 ```
@@ -330,7 +331,7 @@ $\mathbf{X} = \mathbf{UDV'}$ (сингулярное разложение)
 Если $\mathbf{Х}$ --- матрица центрированных данных, то тогда  
 $$\begin{align}\mathbf{A} & = \frac{1}{n - 1}\mathbf{XX'} = \\
 & = \frac{1}{n - 1}\mathbf{X'X} = \\
-& = \frac{1}{n - 1}\mathbf{(UDV)'UDV'} = \\
+& = \frac{1}{n - 1}\mathbf{(UDV')'UDV'} = \\
 & = \frac{1}{n - 1}\mathbf{VDU'UDV'} = \\
 & = \frac{1}{n - 1}\mathbf{V D^2 V'}\end{align}$$
 
@@ -391,7 +392,7 @@ plot(ef)
 
 ## Проведем исследование тех же данных с помощью PCA
 
-```{r, message=FALSE, eval = FALSE}
+```{r, message=FALSE, echo=FALSE}
 library(vegan)
 prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
 summary(prot_pca)
@@ -613,7 +614,8 @@ res_p <- ggplot(data = mod_diag, aes(x = .fitted, y = .stdresid)) + geom_point(a
 mean_val <- mean(mod_diag$.stdresid)
 sd_val <- sd(mod_diag$.stdresid)
 norm_p <- ggplot(mod_diag, aes(sample = .stdresid)) + geom_point(stat = "qq") + geom_abline(intercept = mean_val, slope = sd_val)
-grid.arrange(res_p, norm_p, ncol = 2, widths = c(0.55, 0.45))
+plot_grid(res_p, norm_p, ncol = 2, rel_widths = c(0.55, 0.45))
+# 
 ```
 
 > - Условия применимости дисперсионного анализа выполняются

@@ -11,6 +11,7 @@ jelly <- read.delim("data/jellyfish.csv")
 
 X_raw <- jelly[, 2:3]
 
+library(ggplot2)
 gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) +
   geom_point(size = 2) +
   coord_equal()
@@ -72,6 +73,7 @@ gg_back_full <- gg_centered %+%
   aes(x = V1, y = V2) +
   labs(x = "width", y = "length")
 
+library(cowplot)
 plot_grid(gg_centered,
           gg_back_full + ggtitle("Восстановленные"),
           align = "h")
@@ -111,7 +113,7 @@ head(protein)
 #' # PCA: сколько компонент нужно оставить?
 
 library(vegan)
-prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
+prot_pca <- rda(protein[, -c(1, 2)], scale = FALSE)
 summary(prot_pca)
 
 
@@ -194,7 +196,7 @@ res_p <- ggplot(data = mod_diag, aes(x = .fitted, y = .stdresid)) + geom_point(a
 mean_val <- mean(mod_diag$.stdresid)
 sd_val <- sd(mod_diag$.stdresid)
 norm_p <- ggplot(mod_diag, aes(sample = .stdresid)) + geom_point(stat = "qq") + geom_abline(intercept = mean_val, slope = sd_val)
-grid.arrange(res_p, norm_p, ncol = 2, widths = c(0.55, 0.45))
+plot_grid(res_p, norm_p, ncol = 2, rel_widths = c(0.55, 0.45))
 
 
 
