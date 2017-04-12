@@ -106,9 +106,23 @@ install.packages("jpeg")
 - Канадские волки --- Wolves{candisc}
 - Ирисы --- iris{datasets}
 
-## 7. Анализ избыточности (Redundancy analysis, RDA)
+## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
-## 8. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
+- Презентация [html](07_1_CA_and_CA_calculation.html)
+- [код R](07_CA_vs_PCA_CA_calculation.R)
+- Данные [macnally.xlsx](data/macnally.xlsx) 
+
+**Данные для самостоятельной работы**
+
+
+```{r eval=FALSE}
+install.packages("ade4")
+```
+
+- Крысы [bolger1.csv](data/bolger1.csv) 
+- Бабочки --- butterfly{ade4}
+
+## 8. Анализ избыточности (Redundancy analysis, RDA)
 
 ## 9. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA)
 
