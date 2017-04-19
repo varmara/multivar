@@ -114,7 +114,6 @@ install.packages("jpeg")
 
 **Данные для самостоятельной работы**
 
-
 ```{r eval=FALSE}
 install.packages("ade4")
 ```
@@ -123,6 +122,16 @@ install.packages("ade4")
 - Бабочки --- butterfly{ade4}
 
 ## 8. Анализ избыточности (Redundancy analysis, RDA)
+
+- Презентация [html](07_1_RDA.html)
+- [код R](07_1_RDA.R)
+- Данные butterfly{ade4}
+
+**Данные для самостоятельной работы**
+
+- Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)  
+*Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.*
+
 
 ## 9. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA)
 
