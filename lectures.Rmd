@@ -118,6 +118,7 @@ install.packages("jpeg")
 install.packages("ade4")
 ```
 
+- растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv)
 - Крысы [bolger1.csv](data/bolger1.csv) 
 - Бабочки --- butterfly{ade4}
 
