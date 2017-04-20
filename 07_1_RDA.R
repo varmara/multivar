@@ -24,7 +24,7 @@ head(env_geo, 1)
 summary(gen)
 
 #' ## Линейны ли связи между переменными?
-pairs(env_geo)
+pairs(data.frame(gen, env_geo))
 
 
 #' ## Удаляем колинеарные предикторы
@@ -75,10 +75,10 @@ anova(bf_rda, by = "axis")
 
 #' # Выбор оптимальной модели
 
-m1 <-rda(gen ~ Altitude + Precipitation + Temp_Max + Temp_Min, data = env_geo)
+m1 <-rda(gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 m0 <- rda(gen ~ 1, data = env_geo)
 
-m <- ordistep(m0, scope = formula(m1))
+m <- ordistep(m0, scope = formula(m1), permutations = 99999)
 
 m$anova
 
@@ -86,13 +86,14 @@ m$anova
 #' # Частный анализ избыточности
 
 #' ## Делаем частный RDA: зависимость генетической структуры от среды с учетом географического положения
-bf_prda_1 <- rda(gen ~ Temp_Min + Condition(x + y), data = env_geo)
-anova(bf_prda_1) ## Пермутационный тест
+bf_prda_1 <- rda(gen ~ Altitude + Condition(x + y), data = env_geo)
+anova(bf_prda_1, permutations = 99999) ## Пермутационный тест
 
-plot(bf_prda_1, main = "Partial RDA")
+plot(bf_prda_1, main = "Partial RDA", scaling = 1)
 
 
 #' # Компоненты объясненной инерции
+showvarparts(2)
 
 #' ## Подбираем модели RDA, нужные для поиска компонентов инерции
 bf_prda_2 <- rda(gen ~ x + y + Condition(Temp_Min), data = env_geo)
