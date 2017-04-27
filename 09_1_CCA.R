@@ -86,6 +86,12 @@ grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights 
 
 
 
+
+
+
+
+
+
 #Триплоты
 plot(mite_cca, scaling = 1, main = "scaling 1")
 
