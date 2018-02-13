@@ -8,12 +8,12 @@ title: Презентации и данные
 install.packages("vegan")
 ```
 
-- Презентация [html](01_1_multivariate_data_and_dissimilarities.html) | [pdf](01_1_multivariate_data_and_dissimilarities.pdf)
-- [код R](01_1_multivariate_data_and_dissimilarities.R)
+<!-- - Презентация [html](01_1_multivariate_data_and_dissimilarities.html) | [pdf](01_1_multivariate_data_and_dissimilarities.pdf) -->
+<!-- - [код R](01_1_multivariate_data_and_dissimilarities.R) -->
 - Данные [Protein.txt](data/Protein.txt) 
 
-- Презентация [html](01_2_nMDS.html) 
-- [код R](01_2_nMDS.R)
+<!-- - Презентация [html](01_2_nMDS.html)  -->
+<!-- - [код R](01_2_nMDS.R) -->
 - Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt)
 
 **Данные для самостоятельной работы**
@@ -29,13 +29,13 @@ install.packages("vegan")
 
 ## 2. Тест Мантела, ANOSIM, SIMPER
 
-- Презентация [html](02_1_Mantel_correlation-based_methods.html)
-- [код R](02_2_Mantel_correlation-based_methods.R)
+<!-- - Презентация [html](02_1_Mantel_correlation-based_methods.html) -->
+<!-- - [код R](02_2_Mantel_correlation-based_methods.R) -->
 - Данные [Coordinates.txt](data/Coordinates.txt) | 
 
 
-- Презентация [html](02_2_ANOSIM_SIMPER.html)
-- [код R](02_1_ANOSIM_SIMPER.R)
+<!-- - Презентация [html](02_2_ANOSIM_SIMPER.html) -->
+<!-- - [код R](02_1_ANOSIM_SIMPER.R) -->
 - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv) 
 
 **Данные для самостоятельной работы**
@@ -52,8 +52,8 @@ install.packages("vegan")
 install.packages("readxl")
 ```
 
-- Презентация [html](03_1_perMANOVA.html)
-- [код R](03_1_perMANOVA.R)
+<!-- - Презентация [html](03_1_perMANOVA.html) -->
+<!-- - [код R](03_1_perMANOVA.R) -->
 - Данные [pesch.csv](data/pesch.csv) | [simulated_data.csv](data/simulated_data.csv) 
 
 **Данные для самостоятельной работы**
@@ -73,8 +73,8 @@ install.packages("readxl")
 install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
 ```
 
-- Презентация [html](04_1_cluster_analysis.html)
-- [код R](04_1_cluster_analysis.R)
+<!-- - Презентация [html](04_1_cluster_analysis.html) -->
+<!-- - [код R](04_1_cluster_analysis.R) -->
 
 **Данные для самостоятельной работы**
 
@@ -87,8 +87,8 @@ install.packages("jpeg")
 ```
 
 
-- Презентация [html](05_1_introduction_to_matrix_algebra.html)
-- [код R](05_1_introduction_to_matrix_algebra.R)
+<!-- - Презентация [html](05_1_introduction_to_matrix_algebra.html) -->
+<!-- - [код R](05_1_introduction_to_matrix_algebra.R) -->
 - Данные [Матрица](data/face.rda) 
 
 
@@ -97,8 +97,8 @@ install.packages("jpeg")
 
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA)
 
-- Презентация [html](06_1_PCA.html)
-- [код R](06_1_PCA.R)
+<!-- - Презентация [html](06_1_PCA.html) -->
+<!-- - [код R](06_1_PCA.R) -->
 - Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv)
 
 **Данные для самостоятельной работы**
@@ -108,8 +108,8 @@ install.packages("jpeg")
 
 ## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
-- Презентация [html](07_1_CA_and_CA_calculation.html)
-- [код R](07_CA_vs_PCA_CA_calculation.R)
+<!-- - Презентация [html](07_1_CA_and_CA_calculation.html) -->
+<!-- - [код R](07_CA_vs_PCA_CA_calculation.R) -->
 - Данные [macnally.xlsx](data/macnally.xlsx) 
 
 **Данные для самостоятельной работы**
@@ -124,8 +124,8 @@ install.packages("ade4")
 
 ## 8. Анализ избыточности (Redundancy analysis, RDA)
 
-- Презентация [html](07_1_RDA.html)
-- [код R](07_1_RDA.R)
+<!-- - Презентация [html](07_1_RDA.html) -->
+<!-- - [код R](07_1_RDA.R) -->
 - Данные butterfly{ade4}
 
 **Данные для самостоятельной работы**
@@ -149,8 +149,8 @@ install.packages("reshape2")
 ```
 
 
-- Презентация [html](09_1_CCA.html)
-- [код R](09_1_CCA.R)
+<!-- - Презентация [html](09_1_CCA.html) -->
+<!-- - [код R](09_1_CCA.R) -->
 
 
 - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)  
