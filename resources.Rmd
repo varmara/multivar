@@ -6,7 +6,7 @@ title: Ресурсы по R и статистике
 
 Гланц, С., 1998. Медико-биологическая статистика. М., Практика.
 
-Diez, D. M., Barr, C. D., Çetinkaya-Rundel, M., 2010. [OpenIntro: Statistics.](http://www.openintro.org/stat/down/)
+Diez, D.M., Barr, C.D. and Çetinkaya-Rundel, M., 2015. [OpenIntro Statistics](https://www.openintro.org/stat/textbook.php?stat_book=os) OpenIntro
 
 Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.
 
