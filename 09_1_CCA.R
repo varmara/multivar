@@ -6,6 +6,15 @@
 
 data(mite)
 
+library(vegan)
+data(mite)
+data(mite.env)
+data(mite.xy)
+head(mite[ , 1:6], 4)
+
+
+
+
 library(ggplot2)
 library(gridExtra)
 
@@ -79,23 +88,152 @@ mylegend<-g_legend(p0 + theme(legend.position = "bottom", legend.key = element_b
 library(gridExtra)
 grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights = c(10, 1))
 
+
+
+
 # Здесь будет Ваш код для решения Задания по построению ограниченной ординации CCA
 
 
 
+mite_cca <- cca(mite ~ SubsDens + WatrCont + Substrate + Topo, data = mite.env)
+
+str(mite.env)
+
+
+vif.cca(mite_cca)
+
+
+mite_cca
+
+summary(mite_cca)
+
+################################
+
+f_ij <- mite #Частота встречи данного вида в данной пробе, то есть это первичные даные!
+
+
+Ft <- sum(mite) #Общее количество найденных животных
+
+
+
+f_i <- apply(mite, 1, FUN = sum) #Общее количество особей в каждой пробе
+
+p_i <- f_i/Ft #Вектор вероятностей встретить какую-либо особь в данной пробе
+
+
+
+f_j <- apply(mite, 2, FUN = sum) #Общее количество особей в каждом виде
+
+p_j <- f_j/Ft #Вектор вероятностей встретить особь данного вида
+
+
+###########################
+
+
+Q <- (f_ij*Ft - f_i %*% t(f_j))/(Ft*sqrt(f_i %*% t(f_j))) #Матрица вкладов, вычисленная через частоты
+
+Q <- as.matrix(Q)
+
+sum(Q^2)
+
+
+U <- svd(Q)$u
+D <- diag(svd(Q)$d)
+V <- svd(Q)$v
+
+
+Q1 <- U %*% D %*% t(V)
+
+
+round(sum(Q1 - Q))
+
+sum(round(diag(D), 5) != 0)
+
+
+X <- model.matrix( ~ SubsDens + WatrCont + Substrate + Topo, data =  mite.env)
+
+
+ncol(X)
+
+nlevels(mite.env$Substrate)
+
+nlevels(mite.env$Topo)
 
 
 
 
+betas <- solve(t(X) %*% diag(p_i) %*% X) %*% (t(X) %*% diag(p_i)^(1/2) %*% Q)
+
+#Матрица предсказанных значенй
+Q_pred <- diag(p_i)^(1/2) %*% X %*% betas
+
+U_pred <- svd(Q_pred)$u
+D_pred <- diag(svd(Q_pred)$d)
+V_pred <- svd(Q_pred)$v
 
 
 
+sum(round(diag(D_pred), 5) != 0)
+
+sum(D_pred^2)
+
+
+mite_cca
+
+
+Q_resid <- Q - Q_pred
+
+U_res <- svd(Q_resid)$u
+D_res <- diag(svd(Q_resid)$d)
+V_res <- svd(Q_resid)$v
+
+sum(round(diag(D_res), 5) != 0)
+
+sum(D_res^2)
+
+mite_cca
+
+
+
+sum(D_res^2) + sum(D_pred^2)
+
+
+constr_CA_samples <- diag(p_i^(-1/2))%*% U_pred
+
+ggplot(as.data.frame(constr_CA_samples), aes(x=V1, y=V2)) +   geom_text(label = rownames(mite)) + labs(x = "CCA1", y = "CCA2") + theme_bw() + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2) + ggtitle("Результаты, полученные вручную")
+
+
+
+
+plot(mite_cca, display = "lc", tpe = "t", scaling = 1)
+
+
+
+
+constr_CA_species <- diag(p_j^(-1/2))%*% V_pred
+
+ggplot(as.data.frame(constr_CA_species), aes(x=V1, y=V2)) + geom_text(label = colnames(mite)) + labs(x = "CCA1", y = "CCA2") + theme_bw() + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2) + ggtitle("Результаты, полученные вручную")
+
+
+
+summary(mite_cca)
+
+scores(mite_cca, display = "species", choices = 1:5)
+
+spenvcor(mite_cca)
 
 
 #Триплоты
+
 plot(mite_cca, scaling = 1, main = "scaling 1")
 
+
+
 plot(mite_cca, scaling = 2, main = "scaling 2")
+
+
+
+
 
 plot(mite_cca, scaling = 2,  display = c("sp", "cn"),  main = "biplot cca, scaling 2")
 
@@ -113,6 +251,9 @@ anova(mite_cca, by="axis")
 
 # Компоненты изменчивости при построении модели с двумя наборами предикторов
 mod <- varpart(mite, ~ SubsDens + WatrCont + Substrate + Topo, ~ x + y, data = cbind(mite.env, mite.xy))
+
+showvarparts(2)
+
 
 mod
 
