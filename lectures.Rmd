@@ -8,11 +8,11 @@ title: Презентации и данные
 install.packages("vegan")
 ```
 
-<!-- - Презентация [html](01_1_multivariate_data_and_dissimilarities.html) | [pdf](01_1_multivariate_data_and_dissimilarities.pdf) -->
+- Презентация [html](01_1_multivariate_data_and_dissimilarities.html)
 - [код R](01_1_multivariate_data_and_dissimilarities_code.R)
 - Данные [Protein.txt](data/Protein.txt) 
 
-<!-- - Презентация [html](01_2_nMDS.html)  -->
+- Презентация [html](01_2_nMDS.html)
 - [код R](01_2_nMDS_code.R)
 - Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt)
 
