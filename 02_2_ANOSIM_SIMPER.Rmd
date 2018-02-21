@@ -1,5 +1,5 @@
 ---
-title: "Модельные матрицы, ANOSIM и SIMPER"
+title: "ANOSIM и SIMPER"
 subtitle: "Анализ и визуализация многомерных данных с использованием R"
 author: Вадим Хайтов, Марина Варфоломеева
 presenters: [{
@@ -15,7 +15,7 @@ output:
 
 ## Вы сможете
 
-- Протестировать гипотезу о наличии в данных некоторого специфичского паттерна, используя метод модельных матриц.  
+ 
 - Протестировать гипотезу о различиях между дискретными группами многомерных данных с помощью теста ANOSIM  
 - Выявить переменные, вносящие наибольший вклад в формирование различий между группами, применив процедуру SIMPER  
 
@@ -48,169 +48,213 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 Если $H_0$ истинна, то…  
 
 
-# Тестирование гипотезы о соответствии ожидаемому паттерну: метод модельных матриц
+#Пермутационные методы тестирования
+
+##Тестирование простейшей гипотезы
+Создадим две выборки из популяций с нормальным распределением признака, с заведомо отличающимися средними значениями
+
+```{r}
+set.seed(12345)
+
+male <- rnorm(100, 130, 5)
+female <- rnorm(100, 129,5)
+```
+
+##Частотное распределение этих двух выборок выглядит так
+```{r, echo=FALSE, fig.height=5, fig.width=7, message=FALSE}
+library(ggplot2)
+size <- data.frame(L=1:200, gender=1:100)
+size$L <- male
+size$gender <- "m"
+size$L[101:200] <- female
+size$gender[101:200] <- "f"
+size$gender <- as.factor(size$gender)
+pl <- ggplot(size, aes(x=L, ..density..))
+pl <- pl + theme_bw()  + geom_histogram(binwidth = 5, fill = "gray", color = "black") + facet_grid(gender~.) 
+pl 
+```
+
+##Сравним две выборки с помощью t-критерия Стьюдента
+
+Какая статистика используется в t-критерии?
+
+>- $t= \frac {X1-X2} {SE}$
+
+##Сравним две выборки с помощью t-критерия Стьюдента
+
+Результаты
+
+```{r}
+t <- t.test(male, female)
+t
+```
+
+
+Что означает выражение p-value=`r t$p.value`?
+
+
+##Пермутационный подход к тестированию
+
+Если две сравниваемые выборки взяты из одной совокупности (справедлива $H_0$), то обмен элементами между ними ничего не изменит. Степень различия между выборками (значение статистики) останется более или менее тем же самым.   
+
+Пермутации - это перестановки.
+
+Полное количество пермутаций (при равном количестве объектов в двух группах) будет вычисляться по следующей формуле: 
+$$K= \frac{(2n)!}{(2!(n!)^2)}$$
+
+При большом объеме выборок это огромное число! 
+
+В таких случаях используют метод Монте-Карло. 
+
+##Пермутационный метод вручную
+
+Применим этот метод (на очень примитивном уровне) к нашим двум выборкам, описывающим размеры мальчиков и девочек (векторы male и female). 
+
+
+```{r}
+head (male)
+head (female)
+```
+
+##Пермутационный метод вручную
+
+Введем статистику 
+
+$$t= \frac {X_1 - X_2}{ \sqrt {SE_1^2+SE_2^2}}$$
+
+Вычислим значение этой статистики при сравнении векторов male и female
+
+
+```{r}
+SE_m <- sd(male) / sqrt(length(male))
+SE_f <- sd(female) / sqrt(length(female))
+t_initial <- (mean(male) - mean(female))/sqrt(SE_m^2 + SE_f^2)
+```
+
+
+Полученное значение t = `r t_initial`
+
+
+##Пермутационный метод вручную
+
+При пермутациях мы должны поменять местами, например, male[10] = `r male[10]` и female[20] = `r female[20]`. А еще лучше поменять случайное количество элементов одной выборки на случайное количество элементов из другой выборки.
+
+
+```{r}
+f <- female
+m <- male
+num_perm <- sample(1:100,1)
+order_m <- sample (1:100, num_perm)
+order_f <- sample (1:100, num_perm)
+f[order_f] <- male[order_f]
+m[order_m] <- female[order_f]
+SE_m <- sd(m) / sqrt(length(m))
+SE_f <- sd(f) / sqrt(length(f))
+t_p=(mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
+```
+
+После этой пермутации у нас получилось значение $t_{perm}$ = `r t_p`, а исходное значение было t = `r t_initial` 
+
+
+
+##Пермутационный метод вручную
+
+Теперь нужно провести процедуру пермутации много раз и получить распределение значений статистики $t_{perm}$      
+
+```{r, echo=TRUE}
+Nperm=10000
+tperm <- rep(NA, Nperm)
+
+set.seed(12345)
+for (i in 1:(Nperm-1)) 
+  {
+  BOX <- c(male,female)
+  ord <-sample(1:200, 200)
+  f <- BOX[ord[1:100]]
+  m <- BOX [ord[101:200]]
+  SE_m <- sd(m) / sqrt(length(m))
+  SE_f <- sd(f) / sqrt(length(f))
+  tperm[i]=(mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
+  }
+head(tperm)
+```
+
+
+##Пермутационный метод вручную
+
+Посмотрим в конец этого вектора
+
+```{r}
+tail (tperm)
+```
+
+Последнее 10000-е значение не заполнено!   
+В него надо вписать исходное, полученное до пермутаций, значение t = `r t_initial`. Это необходимо, так как мы тестируем гипотезу о принадлежности этого значения случайному распределению.
+
+```{r}
+tperm [Nperm] <- t_initial
+```
+
+
+##Пермутационный метод вручную
+
+Построим частотное распределение пермутированных значений статистики $t_{perm}$
+
+```{r, echo=FALSE,fig.width=7, fig.height=5, warning=FALSE, message=FALSE}
+tperm <- as.data.frame(tperm)
+names(tperm) <- "t_p" 
+tperm_pl <- ggplot(tperm, aes(x=t_p))
+tperm_pl <- tperm_pl + geom_histogram (bin=0.4, fill="blue", colour="black") + theme_bw() + xlab("Пермутационные значения статистики") + geom_vline(xintercept=c(t_initial, -t_initial), linetype=2)
+
+tperm_pl
+```
+
+
+##Пермутационный метод вручную
+
+
+Рассчитаем величину уровня значимости $p_{perm}= \frac{N_{t_{perm}>=t}}{N_{perm}}$
+
+
+```{r, warning=FALSE}
+p_perm <- length(tperm[tperm >= t_initial] | tperm[tperm <= -t_initial] ) / Nperm
+```
+
+Мы получили уровень значимости $p_{perm}$ = `r p_perm` 
+
+Сравним его с уровнем значимости, вычисленным с помощью параметрического t-критерия p=`r t$p.value`
+
+Они оба близки и оба выявляют достоверные различия!
+
+
+
+
+
+
+# ANOSIM: Analysis Of Similarity
 
 ## Пример: Динамика сообществ мидиевых банок {.columns-2}
 
-Существуют ли направленные многолетние изменения в размерной структуре поселений мидий и в структуре сообщества (Khaitov, 2013)?
+Существуют ли различия в сообществах мидиевых банок, сформированных старыми и молодыми мидиями (Khaitov, 2013)?
+
+<img src="images/musselbed.png" width="450" height="350" alt="Мидиевая банка">
+
 
 ```{r, echo=TRUE}
 com <- read.csv("data/mussel_beds.csv", sep=';', header = T)
 ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
 ```
 
-`com` --- усреденные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).  
+`com` --- усредненные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).  
 
-`ascam` --- (averaged size class abundance matrix) средние плотноси поселения мидий разных размеров (`r ncol(ascam[, -c(1:2)])`] размерных классов) 
-
-<img src="images/musselbed.png" width="450" height="350" alt="Мидиевая банка">
+`ascam` --- (averaged size class abundance matrix) средние плотности поселения мидий разных размеров (`r ncol(ascam[, -c(1:2)])`] размерных классов) 
 
 
-##Задание {.columns-2}
 
-```{r dynam-1, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
-library(vegan)
-log_com <- log(com[,-c(1:3)] + 1)
-vor2_log_com <- log_com[com$Bank == "Vor2",]
-log_ascam <- log(ascam[, -c(1:2)]+1)
-mds_vor2_com <- as.data.frame(metaMDS(vor2_log_com)$points)
-vor2_log_ascam <- log_ascam[ascam$Bank == "Vor2",]
-mds_vor2_ascam <- as.data.frame(metaMDS(vor2_log_ascam, distance = "euclid" )$points)
-```
-
-```{r dynam-2, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5.5, fig.width=5}
-library(ggplot2)
-library(gridExtra)
-theme_set(theme_bw())
-
-Pl1 <- ggplot(mds_vor2_com, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика сообщества")
-
-Pl2 <- ggplot(mds_vor2_ascam, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика размерной структуры")
-
-grid.arrange(Pl1, Pl2)
-```
-
-Рассмотрите многолетние изменения структуры сообщества и размерной структуры мидий на мидиевой банке Vor2
-
-Постройте рисунок, аналогичный приведенному на приведенном слайде
-
-Hint 1. Прологарифмируйте данные.
-
-Hint 2. Примените наиболее подходящий коэффициет для оценки расстояний между объектами.
-
-## Решение
-
-### Ординация
-
-```{r dynam-1, echo=TRUE, eval=FALSE}
-```
-
-## Решение
-
-### График ординации
-
-```{r dynam-2, echo=TRUE, eval=FALSE}
-```
-
-## Градиентная модельная матрица
-
-Это матрица Евклидовых расстояний между временными точками. 
-
-```{r, warning=FALSE}
-gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
-gradient_model 
-```
-
-
-## Тестируем гипотезу о наличии градиента
-
-Протестируем гипотезу о наличии временного градиента с помощью теста Мантела
-
-```{r}
-dist_vor2_com <- vegdist(vor2_log_com, method = "bray")
-dist_vor2_ascam <- vegdist(vor2_log_ascam, method = "euclidean")
-```
-
-### 1) Наличие градиента в структуре сообщества
-
-```{r}
-mantel(dist_vor2_com, gradient_model)
-```
-
-## Тестируем гипотезу о наличии градиента
-
-### 2) Наличие градиента в размерной структуре мидий
-
-```{r}
-mantel(dist_vor2_ascam, gradient_model)
-```
-
-## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
-
-### Не самое правильное решение
-
-```{r}
-mantel(dist_vor2_com, dist_vor2_ascam)
-```
-
-## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
-
-### Более корректное решение
-
-```{r}
-mantel.partial(dist_vor2_com, dist_vor2_ascam, gradient_model)
-```
-
-## Могут быть и более сложные модельные матрицы {.columns-2}
-
-Проверим, нет ли в динамике размерной структуры мидий на банке Vor2 циклических изменений, которые предсказываются некоторыми моделями динамики плотных поселений (Наумов, 2006; Khaitov, Lentsman, 2016)
-
-```{r, echo=FALSE, fig.height=4, fig.width=4}
-cycmod <- function(x){
-  points <- data.frame(X=c(1:x), Y=c(1:x))
-  for (i in 1:x) {
-    points$X[i] <- cos(2*pi*(i-1)/x)
-    points$Y[i] <- sin(2*pi*(i-1)/x)
-  }
-  return(points)
-}
-
-qplot(cycmod(nrow(mds_vor2_ascam))$X, cycmod(nrow(mds_vor2_ascam))$Y, xlab="X", ylab="Y", geom = "point", size = 4)  
-```
-
-Циклическая модельная матрица 
-
-```{r, echo=FALSE}
-cycl_model <- round(vegdist(cycmod(nrow(mds_vor2_ascam)), method = "euclidean"))
-cycl_model
-```
-
-## Выявляется ли циклическая составляющая в динамике размерной структуры?
-
-```{r}
-mantel(dist_vor2_ascam, cycl_model)
-```
-
-Циклическая составляющая есть, но...
-
-## Более корректная оценка
-
-```{r}
-mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
-```
-
-Мы не можем говорить о наличии столь длительного цикла.
-
-При данной длине временного ряда нельзя отличить цикл с большим периодом от направленного изменения. 
-
-Можно обсуждать только циклы с периодом не более половины длины временного ряда.
-
-
-# ANOSIM: Analysis Of Similarity
 
 ## Задание
 
-- Постройте ординацию всех описаний датасета `com` (логарифмированные данные) в осях nMDS на основе матрицы Брея-Куртиса
+- Постройте ординацию всех описаний датасета `com` (прологарифмированные данные) в осях nMDS на основе матрицы Брея-Куртиса
 - Раскрасьте разными цветами точки, относящиеся к двум разным группам: "Large-dominated" и "Small-dominated"
 
 
@@ -219,8 +263,12 @@ mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
 ```{r}
 library(vegan)
 library(ggplot2)
-ord_log_com <- metaMDS(log_com, distance = "bray", k=2)
+
+log_com <- log(com[,-c(1:3)] + 1)
+
+ord_log_com <- metaMDS(log_com, distance = "bray", k=2, trace = 0)
 MDS <- data.frame(ord_log_com$points)
+
 ```
 
 ## Решение
@@ -316,7 +364,7 @@ plot(com_anosim, main = "Dissimilarity ranks \n between and within classes")
 
 НО! Есть одно очень важное ограничение: 
 
-### 2) Попарные сравненения групп можно осуществлять только если было показано, что $R_{global}$ достоверно.
+### 2) Попарные сравненения групп можно осуществлять только если было показано, что $R_{global}$ статистически значимо.
 
 Если это условие выполнено, то можно проводить попарные сравнения
 
@@ -394,19 +442,8 @@ anosim(log_com [com$Bank %in% c("Vor4", "Vor5"),], grouping = com$Bank[com$Bank 
 
 При малых выборках пермутационная оценка уровня значимости может не выявить достоверных различий, даже при очень высоком значении R.
 
-## Модельные матрицы и ANOSIM
 
-При проверке гиптезы о значимости различий между группами можно использовать тест Мантела. В этой ситуации модельная матрица будет содержать 0, если расстояние внутригрупповое, и 1 если рсстояние межгрупповое. 
 
-```{r}
-m <- vegdist(as.numeric(com$Bank), method = "euclidean") 
-mm <- m
-mm[m > 0] <- 1
-mm[m == 0] <- 0
-mantel(vegdist(log_com), mm, method = "pearson")
-```
-
-Значения теста Мантела будут очень близки к $R_{global}$
 
 
 # SIMPER: Similarity Percentages
@@ -430,7 +467,7 @@ $sd$ - среднеквадратичное отклонение
 
 ## Задание
 
-Выявитие виды, отвечающие за различия в сообществах разых банок
+Выявите виды, отвечающие за различия в сообществах разных банок
 
 ## Решение
 
@@ -440,7 +477,7 @@ summary(simper(log_com, group = com$Bank, permutations = 999 ))
 
 ## Summary
 
-+ Можно формулировать гипотезу о существовании некоторого паттерна. Паттерн можно описать модельной матрицей. Проверка соответствия паттерну производится с помощью теста Мантела. 
++ Помимо классических статистических тестов, можно применять тесты, основанные на пермутациях. 
 + ANOSIM --- простейший вариант сравнения нескольких групп объектов, охарактеризованных по многим признакам.
 + С помощью процедуры SIMPER можно оценить вклад отдельных переменных в формирование различий между группами. 
 
