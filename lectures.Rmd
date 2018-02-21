@@ -29,13 +29,13 @@ install.packages("vegan")
 
 ## 2. Тест Мантела, ANOSIM, SIMPER
 
-<!-- - Презентация [html](02_1_Mantel_correlation-based_methods.html) -->
-<!-- - [код R](02_2_Mantel_correlation-based_methods.R) -->
+<!-- - Презентация [html](02_2_Mantel_correlation-based_methods.html) -->
+- [код R](02_2_Mantel_correlation-based_methods.R)
 - Данные [Coordinates.txt](data/Coordinates.txt) | 
 
 
 <!-- - Презентация [html](02_2_ANOSIM_SIMPER.html) -->
-<!-- - [код R](02_1_ANOSIM_SIMPER.R) -->
+- [код R](02_1_ANOSIM_SIMPER.R)
 - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv) 
 
 **Данные для самостоятельной работы**

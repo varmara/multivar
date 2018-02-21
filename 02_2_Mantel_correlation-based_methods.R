@@ -104,6 +104,71 @@ ncol(varechem)
 
 
 
+
+## Градиентная модельная матрица
+gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
+gradient_model
+
+## Тестируем гипотезу о наличии градиента с помощью теста Мантела
+dist_vor2_com <- vegdist(vor2_log_com, method = "bray")
+dist_vor2_ascam <- vegdist(vor2_log_ascam, method = "euclidean")
+
+### 1) Наличие градиента в структуре сообщества
+mantel(dist_vor2_com, gradient_model)
+
+### 2) Наличие градиента в размерной структуре мидий
+mantel(dist_vor2_ascam, gradient_model)
+
+## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
+
+### Не самое правильное решение
+mantel(dist_vor2_com, dist_vor2_ascam)
+
+### Более корректное решение
+mantel.partial(dist_vor2_com, dist_vor2_ascam, gradient_model)
+
+## Задание
+# 1. Выясните есть ли многолетний градиент в динамике размерной струтуры и структуры сообщества на банке Vor4.
+# 2. Оцените связь между размерной структурой мидий и структурой сообщества.
+
+## Циклическая модельная матрица
+cycmod <- function(x){
+  points <- data.frame(X=c(1:x), Y=c(1:x))
+  for (i in 1:x) {
+    points$X[i] <- cos(2*pi*(i-1)/x)
+    points$Y[i] <- sin(2*pi*(i-1)/x)
+  }
+  return(points)
+}
+
+qplot(cycmod(nrow(mds_vor2_ascam))$X, cycmod(nrow(mds_vor2_ascam))$Y, xlab="X", ylab="Y", geom = "point", size = 4)
+
+cycl_model <- round(vegdist(cycmod(nrow(mds_vor2_ascam)), method = "euclidean"))
+cycl_model
+
+## Выявляется ли циклическая составляющая в динамике размерной структуры?
+mantel(dist_vor2_ascam, cycl_model)
+
+## Более корректная оценка
+mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
+
+
+
+
+## Модельные матрицы и ANOSIM
+m <- vegdist(as.numeric(com$Bank), method = "euclidean")
+mm <- m
+mm[m > 0] <- 1
+mm[m == 0] <- 0
+mantel(vegdist(log_com), mm, method = "pearson")
+
+
+
+
+
+
+
+
 # Функция `bioenv()`из пакета `vegan`
 
 BioEnv <- bioenv(varespec, varechem, method = "spearman", index = "bray")
@@ -141,11 +206,11 @@ perm_binv <- data.frame(perm_i=perm_binv)
 
 p=length(perm_binv[perm_binv[,1]>=perm_binv[100,1],1])/nrow(perm_binv)
 
-png("BIOENV.png")
+# png("BIOENV.png")
 
 hist <- ggplot(perm_binv, aes(x=perm_i))
 hist + geom_histogram (bin=0.1, fill="blue", colour="black")+geom_vline(xintercept=perm_binv[100,1], linetype=2) + theme_bw() + xlab("Мантеловские корреляции, \nполученные при пермутациях \nпроцедуры BIO-ENV ") + annotate("text", x=0.8, y=20, label=(paste("P=", p, sep=" ")))
 
-dev.off()
+# dev.off()
 #------------------------------------
 
