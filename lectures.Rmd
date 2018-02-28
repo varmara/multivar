@@ -53,7 +53,7 @@ install.packages("readxl")
 ```
 
 <!-- - Презентация [html](03_1_perMANOVA.html) -->
-<!-- - [код R](03_1_perMANOVA.R) -->
+- [код R](03_1_perMANOVA.R)
 - Данные [pesch.csv](data/pesch.csv) | [simulated_data.csv](data/simulated_data.csv) 
 
 **Данные для самостоятельной работы**
