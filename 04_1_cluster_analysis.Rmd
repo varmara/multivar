@@ -38,7 +38,18 @@ output:
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE, message = FALSE)
+par_spbu <- par(
+    mar = c(3, 3, 2, 0.5), # Dist' from plot to side of page
+    mgp = c(2, 0.4, 0), # Dist' plot to label
+    las = 1, # Rotate y-axis text
+    tck = -.01, # Reduce tick length
+    xaxs = "i", yaxs = "i", 
+    family = "GT Eesti Pro Display",
+    mex = 0.8,
+    mgp = c(2, .5, 0),
+    tcl = -0.3) # Remove plot padding
+par(par_spbu)
 ```
 
 # Кластерный анализ
@@ -77,7 +88,7 @@ library(candisc)
 data("Wolves")
 ```
 
-## Знакомимся с данными
+## Знакомимся с даннымиw
 
 ```{r}
 dim(Wolves)
@@ -120,8 +131,8 @@ siris <- iris[ids, ]
 ## Решение: Волки
 
 ```{r}
-library(vegan)
-library(ggplot2)
+library(vegan, quietly = TRUE)
+library(ggplot2); theme_set(theme_bw())
 s_w <- scale(Wolves[, 4:ncol(Wolves)]) ## стандартизируем
 ord_w <- metaMDS(comm = s_w, distance = "euclidean", autotransform = FALSE)
 dfr_w <- data.frame(ord_w$points, Group = Wolves$group)
@@ -137,7 +148,8 @@ gg_w
 ## Решение: Ирисы
 
 ```{r}
-ord_i <- metaMDS(comm = siris[, -5], distance = "euclidean", autotransform = FALSE)
+ord_i <- metaMDS(comm = siris[, -5], distance = "euclidean", 
+                 autotransform = FALSE)
 dfr_i <- data.frame(ord_i$points, Species = siris$Species)
 gg_i <- ggplot(dfr_i, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = factor(Species)))
 ```
@@ -348,13 +360,13 @@ hc_single <- hclust(d, method = "single")
 
 ## Визуализируем при помощи базовой графики
 
-```{r}
+```{r fig.height=4.5}
 plot(hc_single)
 ```
 
 
 ## Визуализируем средствами ape
-```{r}
+```{r fig.height=4.5}
 ph_single <- as.phylo(hc_single)
 plot(ph_single, type = "phylogram", cex = 0.7)
 axisPhylo()
@@ -362,7 +374,7 @@ axisPhylo()
 
 ## Визуализируем средствами dendextend
 
-```{r}
+```{r fig.height=4.5}
 den_single <- as.dendrogram(hc_single)
 plot(den_single)
 ```
@@ -379,7 +391,7 @@ axisPhylo()
 
 ## Визуализируем дерево, полученное методом отдаленного соседа, средствами `dendextend`
 
-```{r}
+```{r fig.height=4.5}
 den_compl <- as.dendrogram(hc_compl)
 plot(den_compl)
 ```
@@ -395,7 +407,7 @@ axisPhylo()
 
 ## Визуализируем дерево, полученное методом невзвешенного попарного среднего, средствами `dendextend`
 
-```{r}
+```{r  fig.height=4.5}
 den_avg <- as.dendrogram(hc_avg)
 plot(den_avg)
 ```
@@ -411,7 +423,7 @@ axisPhylo()
 
 ## Визуализируем дерево, полученное методом Варда, средствами `dendextend`
 
-```{r}
+```{r fig.height=4.5}
 den_w2 <- as.dendrogram(hc_w2)
 plot(den_w2)
 ```
@@ -487,7 +499,8 @@ plot(silhouette(x = complete3, dist = d), cex.names = 0.6)
 ```{r}
 library(pvclust)
 # итераций должно быть 1000 и больше, здесь мало для скорости
-cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, method.dist = "euclidean", parallel = TRUE, iseed = 42)
+cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100, 
+                   method.dist = "euclidean", parallel = TRUE, iseed = 42)
 ```
 
 Обратите внимание на число итераций: `nboot = 100` --- это очень мало. На самом деле нужно 10000 или больше.
@@ -538,7 +551,7 @@ tanglegram(untang_w[[1]], untang_w[[2]],
 
 ## Танглграмма
 
-```{r tang, eval=TRUE, echo=FALSE}
+```{r tang, eval=TRUE, echo=FALSE,  fig.height=5, fig.width=10}
 ```
 
 
@@ -550,7 +563,7 @@ tanglegram(untang_w[[1]], untang_w[[2]],
 
 ## И небольшая демонстрация - дерево по генетическим данным
 
-```{r, cache=TRUE, fig.height = 4.5, cache=TRUE}
+```{r, cache=TRUE, fig.height = 4}
 webpage <-"http://evolution.genetics.washington.edu/book/primates.dna"
 primates.dna <- read.dna(webpage)
 d_pri <- dist.dna(primates.dna)

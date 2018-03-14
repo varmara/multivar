@@ -1,14 +1,21 @@
-name: "multivar"
-output_dir: "."
-include: ["import.R"]
-exclude: ["docs.txt", "*.csv", "*.xls", "*.xlsx"]
+name: multivar
+output_dir: '.'
+include: import.R
+exclude:
+- docs.txt
+- '*.csv'
+- '*.xls'
+- '*.xlsx'
 output:
   html_document:
-    toc: true
+    toc: yes
     toc_float:
-      collapsed: false
+      collapsed: no
     theme: flatly
     highlight: haddock
     include:
       after_body: _footer.html
     css: my_styles.css
+    lib_dir: site_libs
+    self_contained: no
+
