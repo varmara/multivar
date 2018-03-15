@@ -42,6 +42,7 @@ siris <- iris[ids, ]
 
 # Кластерный анализ в R
 # Нам понадобится матрица расстояний
+s_w <- scale(Wolves[, 4:ncol(Wolves)]) ## стандартизируем
 d <- dist(x = s_w, method = "euclidean")
 # Пакеты для визуализации кластеризации
 library(ape)
@@ -148,6 +149,33 @@ tanglegram(untang_w[[1]], untang_w[[2]],
 ## Задание
 # Постройте танглграмму для данных о морфометрии ирисов из дендрограмм, полученных методом ближайшего соседа и методом Варда.
 
+
+
+
+
+# При желании можно раскрасить лейблы
+# Раскраска происходит в порядке следования веток на дендрограмме
+# а) Вручную
+# Здесь в примере просто произвольные цвета
+cols <- rainbow(30)
+den_single_manual <- color_labels(dend = den_single, col = cols)
+plot(den_single_manual, horiz = TRUE)
+
+# б) При помощи функции
+# Функция для превращения лейблов в цвета
+get_colours <- function(dend, n_chars, palette = "Dark2"){
+  labs <- get_leaves_attr(dend, "label")
+  group <- substr(labs, start = 0, stop = n_chars)
+  group <- factor(group)
+  cols <- brewer.pal(length(levels(group)), name = palette)[group]
+  return(cols)
+}
+
+# Применяем функцию
+library(RColorBrewer)
+cols <- get_colours(dend = den_single, n_chars = 2)
+den_single_c <- color_labels(dend = den_single, col = cols)
+plot(den_single_c, horiz = TRUE)
 
 
 
