@@ -1,293 +1,387 @@
-###########################################
-# Краткое введение в мир матричной алгебры
-###########################################
-
-#Анализ и визуализация многомерных данных с использованием R"
-# Вадим Хайтов, Марина Варфоломеева
-
-c <- 1:5
+#' title: "Краткое введение в мир матричной алгебры. Часть 2"
+#' subtitle: "Анализ и визуализация многомерных данных с использованием R"
+#' author: Вадим Хайтов, Марина Варфоломеева
 
 
-diag(c)
-
-I <- diag(rep(1,5))
-
-
-# Транспонирование матриц
+#' ##Транспонирование матриц
 A <- matrix(1:12, ncol = 3)
+A
 
 B <- t(A)
+B
+
+#' ##Сложение матриц
 
 A + 4
 
 A + A
-
+#' Но! Нельзя складывать матрицы разных размеров
 A + B
 
+#' ##Простое умножение
 
-##Сложение матриц
-Large <- data.frame(Sp1 = round(rnorm(5, 10, 2)), Sp2 = round(rnorm(5, 10, 3)), Sp3 = round(rnorm(5, 10, 2)))
+A * 4
 
-rownames(Large) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
+#' Простое умножение матрицы на вектор возможно только если число элементов в векторе равно числу строк в матрице
 
-Small <- data.frame(Sp1 = round(rnorm(5, 50, 5)), Sp2 = round(rnorm(5, 50, 5)), Sp3 = round(rnorm(5, 50, 5)))
+A * c(10, 11, 12, 13)
 
-rownames(Small) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
+#' Длина вектора
 
-
-##Две матрицы
-Large
-Small
-
-## Сложение двух матриц
-Large + Small
-
-
-
-## Простое умножение A на число
-A * 10
-
-A * c(1, 10, 100, 1000)
-
-A * c(1, 10, 100)
-
-## Простое умножение на вектор A на вектор c(10, 11, 12, 13)
-
-
-## Пример простого умножениея матрицы на вектор
-Rpocessed_portion <- c(1, 1, 1/2, 1/3, 1/4)
-Processed_Factor <- 1/Rpocessed_portion
-
-Small * Processed_Factor
-
-
-
-## Находим номализованный вектор
 Vec <- 1:5
+
 sqrt(sum(Vec^2))
 
-c <- Vec/norm(t(Vec), type="F")
+norm(t(Vec), type = "F") #Аналогчное решение
 
-norm(t(c), type="F")
-Vec
-Vec2 <- 1:5
+#' ##  Скалярное произведение векторов
 
-Vec %*% Vec2
+#'
+#' В доме есть следующие электроприборы.
+#'
+#' Электроприбор | Количество | Мощность (Вт) |
+#' --------------|------------|---------------|
+#' Чайник        | 2 шт       |       1200    |
+#' Обогреватели  | 3 шт.      |    1300       |
+#' Осушитель     | 1 шт.      |     1100 |
+#' Стиральная машина | 1 шт.| 1500 |
+#' Фен | 2 шт. | 800 |
+#'
+#' Вопрос: Какова будет суммарная мощность всех электроприборов, если их включить одновременно?
+#'
+#' ## Решение
 
 
-## Скалярное произвеение векторов
-
-N <- c(20, 40, 32, 45, 80, 50, 10)
-Fert <- c( 0,  0,   1,   2,   2,   0,   0)
-
-N %*% Fert
 
 
+
+
+
+
+#' ## Задание
+#'
+#' Выясните, являются ли ортогональными следующие векторы?
 
 a <- c(0, 1)
 b <- c(1, 0)
 c <- c(1, 1)
 d <- c(1, -1)
 
-a%*% b
-b %*% a
+#' Аналитическое решение
 
-b %*% c
 
-c %*% d
 
+
+
+
+
+
+
+
+#' ## Нормализованные векторы
+#' ##Задание
+#' Найдите нормализованный вектор для следующего вектора и определите его длину
+
+Vec <- 1:5
+Vec
+
+#' ##Решение
+
+
+#' ## Матричное умножение матрицы на вектор {.smaller .columns-2}
+
+#' Пусть, есть матрица
+A
+A %*% c(10, 10, 10)
+
+#' Но! если поменять местами множители, то будет ошибка
+c(10, 10, 10) %*% A
+
+
+
+#' ## Матричное умножение вектора на матрицу
+
+c(10, 10, 10, 10) %*% A
+
+A %*% c(10, 10, 10, 10)
+
+
+
+#' ##Умножение матриц {.smaller .columns-2}
 A
 
 B
 
 A %*% B
 
-B %*% A
-
 A %*% A
 
-## Простейшая демографическая модель
-T1 <- c(20, 40, 32, 45, 80, 50, 10)
-
-Age <- c("0", "1-10", "11-20", "21-35", "36-45", "46-55", "56-65")
-Pop <- data.frame(Age, T1)
-
-Lesl <- matrix(
-c( 0,  0,   1,   2,   2,   0,   0,
-  0.6, 0,   0,   0,   0,   0,   0,
-   0,  0.7, 0,   0,   0,   0,   0,
-   0,  0,   0.8, 0,   0,   0,   0,
-   0,  0,   0,   0.7, 0,   0,   0,
-   0,  0,   0,   0,   0.6, 0,   0,
-   0, 0,    0,   0,   0,  0.2, 0  ),
-byrow = T,
-ncol = 7)
-
-# Последовательно преображуем демографические вектора с помощью матрицы Лесли
-#Найдите демографический вектор для T=3
-
-Pop$T2 <- Lesl %*% Pop$T1
-
-Pop$T3 <- Lesl %*% Pop$T2
 
 
-
-## Свойства матричных произведений
-B <- matrix(1:24, ncol = 4)
-C <- matrix(1:12, ncol = 3)
-
-# Найдите произведение B на C и C на B
+#'
+#' ## Зачем это нужно?  {.smaller .columns-2}
+#' ### Бытовой пример
+#' Представим себе, что вы решили купить четыре товара, по следующим ценам
+#'
+#' Товар | Цена
+#' ------|-----
+#' Товар 1 | 10
+#' Товар 2 | 20
+#' Товар 3 | 30
+#' Товар 4 | 40
+#'
+#'
+#'
+#' Прямых выходов на продавца у вас нет, но есть три посредника, которые выставляют следующие "накрутки" цен.
+#'
+#' Посредники  | Товар 1 | Товар 2 | Товар 3 | Товар 4
+#' ------------|---------|---------|---------|--------
+#' Посредник 1 | 0.1     | 0.15    | 0.05    | 0.05
+#' Посредник 2 | 0.15    | 0.15    | 0.09    | 0.01
+#' Посредник 3 | 0.2     | 0.05    | 0.1     | 0.1
 
 
 
-# Найдите произведение С на C' и C' на С
+# Какой из посредников выгоднее?
+#' ## Решение
 
+cost <- c()
 
-set.seed(12345)
-Z <- round(matrix(rnorm(20, 10, 1), ncol = 4), 2)
-
-
-Z_cent <- scale(Z, center = TRUE, scale = FALSE)
-
-apply(Z, 2, FUN = mean)
-
-(t(Z_cent) %*% Z_cent)/(nrow(Z_cent) - 1)
-
-cov(Z)
-
-apply(Z, 2, FUN = function(x) sd(x)^2)
-
-
-Z_stand <- scale(Z, center = TRUE, scale = TRUE)
-
-(t(Z_stand) %*% Z_stand)/(nrow(Z_stand) - 1)
-
-cor(Z)
-
-## Инверсия матрицы
-
-X <- matrix(c(seq(1, 8),10), nrow = 3, byrow = T)
-
-
-## Определитель матрицы X
-
-det(X)
-
-
-## Инверсия матрицы X
+retailer <- matrix(c(0.1, 0.15, 0.05, 0.05,
+                     0.15, 0.15, 0.09, 0.01,
+                     0.2, 0.05, 0.1, 0.1 ),  = TRUE, ncol = )
 
 
 
-## Получаем единичную матрицу
+#' ## Матрицы позволяют преобразовывать системы векторов
+#'
+#' Начальная система расположения точек
+#'
+## ---- purl=TRUE----------------------------------------------------------
+y = c(2,2,3,3,2,2,3,4,5,6,6,5,4,3,2)
+x = c(2,3,4,5,6,7,7,7,6,5,4,3,2,2,2)
+
+Image <- cbind((x), (y))
+
+qplot(Image[,1], Image[,2] ) + geom_polygon(fill = "red") + coord_fixed()
+
+
+#' Поворот изображения на заданный угол
+
+angle <- 30*pi/180
+
+Rot <- matrix(c(cos(angle), sin(angle),
+                -sin(angle), cos(angle)), nrow = 2)
+
+Image_trans <-   t((Rot) %*% t(Image))
+
+
+qplot(Image_trans[,1], Image_trans[,2] ) +
+  geom_polygon(fill = "red") + coord_fixed()
 
 
 
-## Решаем систему линейных уравнений
-Coef <- matrix(c(1 , 2 , 3 ,
-         4 , 5 , 6 ,
-         7 , 8 , 10), byrow = T, ncol = 3)
-Val <- c(2,4,10)
+#' Масштабирующая матрица
+Scale <- matrix(c(1, 0, 0, 2), nrow = 2)
 
-solve(Coef) %*% Val
+Image_trans2 <-   t((Scale) %*% t(Image_trans))
 
+qplot(Image_trans2[,1], Image_trans2[,2] ) +
+  geom_polygon(fill = "red") + coord_fixed()
 
+#' ## Ковариационная матрица
 
+M <- matrix(c(1,2,3,4,5,5,2,1,2,5,2,1,3,5,4,6,8,4,0,2), ncol = 4)
+M
 
+#' Матрица центрированных значений
+Cent_M <- scale(M, center = TRUE, scale = FALSE)
+Cent_M
 
-## Подбираем коэффициенты линейной регрессии вручную
-data(cars)
+#' Вычислите ковариационную матрицу с помощью методов матричной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`
 
-## Модельная матрица
-X <- data.frame(Int = 1, x = cars$speed)
-X <- as.matrix(X)
-
-y <- cars$dist
-
-# Находим кожффициенты betas
+Cov_M <-
 
 
+diag(Cov_M)
+
+#' Сравним
+
+apply(M, 2, FUN = function(x)sd(x)^2)
+
+#' ## Вычисление матрицы  корреляций с помощью матричной алгебры {.smaller .columns-2}
+
+Stand_M <- scale(M         )
+Stand_M
 
 
-A <- matrix(c(2,2,2,5), byrow = T, ncol = 2)
-
-eigen(A)
-
-U <- eigen(A)$vectors
-Lambd <- eigen(A)$values
-
-U[,1] %*% U[,2]
-
-A %*% U
-
-U %*% diag(Lambd)
+# Вычисление вручную
+Cor_M <-
+Cor_M
 
 
-###################################
-## SVD
-set.seed(12345)
+
+cor(M) # Стандартная функция R
+
+
+
+#' Во многих многомерных методах требуется найти оси максимального варьирования
+
+set.seed(123456789)
+
+x <- rnorm(1000, 50, 10)
+y <- 10 * x + rnorm(1000, 0, 100)
+XY <-data.frame(x = x, y = y)
+qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") +
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
+
+
+#' ## Нормализуем векторы {.smaller}
+
+x_norm <- XY$x/sqrt(sum(XY$x)^2)
+y_norm <- XY$y/sqrt(sum(XY$y)^2)
+
+
+XY_norm <- data.frame(x = x_norm, y = y_norm)
+
+
+ggplot(XY_norm , aes(x = x, y = y)) + geom_point() +
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
+
+
+#' ## Центрируем нормализованные векторы {.smaller}
+
+XY_norm_cent <- as.data.frame(scale(XY_norm,          ))
+
+ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() +
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
+
+
+#' ## Находим ковариационную матрицу {.smaller}
+
+mXY_norm_cent <- as.matrix(XY_norm_cent)
+
+Sxy_norm_cent <-
+
+Sxy_norm_cent
+
+#' ## Находим собственные числа и собственные векторы {.smaller}
+
+eig <- eigen(Sxy_norm_cent) # Стандартная функция R для извлечения собственных чисел и собственных векторов
+
+Lambda <- eig$values # Собственные числа
+
+Lambda
+
+U <- eig$vectors # Собственные векторы
+
+U
+
+#' ## Стандартизованные собственные векторы {.smaller}
+
+U_scaled <- U %*% sqrt(diag(Lambda)) #
+
+(U %*% sqrt(diag(Lambda))) %*% t(U %*% sqrt(diag(Lambda)))
+
+
+#' ## Рисуем собственные векторы {.smaller}
+
+PC1 <- data.frame(x = c(mean(XY_norm_cent$x), U_scaled[1, 1]),
+                  y = c(mean(XY_norm_cent$y),  U_scaled[2,1]))
+
+PC2 <- data.frame(x = c(mean(XY_norm_cent$x),  U_scaled[1, 2]),
+                  y = c(mean(XY_norm_cent$y),  U_scaled[2,2]))
+
+ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") +
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar) +
+  coord_equal()
+
+
+
+#' ## Рисуем главные оси {.smaller .columns-2}
+
+ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") +
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar) +
+  coord_equal() + geom_abline(slope = tan(acos(U[1,1])), color = "blue") +
+  geom_abline(slope = tan(acos(U[1,1]) + acos(U[2,1]) + acos(U[2,2])), color = "blue")
+
+
+
+#' ## Вращение осей {.smaller .columns-2}
+
+#' Вращающая матрица
+## ---- purl=TRUE----------------------------------------------------------
+angle <- - acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
+
+Rot <- matrix(c(cos(angle), sin(angle),
+                -sin(angle), cos(angle)), nrow = 2)
+Rot
+
+
+XY_norm_cent_rot <- as.data.frame(t(Rot %*% t(mXY_norm_cent)))
+
+ggplot(XY_norm_cent, aes(x = x, y = y)) +
+  geom_point(color = "gray") +
+  geom_point(data = XY_norm_cent_rot, aes(x = V1, y = V2)) +
+  labs(x = "Первая главная ось", y = "Вторая главная ось")
+
+
+
+
+
+
+#' ## Сингулярное разложение матрицы средствами R {.smaller}
+
+set.seed(123456789)
+
 B <- matrix(round(runif(50, 1, 5))  , byrow = T, ncol=5) #Некоторая матрица
-SVD <- svd(B) #Сингулярное Разложение матрицы B с помощью функции svd()
-V <- SVD$v #"Вспомогательная" матрица - левые сингулярные вектора
-D <- SVD$d #Вектор сингулярных чисел
-U <- SVD$u #"Вспомогательная" матрица - правые сингулярные вектора
 
-#Получаем исходную матрицу из трех "вспомогательных"
+SVD <- svd(B) #Сингулярное Разложение матрицы B с помощью функции svd()
+
+V <- SVD$v #"Вспомогательная" матрица - левые сингулярные векторы
+
+D <- SVD$d #Вектор сингулярных чисел
+
+U <- SVD$u #"Вспомогательная" матрица - правые сингулярные векторы
+
+
+
 U %*% diag(D) %*% t(V)
 
-U[,1:2]%*% diag(D[1:2]) %*% t(V[,1:2])
+#' ## Задание
+#'
+#' Вычислите матрицу, которая получится при использовании только 1 и 2 сингулярного числа для матрицы, использованной на предыдущем слайде.
+#' ##Решение
 
 
+#' ## Применение свойства сингулярных чисел в сжатии изображений
 
 
-# Код для поиска редуцированной матрицы
-
-
-
-
-#  Подобие исходной и редуцированной матрицы
-library(ggplot2)
-Dat <- data.frame(Init = rep(as.vector(B), 4), SingValue = rep(2:5, each = length(as.vector(B))), Calc = c(as.vector((U[,1:2] %*% diag(D[1:2]) %*% t(V[,1:2]))), as.vector((U[,1:3] %*% diag(D[1:3]) %*% t(V[,1:3]))), as.vector((U[,1:4] %*% diag(D[1:4]) %*% t(V[,1:4]))), as.vector((U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5])))))
-
-ggplot(Dat, aes(x = Init, y = Calc)) + geom_point(size = 2) + labs(x = "значения в исходной матрицы", y = "значения в редуцированной матрице") + facet_wrap(~SingValue) + geom_abline(slope = 1)
-
-
-## Пример с SVD для обработки изображений
 load("data/face.rda")
 
-faceData
-
-#Вспомогательная функция
 gg_face <- function(x) {
   library(reshape)
   library(ggplot2)
     rotate <- function(x) t(apply(x, 2, rev))
   dd <- rotate(x)
   ddd <- melt(dd)
-  ggplot(ddd, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" )
+  ggplot(ddd, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 }
 
 gg_face(faceData)
 
 
-## Проводим SVD для матрицы faceData
 SVD_face <- svd(faceData)
 
 U <- SVD_face$u
 D <- SVD_face$d
 V <- SVD_face$v
 
+#' ##Рекоструируем изображение, используя только часть информации
+
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
-
-
-
-gg_face(U[,1:30] %*% diag(D[1:30]) %*% t(V[, 1:30]))
-
-
-
-
-U_w <- as.matrix(read.csv("data/U_wolv.csv"))
-
-eig_w <- as.matrix(read.csv("data/Eigen_wolv.csv"))
-
-
-
+gg_face(reduction(4))
