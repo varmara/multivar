@@ -87,7 +87,7 @@ install.packages("jpeg")
 ```
 
 
-<!-- - Презентация [html](05_1_introduction_to_matrix_algebra_new.html) -->
+- Презентация [html](05_1_introduction_to_matrix_algebra_new.html)
 - [код R](05_1_introduction_to_matrix_algebra.R)
 - Данные [Матрица](data/face.rda) 
 
