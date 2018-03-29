@@ -112,6 +112,7 @@ install.packages(c("cowplot", "geomorph"))
 
 <!-- - Презентация [html](06_2_PCA_geometric_morphometrics.html) -->
 - [код R](06_2_PCA_geometric_morphometrics_code.R)
+- Данные [turtles.txt](data/turtles.txt)
 
 ## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
