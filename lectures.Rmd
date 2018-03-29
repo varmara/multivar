@@ -111,7 +111,7 @@ install.packages(c("cowplot", "geomorph"))
 (Геометрическаая) морфометрия
 
 <!-- - Презентация [html](06_2_PCA_geometric_morphometrics.html) -->
-- [код R](06_2_PCA_geometric_morphometrics_.html_code.R)
+- [код R](06_2_PCA_geometric_morphometrics_code.R)
 
 ## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
