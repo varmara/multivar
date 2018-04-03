@@ -97,19 +97,27 @@ install.packages("jpeg")
 
 ## 6. Анализ главных компонент (Principal Component Analysis, PCA)
 
-<!-- - Презентация [html](06_1_PCA.html) -->
-<!-- - [код R](06_1_PCA.R) -->
+```{r eval=FALSE}
+install.packages(c("cowplot", "geomorph"))
+```
+
+- Презентация [html](06_1_PCA_new.html)
+- [код R](06_1_PCA_code.R)
 - Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv)
 
 **Данные для самостоятельной работы**
-
-- Канадские волки --- Wolves{candisc}
 - Ирисы --- iris{datasets}
+
+(Геометрическаая) морфометрия
+
+- Презентация [html](06_2_PCA_geometric_morphometrics.html)
+- [код R](06_2_PCA_geometric_morphometrics_code.R)
+- Данные [turtles.txt](data/turtles.txt)
 
 ## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
 <!-- - Презентация [html](07_1_CA_and_CA_calculation.html) -->
-<!-- - [код R](07_CA_vs_PCA_CA_calculation.R) -->
+- [код R](07_CA_vs_PCA_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx) 
 
 **Данные для самостоятельной работы**
