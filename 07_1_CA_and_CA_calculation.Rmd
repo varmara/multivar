@@ -227,7 +227,7 @@ Tourbière/Peat bog* by [peupleloup on Flickr](https://flic.kr/p/51F8Ks)
 
 ## Структура данных {.columns-2 .smaller}
 
-```{r, echo=TRUE}
+```{r, echo=FALSE}
 library(vegan)
 data(mite)
 data(mite.xy)
@@ -239,6 +239,8 @@ ggplot(mite.xy, aes(x =x, y = y )) + geom_point() + coord_equal()
 
 
 ```{r}
+library(vegan)
+data(mite)
 head(mite[, 1:5])
 
 ```
@@ -450,7 +452,7 @@ p_j <- f_j/Ft #Вектор вероятностей для цвета
 Но! в этой таблице легко узнать результат матричного произведения двух векторов
 
 $$
-\textbf{a} \bullet \textbf{b} =  
+\textbf{a} \cdot \textbf{b} =  
 \begin{pmatrix}
 p_y \\
 p_g     
@@ -933,7 +935,7 @@ ggplot(mite_inter, aes(x=x2, y=y2, fill = CA1)) + geom_tile() + scale_fill_gradi
 
 
 ```
-Становится виден отчетливый градиент!
+<!-- Становится виден отчетливый градиент! -->
 
 
 
