@@ -116,7 +116,7 @@ install.packages(c("cowplot", "geomorph"))
 
 ## 7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент
 
-<!-- - Презентация [html](07_1_CA_and_CA_calculation.html) -->
+- Презентация [html](07_1_CA_and_CA_calculation.html)
 - [код R](07_CA_vs_PCA_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx) 
 
