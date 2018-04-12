@@ -98,8 +98,8 @@ showvarparts(2)
 
 # ## Подбираем модели RDA, нужные для поиска компонентов инерции
 # bf_prda_1 уже есть
-bf_prda_2 <- rda(gen ~ x + y + Condition(Temp_Min), data = env_geo)
-bf_rda_full <- rda(gen ~ x + y + Temp_Min, data = env_geo)
+bf_prda_2 <- rda(gen ~ x + y + Condition(Altitude), data = env_geo)
+bf_rda_full <- rda(gen ~ x + y + Altitude, data = env_geo)
 
 # ## Задание: Найдите компоненты инерции -----------------------
 # По результатам трех RDA найдите всю потенциально объяснимую инерцию, а так же долю инерции, объясненную:
@@ -108,3 +108,7 @@ bf_rda_full <- rda(gen ~ x + y + Temp_Min, data = env_geo)
 # - географией, но не со средой
 
 
+# # Задание для самостоятельной работы
+# 1) полный RDA, значимость модели, предикторов, осей
+# 2) оптимальная модель RDA
+# 3) частный RDA среда + география
