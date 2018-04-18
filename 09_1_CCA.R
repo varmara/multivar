@@ -4,9 +4,8 @@
 #Вадим Хайтов, Марина Варфоломеева
 
 
-data(mite)
-
 library(vegan)
+
 data(mite)
 data(mite.env)
 data(mite.xy)
@@ -95,15 +94,13 @@ grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights 
 
 
 
-mite_cca <- cca(mite ~ SubsDens + WatrCont + Substrate + Topo, data = mite.env)
-
-str(mite.env)
+mite_cca <- cca( )
 
 
-vif.cca(mite_cca)
+
+vif.cca()
 
 
-mite_cca
 
 summary(mite_cca)
 
@@ -249,7 +246,7 @@ anova(mite_cca, by="mar")
 anova(mite_cca, by="axis")
 
 
-# Компоненты изменчивости при построении модели с двумя наборами предикторов
+# Компоненты изменчивости при построении модели с двумя наборами предикторов (возможно только для RDA)
 mod <- varpart(mite, ~ SubsDens + WatrCont + Substrate + Topo, ~ x + y, data = cbind(mite.env, mite.xy))
 
 showvarparts(2)
