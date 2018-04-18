@@ -4,9 +4,8 @@
 #Вадим Хайтов, Марина Варфоломеева
 
 
-data(mite)
-
 library(vegan)
+
 data(mite)
 data(mite.env)
 data(mite.xy)
@@ -94,16 +93,23 @@ grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights 
 # Здесь будет Ваш код для решения Задания по построению ограниченной ординации CCA
 
 
+# Что нужно проверить до начала анализа?
 
-mite_cca <- cca(mite ~ SubsDens + WatrCont + Substrate + Topo, data = mite.env)
-
-str(mite.env)
-
-
-vif.cca(mite_cca)
+<<<<<<< HEAD
 
 
-mite_cca
+
+mite_cca <- cca( )
+
+=======
+mite_cca <- cca( )
+
+
+
+vif.cca()
+>>>>>>> refs/remotes/origin/master
+
+
 
 summary(mite_cca)
 
@@ -249,7 +255,7 @@ anova(mite_cca, by="mar")
 anova(mite_cca, by="axis")
 
 
-# Компоненты изменчивости при построении модели с двумя наборами предикторов
+# Компоненты изменчивости при построении модели с двумя наборами предикторов (возможно только для RDA)
 mod <- varpart(mite, ~ SubsDens + WatrCont + Substrate + Topo, ~ x + y, data = cbind(mite.env, mite.xy))
 
 showvarparts(2)
