@@ -4,8 +4,9 @@
 #Вадим Хайтов, Марина Варфоломеева
 
 
-library(vegan)
+data(mite)
 
+library(vegan)
 data(mite)
 data(mite.env)
 data(mite.xy)
@@ -95,21 +96,17 @@ grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights 
 
 # Что нужно проверить до начала анализа?
 
-<<<<<<< HEAD
-
-
-
 mite_cca <- cca( )
+
+str(mite.env)
+
+
+vif.cca()
 
 =======
 mite_cca <- cca( )
 
-
-
-vif.cca()
->>>>>>> refs/remotes/origin/master
-
-
+mite_cca
 
 summary(mite_cca)
 

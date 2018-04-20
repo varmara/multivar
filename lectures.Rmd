@@ -157,7 +157,7 @@ install.packages("reshape2")
 ```
 
 
-<!-- - Презентация [html](09_1_CCA.html) -->
+- Презентация [html](09_1_CCA.html)
 - [код R](09_1_CCA.R)
 
 
