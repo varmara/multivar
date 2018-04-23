@@ -674,7 +674,7 @@ summary(bf_rda) </pre>
 <li>тестируем гипотезу о том, что отношения между генотипом и средой значимы.</li>
 </ul>
 
-<p>\(H _0\): значения предикторов в пробах не зависят от переменных среды (генетическая структура не зависит от среды)</p>
+<p>\(H _0\): значения откликов в пробах не зависят от переменных среды (генетическая структура не зависит от среды)</p>
 
 </article></slide><slide class=""><hgroup><h2>Общий тест: Влияют ли факторы на зависимые переменные?</h2></hgroup><article  id="-------">
 
@@ -688,7 +688,7 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##          Df Variance    F Pr(&gt;F)   
-## Model     3      372 4.15  0.007 **
+## Model     3      372 4.15 0.0078 **
 ## Residual 12      358               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -708,9 +708,9 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##               Df Variance    F Pr(&gt;F)   
-## Altitude       1      279 9.37 0.0018 **
-## Precipitation  1       72 2.43 0.1003   
-## Temp_Max       1       20 0.67 0.5167   
+## Altitude       1      279 9.37  0.002 **
+## Precipitation  1       72 2.43  0.103   
+## Temp_Max       1       20 0.67  0.516   
 ## Residual      12      358               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -732,8 +732,8 @@ summary(bf_rda) </pre>
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##               Df Variance    F Pr(&gt;F)
 ## Altitude       1       12 0.41   0.67
-## Precipitation  1       71 2.39   0.11
-## Temp_Max       1       20 0.67   0.52
+## Precipitation  1       71 2.39   0.10
+## Temp_Max       1       20 0.67   0.51
 ## Residual      12      358</pre>
 
 <ul class = 'build'>
@@ -758,9 +758,9 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##          Df Variance     F Pr(&gt;F)   
-## RDA1      1      352 11.82 0.0047 **
-## RDA2      1       18  0.62 0.8532   
-## RDA3      1        1  0.03 0.9974   
+## RDA1      1      352 11.82 0.0053 **
+## RDA2      1       18  0.62 0.8576   
+## RDA3      1        1  0.03 0.9976   
 ## Residual 12      358                
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -809,22 +809,22 @@ m0 &lt;- rda(gen ~ 1, data = env_geo)</pre>
 ## Start: gen ~ 1 
 ## 
 ##                 Df AIC    F Pr(&gt;F)   
-## + Altitude       1 101 8.69 0.0019 **
-## + Temp_Max       1 101 8.12 0.0033 **
-## + Precipitation  1 102 7.30 0.0036 **
+## + Altitude       1 101 8.69 0.0021 **
+## + Temp_Max       1 101 8.12 0.0041 **
+## + Precipitation  1 102 7.30 0.0045 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Step: gen ~ Altitude 
 ## 
 ##            Df AIC    F Pr(&gt;F)   
-## - Altitude  1 106 8.69 0.0024 **
+## - Altitude  1 106 8.69 0.0018 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ##                 Df   AIC    F Pr(&gt;F)  
-## + Precipitation  1  99.9 2.49  0.092 .
-## + Temp_Max       1 102.0 0.64  0.548  
+## + Precipitation  1  99.9 2.49  0.091 .
+## + Temp_Max       1 102.0 0.64  0.551  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
@@ -833,7 +833,7 @@ m0 &lt;- rda(gen ~ 1, data = env_geo)</pre>
 <pre class = 'prettyprint lang-r'>m$anova</pre>
 
 <pre >##            Df AIC    F Pr(&gt;F)   
-## + Altitude  1 101 8.69 0.0019 **
+## + Altitude  1 101 8.69 0.0021 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
@@ -890,9 +890,9 @@ anova(bf_prda_1, permutations = 9999) ## Пермутационный тест</
 ## Number of permutations: 9999
 ## 
 ## Model: rda(formula = gen ~ Altitude + Condition(x + y), data = env_geo)
-##          Df Variance    F Pr(&gt;F)    
-## Model     1      213 9.94 0.0008 ***
-## Residual 12      257                
+##          Df Variance    F Pr(&gt;F)   
+## Model     1      213 9.94 0.0012 **
+## Residual 12      257               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
