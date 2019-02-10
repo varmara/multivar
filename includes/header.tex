@@ -1,53 +1,121 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     <-- выше автоматическая преамбула  |  пользовательская преамбула ниже --->      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %%% Работа с русским языком
-\usepackage[russian,english]{babel}   %% загружает пакет многоязыковой вёрстки
-\usepackage{fontspec}      %% подготавливает загрузку шрифтов Open Type, True Type и др.
-\defaultfontfeatures{Ligatures={TeX},Renderer=Basic,Scale=0.75}  %% свойства шрифтов по умолчанию
-\setmainfont[Ligatures={TeX,Historic}]{Times New Roman} %% задаёт основной шрифт документа
-\setsansfont[Ligatures={TeX,Historic}]{Verdana} %% задаёт шрифт без засечек
-\setmonofont[Scale=0.7]{DejaVu Sans Mono}
+\usepackage{cmap}					    % поиск в PDF
+\usepackage{mathtext} 				% русские буквы в формулах
 
-\linespread{0.75}
+% Для разметки слайдов и картинок
+\usepackage{tikz}
+\usepackage{animate}
 
+% Для двойных прямых кавычек в Verbatim (не работает почему-то)
+\usepackage{upquote}
+
+% % Работа с прочими шрифтами
+% \usepackage{fontspec}      %% УЖЕ ЗАГРУЖЕН В ПРЕАМБУЛЕ подготавливает загрузку шрифтов Open Type, True Type и др.
+\setmainfont{DejaVu Sans} %% задаёт основной шрифт документа
+\setsansfont{DejaVu Sans} %% задаёт шрифт без засечек
+\setmonofont[Scale=0.7]{DejaVu Sans Mono} %% моноширинный шрифт\
+
+% Межстрочный интервал в verabtim
+\makeatletter
+\def\verbatim@font{\linespread{0.7}\normalfont\ttfamily}
+\makeatother
+
+% Межабзацный интервал в columns
+\makeatletter
+\newcommand{\@minipagerestore}{\setlength{\parskip}{4pt plus 2pt minus 1pt}}
+\makeatother
+
+% \usepackage{hyperref} %% УЖЕ ЗАГРУЖЕН В ПРЕАМБУЛЕ
 \definecolor{links}{HTML}{2A1B81}
 \hypersetup{colorlinks=true,linkcolor=,urlcolor=links,pdfview=FitH,pdfpagelayout=SinglePage, unicode=true,breaklinks=true}
 
-% links format
-\usepackage{hyperref}
+% Тильда в тексте
+\newcommand{\mytilde}{\char`~\:}
+% argmin и argmax
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
 
-% decrease text margins
-\setbeamersize{text margin left = 8pt, text margin right = 16pt}
-
-\newcommand{\columnsbegin}{\begin{columns}}
+% Более простой ввод команд для двухколоночной верстки
+\newcommand{\columnsbegin}{\vspace{-0.5\baselineskip}\begin{columns}[t,onlytextwidth]}
 \newcommand{\columnsend}{\end{columns}}
+\newcommand{\columnbegin}{\begin{column}}
+\newcommand{\columnend}{\end{column}}
 \newcommand{\blockbegin}{\begin{block}}
 \newcommand{\blockend}{\end{block}}
-
-\usepackage{graphics}
 
 % allows to add alignment keys to \includegraphics
 \usepackage[export]{adjustbox}
 
-% % subfigures
-% \usepackage{subcaption}
-% \usepackage{wrapfig}
+% Работа с таблицами %%%%%%%%%%%%%%
 
-%\addto{\captionsrussian}{\renewcommand*{\figurename}{рис.}}
+\usepackage{adjustbox}
 
-% Tables
-% Define new column types to adjust sizes in tabular environment
-% For example, \begin{tabular}{ L{2.3cm} C{2cm} C{1.5cm} C{2.5cm} C{4cm}}
+% Новые типы колонок для окружения tabular, чтобы можно было задавать их ширину
+% Например, \begin{tabular}{ L{2.3cm} C{2cm} C{1.5cm} C{2.5cm} C{4cm}}
 \usepackage{array}
-\renewcommand{\arraystretch}{2}
+\renewcommand{\arraystretch}{1.5}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
-\logo{\includegraphics[height=0.3cm]{assets/Linmod_logo.png}}
+% Для таблиц в tabularx окружении при помощи пакета huxtable
+\usepackage{tabularx}
+
+% Прочие настройки beamer %%%%%%%%%%%%
+
+% decrease text margins
+\setbeamersize{text margin left = 8pt, text margin right = 16pt}
+
+% Галочка в тексте
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+
+% Цвета
+% Посмотреть и конвертировать можно здесь https://convertingcolors.com/
+%                       RGB                       HEX    nearest R colour
+\definecolor{myblack}{RGB}{30,30,30}           % 1e1e1e "gray12"
+\definecolor{mygrey}{RGB}{191,191,191}         % BFBFBF "gray75"
+\definecolor{myteal}{RGB}{188, 216, 221}       % BCD8DD "powderblue"
+\definecolor{mylightteal}{RGB}{222,236,238}    % DEECEE "azure2"
+\definecolor{myred}{RGB}{203,55,87}            % CB3757 "maroon"
+\definecolor{mygreen}{RGB}{168,207,166}        % A8CFA6 "darkseagreen3"
+\definecolor{mydarkgreen}{RGB}{96,157,131}     % 609D83 "paleturquoise4"
+\definecolor{myblue}{RGB}{98,122,235}          % 627AEB "cornflowerblue"
+\definecolor{mydarkblue}{RGB}{24,112,184}      % 1870B8 "dodgerblue3"
+\definecolor{myviolet}{RGB}{212,207,232}       % D4CFE8
+\definecolor{mydarkviolet}{RGB}{101,118,185}   % 6576B9
+\definecolor{myyellow}{RGB}{254,192,15}        % FEC00F "darkgoldenrod1"
+\definecolor{mysteelblue}{RGB}{70,130,180}     % 4682B4 "steelblue"
+
+% Для подсветки элементов формул
+\usepackage[beamer,customcolors,norndcorners]{hf-tikz}
+\hfsetfillcolor{myviolet}
+\hfsetbordercolor{white}
+
+% \logo{\includegraphics[height=0.3cm]{assets/Linmod_logo.png}}
+
+% Переопределяем бимеровский footline
+\setbeamertemplate{footline}{
+  \quad\hfill\insertframenumber/\inserttotalframenumber\strut\quad
+}
+% Заголовок на титульном слайде
+\setbeamercolor{titlelike}{parent=palette primary,fg=myblack,bg=}
+
+% Блоки
+\setbeamercolor{block title}{fg=myblack, bg=}
+
+% Заголовки слайдов
+\setbeamercolor{frametitle}{bg=}
+\setbeamertemplate{frametitle}{
+  \vspace{1cm}
+  \color{myblack}\bfseries\insertframetitle%
+}
+% Маркеры элементов списка
+\setbeamertemplate{itemize items}{\color{myred}\normalsize$\bullet$}
 
 
-% redefine beamer footline
-\setbeamertemplate
-{footline}{\quad\hfill\insertframenumber/\inserttotalframenumber\strut\quad}
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

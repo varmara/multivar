@@ -1,0 +1,23 @@
+%     <-- выше пользовательская преамбула | новый Verabtim ниже --->      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Уменьшаем интервалы сверху и снизу Verbatim
+% https://stackoverflow.com/a/2319042
+\setlength\partopsep{-\topsep}
+\addtolength\partopsep{-\parskip}
+\addtolength\partopsep{0.5\baselineskip}
+
+% Линия рядом с кодом
+\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{
+   commandchars=\\\{\},
+   frame=leftline,
+   framerule=0.75mm,
+   rulecolor=\color{myred},
+   samepage=true,
+   baselinestretch=0.8
+}
+
+\usepackage{caption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

@@ -25,44 +25,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #0000ff; } /* Keyword */
-code > span.ch { color: #008080; } /* Char */
-code > span.st { color: #008080; } /* String */
-code > span.co { color: #008000; } /* Comment */
-code > span.ot { color: #ff4000; } /* Other */
-code > span.al { color: #ff0000; } /* Alert */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #008000; font-weight: bold; } /* Warning */
-code > span.cn { } /* Constant */
-code > span.sc { color: #008080; } /* SpecialChar */
-code > span.vs { color: #008080; } /* VerbatimString */
-code > span.ss { color: #008080; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { } /* Variable */
-code > span.cf { color: #0000ff; } /* ControlFlow */
-code > span.op { } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #ff4000; } /* Preprocessor */
-code > span.do { color: #008000; } /* Documentation */
-code > span.an { color: #008000; } /* Annotation */
-code > span.cv { color: #008000; } /* CommentVar */
-code > span.at { } /* Attribute */
-code > span.in { color: #008000; } /* Information */
-</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 
 
 <style type="text/css">
@@ -115,8 +77,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -132,7 +100,6 @@ body {
   padding-top: 65px;
   margin-top: -65px;
 }
-
 .section h2 {
   padding-top: 65px;
   margin-top: -65px;
@@ -152,6 +119,43 @@ body {
 .section h6 {
   padding-top: 65px;
   margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -173,18 +177,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -305,15 +368,17 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li><a href="index.html">О курсе</a></li>
         <li><a href="lectures.html">Презентации и данные</a></li>
-        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li>
+<!--/        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li> -->
+       <li><a href="resources.html">Ссылки и ресурсы</a></li>
+       <li><a href="coding_practices.html">Правила хорошего кода</a></li>
+<!--/
         <li class="dropdown">
           <a href="appendix" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Полезности<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
              <li><a href="supplement.html">Дополнительные темы</a></li>
-             <li><a href="resources.html">Ссылки и ресурсы</a></li>
-             <li><a href="coding_practices.html">Правила хорошего кода</a></li>
           </ul>
         </li>
+-->
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -328,146 +393,147 @@ div.tocify {
 </div>
 
 
-<div id="---.-nmds-envfit-ordisurf" class="section level2">
-<h2>1. Знакомство с многомерными данными. nMDS, envfit, ordisurf</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</code></pre></div>
-<ul>
-<li>Презентация <a href="01_1_multivariate_data_and_dissimilarities.html">html</a></li>
-<li><a href="01_1_multivariate_data_and_dissimilarities_code.R">код R</a></li>
-<li><p>Данные <a href="data/Protein.txt">Protein.txt</a></p></li>
-<li>Презентация <a href="01_2_nMDS.html">html</a></li>
-<li><a href="01_2_nMDS_code.R">код R</a></li>
-<li><p>Данные <a href="data/dolg_abundance.txt">dolg_abundance.txt</a> | <a href="data/dolg_hydrology.txt">dolg_hydrology.txt</a></p></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<ul>
-<li><p>Обилие полихет на литорали Белого моря <a href="data/Polychaetes_species.csv">Polychaetes_species.csv</a> | параметры среды <a href="data/Polychaeta_env.csv">Polychaeta_env.csv</a><br />
-<em>Оригинальные данные В. М. Хайтова</em></p></li>
-<li><p>растительные сообщества во франции La Mafragh (Annaba, Algérie) <a href="data/mafragh_species.csv">mafragh_species.csv</a> | параметры среды <a href="data/mafragh_env.csv">mafragh_env.csv</a><br />
-Данные из работы <em>de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d’une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d’Ecologie, 18, 393–407.</em></p></li>
-<li><p>Деревья на острове Barro Colorado <a href="data/BCI_species.csv">BCI_species.csv</a> | параметры среды <a href="data/BCI_env.csv">BCI_env.csv</a><br />
-Данные из работы <em>Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. &amp; Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.</em></p></li>
-</ul>
+<div id="---.-14--" class="section level2">
+<h2>1. Знакомство с многомерными данными. (14 февраля, ВХ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("vegan") -->
+<!-- ``` -->
+<!-- - Презентация [html](01_multivariate_data_and_dissimilarities.html) -->
+<!-- - [код R](01_multivariate_data_and_dissimilarities_code.R) -->
+<!-- - Данные [Protein.txt](data/Protein.txt)  -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- - Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)   -->
+<!-- *Оригинальные данные В. М. Хайтова*    -->
 </div>
-<div id="--anosim-simper" class="section level2">
-<h2>2. Тест Мантела, ANOSIM, SIMPER</h2>
-<ul>
-<li>Презентация <a href="02_1_Mantel_correlation-based_methods.html">html</a></li>
-<li><a href="02_2_Mantel_correlation-based_methods.R">код R</a></li>
-<li><p>Данные <a href="data/Coordinates.txt">Coordinates.txt</a> |</p></li>
-<li>Презентация <a href="02_2_ANOSIM_SIMPER.html">html</a></li>
-<li><a href="02_1_ANOSIM_SIMPER.R">код R</a></li>
-<li><p>Данные <a href="data/mussel_beds.csv">mussel_beds.csv</a> | <a href="data/ASCAM.csv">ASCAM.csv</a></p></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<ul>
-<li><p>Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий <a href="data/mussel_experiment.csv">mussel_experiment.csv</a><br />
-Данные из работы <em>Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308</em></p></li>
-<li><p>Сообщества макробентоса в друзах мидий <a href="data/mussel_patches.csv">mussel_patches.csv</a><br />
-Данные из работы <em>Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.</em></p></li>
-</ul>
+<div id="nmds-envfit-ordisurf-21--" class="section level2">
+<h2>2. nMDS, envfit, ordisurf (21 февраля, МВ)</h2>
+<!-- - Презентация [html](02_nMDS.html) -->
+<!-- - [код R](02_nMDS_code.R) -->
+<!-- - Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- - Растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)   -->
+<!-- Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*  -->
+<!-- - Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)   -->
+<!-- Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.* -->
 </div>
-<div id="permanova" class="section level2">
-<h2>3. PERMANOVA</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</code></pre></div>
-<ul>
-<li>Презентация <a href="03_1_perMANOVA.html">html</a></li>
-<li><a href="03_1_perMANOVA.R">код R</a></li>
-<li>Данные <a href="data/pesch.csv">pesch.csv</a> | <a href="data/simulated_data.csv">simulated_data.csv</a></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<p><a href="03_2_perMANOVA_task.html">Пояснения к датасетам и задание</a></p>
-<ul>
-<li><p>Влияние выпаса скота на зообентос рек о.Тасмания <a href="data/Grazing_Magierowski_et_al_2015.xls">Grazing_Magierowski_et_al_2015.xls</a><br />
-<em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em></p></li>
-<li><p>Гематология сонных ящериц <em>Tiliqua rugosa</em> <a href="data/Sleepy%20lizard.xlsx">Sleepy lizard.xlsx</a><br />
-<em>Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia’s cereal croplands, 2010, Version 1.0. <a href="http://doi.org/10.4227/05/537C5C5553F9E" class="uri">http://doi.org/10.4227/05/537C5C5553F9E</a>. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.</em></p></li>
-</ul>
+<div id="---.---28--" class="section level2">
+<h2>3. Связь между наборами данных. Тест Мантела (28 февраля, ВХ)</h2>
+<!-- - Презентация [html](03_Mantel_correlation-based_methods.html) -->
+<!-- - [код R](03_Mantel_correlation-based_methods.R) -->
+<!-- - Данные [Coordinates.txt](data/Coordinates.txt) |  -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- - Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv)   -->
+<!-- Данные из работы *Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308*    -->
+<!-- - Сообщества макробентоса в друзах мидий [mussel_patches.csv](data/mussel_patches.csv)   -->
+<!-- Данные из работы *Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами  Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.*    -->
 </div>
-<div id="-" class="section level2">
-<h2>4. Кластерный анализ</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</code></pre></div>
-<ul>
-<li>Презентация <a href="04_1_cluster_analysis.html">html</a></li>
-<li><a href="04_1_cluster_analysis.R">код R</a></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<p>С прошлого занятия.</p>
+<div id="anosim-simper-7--" class="section level2">
+<h2>4. ANOSIM, SIMPER (7 марта, ВХ)</h2>
+<!-- - Презентация [html](04_ANOSIM_SIMPER.html) -->
+<!-- - [код R](04_ANOSIM_SIMPER.R) -->
+<!-- - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv)  -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- - Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv)   -->
+<!-- Данные из работы *Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308*    -->
+<!-- - Сообщества макробентоса в друзах мидий [mussel_patches.csv](data/mussel_patches.csv)   -->
+<!-- Данные из работы *Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами  Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.*    -->
 </div>
-<div id="--.-svd." class="section level2">
-<h2>5. Основы матричной алгебры. SVD.</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</code></pre></div>
-<ul>
-<li>Презентация <a href="05_1_introduction_to_matrix_algebra_new.html">html</a></li>
-<li><a href="05_1_introduction_to_matrix_algebra.R">код R</a></li>
-<li>Данные <a href="data/face.rda">Матрица</a></li>
-</ul>
-<p><a href="05_1_matrix_algebra_task.html"><strong>Данные для самостоятельной работы</strong></a></p>
+<div id="permanova-14--" class="section level2">
+<h2>5. PERMANOVA (14 марта, МВ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("readxl") -->
+<!-- ``` -->
+<!-- - Презентация [html](05_perMANOVA.html) -->
+<!-- - [код R](05_perMANOVA.R) -->
+<!-- - Данные [pesch.csv](data/pesch.csv) | [simulated_data.csv](data/simulated_data.csv)  -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- [Пояснения к датасетам и задание](07_perMANOVA_task.html) -->
+<!-- - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)   -->
+<!-- *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
+<!-- - Гематология сонных ящериц _Tiliqua rugosa_ [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx)   -->
+<!-- *Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.* -->
 </div>
-<div id="---principal-component-analysis-pca" class="section level2">
-<h2>6. Анализ главных компонент (Principal Component Analysis, PCA)</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</code></pre></div>
-<ul>
-<li>Презентация <a href="06_1_PCA_new.html">html</a></li>
-<li><a href="06_1_PCA_code.R">код R</a></li>
-<li>Данные <a href="data/jellyfish.csv">jellyfish.csv</a> | <a href="data/protein.csv">protein.csv</a></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong> - Ирисы — iris{datasets}</p>
-<p>(Геометрическаая) морфометрия</p>
-<ul>
-<li>Презентация <a href="06_2_PCA_geometric_morphometrics.html">html</a></li>
-<li><a href="06_2_PCA_geometric_morphometrics_code.R">код R</a></li>
-<li>Данные <a href="data/turtles.txt">turtles.txt</a></li>
-</ul>
+<div id="--21--" class="section level2">
+<h2>6. Кластерный анализ (21 марта, МВ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust")) -->
+<!-- ``` -->
+<!-- - Презентация [html](06_cluster_analysis.html) -->
+<!-- - [код R](06_cluster_analysis.R) -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- С прошлого занятия. -->
 </div>
-<div id="--corespondence-analysis-ca----" class="section level2">
-<h2>7. Корреспондентный анализ (Corespondence Analysis, CA) и анализ главных компонент</h2>
-<ul>
-<li>Презентация <a href="07_1_CA_and_CA_calculation.html">html</a></li>
-<li><a href="07_CA_vs_PCA_CA_calculation.R">код R</a></li>
-<li>Данные <a href="data/macnally.xlsx">macnally.xlsx</a></li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;ade4&quot;</span>)</code></pre></div>
-<ul>
-<li>растительные сообщества во франции La Mafragh (Annaba, Algérie) <a href="data/mafragh_species.csv">mafragh_species.csv</a></li>
-<li>Крысы <a href="data/bolger1.csv">bolger1.csv</a></li>
-<li>Бабочки — butterfly{ade4}</li>
-</ul>
+<div id="--.-svd.-28--" class="section level2">
+<h2>7. Основы матричной алгебры. SVD. (28 марта, ВХ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("jpeg") -->
+<!-- ``` -->
+<!-- - Презентация [html](07_introduction_to_matrix_algebra_new.html) -->
+<!-- - [код R](07_introduction_to_matrix_algebra.R) -->
+<!-- - Данные [Матрица](data/face.rda)  -->
+<!-- [**Данные для самостоятельной работы**](07_matrix_algebra_task.html) -->
 </div>
-<div id="--redundancy-analysis-rda" class="section level2">
-<h2>8. Анализ избыточности (Redundancy analysis, RDA)</h2>
-<ul>
-<li>Презентация <a href="07_1_RDA.html">html</a></li>
-<li><a href="07_1_RDA.R">код R</a></li>
-<li>Данные butterfly{ade4}</li>
-</ul>
-<p><strong>Данные для самостоятельной работы</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</code></pre></div>
-<ul>
-<li>Влияние выпаса скота на зообентос рек о.Тасмания <a href="data/Grazing_Magierowski_et_al_2015.xls">Grazing_Magierowski_et_al_2015.xls</a><br />
-<em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em></li>
-<li>Морфометрия поссумов в Австралии possum{DAAG}, possumsites{DAAG}<br />
-<em>Lindenmayer, D. B., Viggers, K. L., Cunningham, R. B., and Donnelly, C. F. 1995. Morphological variation among columns of the mountain brushtail possum, Trichosurus caninus Ogilby (Phalangeridae: Marsupiala). Australian Journal of Zoology 43: 449-458.</em></li>
-</ul>
+<div id="---principal-component-analysis-pca-4--" class="section level2">
+<h2>8. Анализ главных компонент (Principal Component Analysis, PCA) (4 апреля, МВ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages(c("cowplot", "geomorph")) -->
+<!-- ``` -->
+<!-- - Презентация [html](08_PCA_new.html) -->
+<!-- - [код R](08_PCA_code.R) -->
+<!-- - Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv) -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- - Ирисы --- iris{datasets} -->
+<!-- (Геометрическаая) морфометрия -->
+<!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
+<!-- - [код R](08_PCA_geometric_morphometrics_code.R) -->
+<!-- - Данные [turtles.txt](data/turtles.txt) -->
 </div>
-<div id="---canonical-correspondence-analysis-cca" class="section level2">
-<h2>9. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA)</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)
-<span class="kw">install.packages</span>(<span class="st">&quot;akima&quot;</span>)
-<span class="kw">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</code></pre></div>
-<ul>
-<li>Презентация <a href="09_1_CCA.html">html</a></li>
-<li><p><a href="09_1_CCA.R">код R</a></p></li>
-<li><p>Влияние выпаса скота на зообентос рек о.Тасмания <a href="data/Grazing_Magierowski_et_al_2015.xls">Grazing_Magierowski_et_al_2015.xls</a> <em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em></p></li>
-<li><p>Сообщества бентоса Долгой губы о. Большого Соловецкого <a href="data/dolg_abundance.txt">dolg_abundance.txt</a> | параметры среды <a href="data/dolg_hydrology.txt">dolg_hydrology.txt</a> <em>Оригинальные данные В. М. Хайтова</em></p></li>
-<li><p>Обилие полихет на литорали Белого моря <a href="data/Polychaetes_species.csv">Polychaetes_species.csv</a> | параметры среды <a href="data/Polychaeta_env.csv">Polychaeta_env.csv</a><br />
-<em>Оригинальные данные В. М. Хайтова</em></p></li>
-<li><p>растительные сообщества во франции La Mafragh (Annaba, Algérie) <a href="data/mafragh_species.csv">mafragh_species.csv</a> | параметры среды <a href="data/mafragh_env.csv">mafragh_env.csv</a><br />
-Данные из работы <em>de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d’une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d’Ecologie, 18, 393–407.</em></p></li>
-<li><p>Деревья на острове Barro Colorado <a href="data/BCI_species.csv">BCI_species.csv</a> | параметры среды <a href="data/BCI_env.csv">BCI_env.csv</a><br />
-Данные из работы <em>Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. &amp; Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.</em></p></li>
-</ul>
+<div id="--corespondence-analysis-ca-11--" class="section level2">
+<h2>9. Корреспондентный анализ (Corespondence Analysis, CA) (11 апреля, ВХ)</h2>
+<!-- - Презентация [html](09_CA_and_CA_calculation.html) -->
+<!-- - [код R](09_CA_vs_PCA_CA_calculation.R) -->
+<!-- - Данные [macnally.xlsx](data/macnally.xlsx)  -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("ade4") -->
+<!-- ``` -->
+<!-- - растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) -->
+<!-- - Крысы [bolger1.csv](data/bolger1.csv)  -->
+<!-- - Бабочки --- butterfly{ade4} -->
+</div>
+<div id="--redundancy-analysis-rda-18--" class="section level2">
+<h2>10. Анализ избыточности (Redundancy analysis, RDA) (18 апреля, МВ)</h2>
+<!-- - Презентация [html](10_RDA.html) -->
+<!-- - [код R](10_RDA.R) -->
+<!-- - Данные butterfly{ade4} -->
+<!-- **Данные для самостоятельной работы** -->
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("DAAG") -->
+<!-- ``` -->
+<!-- - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)   -->
+<!-- *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
+<!-- - Морфометрия поссумов в Австралии possum{DAAG}, possumsites{DAAG}   -->
+<!-- *Lindenmayer, D. B., Viggers, K. L., Cunningham, R. B., and Donnelly, C. F. 1995. Morphological variation among columns of the mountain brushtail possum, Trichosurus caninus Ogilby (Phalangeridae: Marsupiala). Australian Journal of Zoology 43: 449-458.* -->
+</div>
+<div id="---canonical-correspondence-analysis-cca-25--" class="section level2">
+<h2>11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (25 апреля, ВХ)</h2>
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("DAAG") -->
+<!-- install.packages("akima") -->
+<!-- install.packages("reshape2") -->
+<!-- ``` -->
+<!-- - Презентация [html](11_1_CCA.html) -->
+<!-- - [код R](11_1_CCA.R) -->
+<!-- - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls) -->
+<!-- *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
+<!-- - Сообщества бентоса Долгой губы о. Большого Соловецкого [dolg_abundance.txt](data/dolg_abundance.txt) | параметры среды [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+<!-- *Оригинальные данные В. М. Хайтова*    -->
+<!-- - Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)   -->
+<!-- *Оригинальные данные В. М. Хайтова*    -->
+<!-- - растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)   -->
+<!-- Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*  -->
+<!-- - Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)   -->
+<!-- Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.* -->
 </div>
 
 <p><small>
