@@ -1,0 +1,1073 @@
+---
+title: "Знакомство с многомерными данными"
+subtitle: "Анализ и визуализация многомерных данных с использованием R"
+author: Вадим Хайтов, Марина Варфоломеева
+presenters: [{
+  name: 'Вадим Хайтов',
+  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
+  }]
+output:
+ ioslides_presentation:
+  widescreen: true
+  css: assets/my_styles.css
+  logo: assets/Linmod_logo.png
+---
+
+## Вы сможете
+
+- Объяснить почему для некоторых задач больше подходят многомерные данные
+- Объяснить суть понятия "многомерное пространство признаков"
+- Представить многомерные данные в виде матриц описания значений признаков для объектов 
+- Оценить сходство/различие между объектами с помощью специальных коэффициентов
+- Описать _взаиморасположение_ объектов в многомерном пространстве признаков с помощью матриц
+- Визуализировать взаиморасположение объектов с помощью простейших методов
+
+```{r setup, include = FALSE, cache = FALSE, purl = FALSE}
+# output options
+options(width = 70, scipen = 6, digits = 3)
+library(knitr)
+# chunk default options
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE, message = FALSE, echo = FALSE)
+```
+
+
+# Общая характеристика многомерных методов 
+
+## Почему нужны многомерные методы?
+
+Пусть у нас имеется две группы объектов, у которых мы изучили некий признак. Мы хотим тестировать гипотезу о том, что эти две группы различаются.  
+
+Вспомним логику тестирования гипотез.
+
+```{r, echo = FALSE, fig.align = 'center'}
+dat <- data.frame(trait = c(rnorm(100, 10,1), rnorm(100, 15, 1)), object = rep(c("a","b"), each = 100))
+library(ggplot2)
+theme_set(theme_bw(base_size = 14))
+
+ggplot(dat[1:100,], aes(x = trait)) + geom_histogram(binwidth = 0.5, color = "black", fill = "blue") + xlab("Character") + theme_bw() + geom_histogram(data = dat[101:200,], aes(x = trait), binwidth = 0.5, color = "black", fill = "red") + ggtitle("Character distribution ")
+```
+
+
+## Почему нужны многомерные методы?
+
+Теперь представим, что наш объект, по своей природе, не может быть описан только по одному признаку
+
+- Сообщества (признаки - виды)
+- Форма тела (признаки - размеры тех или иных частей)
+- Социальная активность животного (признаки - проявление того или иного паттерна)
+- Общественное мнение (признаки - ответы на разные вопросы анкет)
+- Транскриптом (признаки - транскрипты)
+
+
+## Почему нужны многомерные методы?
+
+Предположим, что объекты характеризуются только двумя признаками 
+
+```{r, echo = FALSE, fig.height=5}
+ax <- rnorm(100, 10, 1)
+ay <- 7*ax + rnorm(100, 0, 5)
+
+bx <- rnorm(100, 11, 1)
+by <- -0.5*bx + 70 + rnorm(100, 0, 3)
+
+dat <- data.frame(x = c(ax, bx), y = c(ay, by), object = rep(c("a","b"), each = 100))
+
+pl1 <- ggplot(dat, aes(x = x, y = y)) + geom_point(aes(color = object), size = 3) + xlab("Character 1") + ylab("Character 2") + theme_bw() + guides(color = F) + scale_color_manual(values = c("blue", "red"))
+
+pl2 <- ggplot(dat, aes(x = x)) + geom_histogram(binwidth = 0.5, color = "black", fill = "gray") + xlab("Character 1") + theme_bw()
+
+pl3 <- ggplot(dat, aes(x = y)) + geom_histogram(binwidth = 3, color = "black", fill = "gray") + xlab("Character 2") + theme_bw()
+
+library(gridExtra)
+
+grid.arrange(pl1, pl2, pl3, ncol = 2)
+
+```
+
+
+## Какие задачи решаются методами могомерной статистики?
+
+>- Выявление взаимоотношений (сходства-различия) между объектами (или признаками): 
+    - Классификация (Кластерный анализ)
+    - Ординация. В том числе картирование пространственно выраженных объектов (nMDS, PCA).
+- Тестирование гипотез о различиях между группами объектов (ANOSIM, PERMANOVA).
+- Выявление  связи между группами признаков (тест Мантела, BIOENV, RDA, CCA).
+
+
+## Признаки и объекты 
+
+Данные представляются в виде таблицы (матрицы), где строками являются объекты (Objects), а столбцами признаки (Descriptors).
+
+
+## R и Q анализы 
+
+
+![R и Q](images/R Q analysis.png)
+
+- R-анализ: Выясняем взаимоотношения между признаками
+- Q-анализ: Выясняем взаимоотношения между объектами
+
+## Геометрическая интерпретация Q-анализа
+
+- Признаки - оси
+- Объекты - точки  
+
+```{r, echo = FALSE, fig.height=5}
+library (scatterplot3d) 
+
+dat$z = c(rnorm(100, 11, 1), rnorm(100, 14, 1))
+
+scatterplot3d(x = dat$x, y = dat$z, z = dat$y, xlab = "Descriptor 1", ylab = "Descriptor 2", zlab = "Descriptor 3", color = rep(c("red","blue"), each = 100), pch = 21)
+```
+
+
+
+
+
+
+
+
+
+## Описание расположения объектов в многомерном пространстве признаков 
+
+В большинстве случаев нас интересуют не абсолютные значения координат (признаков), а _взаиморасположение_ точек в многомерном пространстве.
+
+Существует два основных способа описания.
+
+
+## Способ 1. Геометрическое описание (линейная алгебра) {.smaller .columns-2}
+
+```{r echo = FALSE, fig.width = 5, fig.height=5, warning=FALSE}
+dat2 <- data.frame(object = c("Object 1", "Object 2", "Object 3", "Object 4" ), x = c(2, 2, 4, 2.5), y = c(5, 10, 8, 4))
+
+library(ggrepel)
+
+pl4 <- ggplot(dat2, aes(x = x, y = y)) + geom_point(size = 5, color = "red") + xlim(0,5) + ylim(0, 11) + annotate(geom = "segment", x = 0, y = 0, xend = 2, yend = 5, arrow = arrow(type = "closed", angle = 20, ends = "last"), size = 1) + annotate(geom = "segment", x = 0, y = 0, xend = 2, yend = 10, arrow = arrow(type = "closed", angle = 20, ends = "last"), size = 1) + geom_text_repel(aes(label = object)) + annotate(geom = "text", x = 1, y = 2, label = "LV 1", angle = 0) + annotate(geom = "text", x = 1, y = 6, label = "LV 2", angle = 0) + annotate(geom = "text", x = 1, y = 3.3, parse = TRUE, label = "alpha", size = 10, angle = 0)
+
+pl5 <- ggplot(dat2, aes(x = x, y = y)) + geom_point(size = 5, color = "red") + xlim(0,5) + ylim(0, 11) + geom_segment(aes(x = 0, y = 0, xend = x, yend = y), arrow = arrow(type = "closed", angle = 20, ends = "last"), size = 1) + geom_segment(aes(x = 0, y = 0, xend = 2, yend = 10), arrow = arrow(type = "closed", angle = 20, ends = "last"), size = 1) + geom_text_repel(aes(x = x, y = y+0.5), label = dat2$object)
+
+grid.arrange(pl4, pl5, nrow = 2)
+```
+
+Для описания взаиморасположения точек необходимо иметь два набора данных  
+ 
+Матрицу углов между векторами (косинусов углов)
+
+$$\begin{pmatrix}
+\alpha_{11} & \alpha_{12} & \cdots & \alpha_{1n} \\
+\alpha_{21} & \alpha_{22} & \cdots & \alpha_{2n} \\    
+\vdots & \vdots & \ddots & \vdots \\
+\alpha_{n1} & \alpha_{n2} & \cdots & \alpha_{nn}
+\end{pmatrix}$$
+
+Ряд длин векторов
+$$\begin{vmatrix} LV1 \\ LV2 \\ ... \\ LVn \end{vmatrix}$$
+
+Этот способ описания, с разными вариациями, будет применяться в методах _PCA, CA, CCA, RDA_
+
+
+## Способ 2. Через вычисление матрицы попарных расстояний (Similarity/Dissimilarity matrix) {.smaller .columns-2}
+
+
+```{r echo = FALSE, fig.width = 5}
+
+pl6 <- ggplot(dat2, aes(x = x, y = y)) + geom_point(size = 5, color = "red") + theme_bw() + xlim(0, 5) + ylim(0, 11) 
+
+for ( i in 1:nrow(dat2)) for (j in i:nrow(dat2)) pl6 <- pl6 + geom_segment(x = dat2$x[i], y = dat2$y[i], xend = dat2$x[j], yend = dat2$y[j], arrow = NULL, size = 1) 
+
+pl6 + geom_text_repel(aes(x = x, y = y+0.5), label = dat2$object,  box.padding = 0.6, min.segment.length = 0.5) 
+
+```
+
+В анализ вовлекается матрица попарных расстояний (сходств) между объектами. Эта матрица однозначно описывает взаиморасположение между объектами.  
+
+Этот способ представления взаиморасположения лежит в основе _Иерархического кластерного анализа, MDS, теста Мантела, ANOSIM, PERMANOVA, процедуры BIOENV_
+
+
+# Простейший многомерный анализ
+
+## Простейшая матрица значений признаков
+
+Два объекта и два признака
+
+```{r echo=FALSE}
+points <- data.frame(X =c(1, 2), Y = c(1, 2))
+row.names(points) <-  c("Объект 1", "Объект 2")
+
+kable(points, col.names = c("Признак А", "Признак B"), row.names = T, align = "cc")  
+
+```
+
+## Геометрическая интерпретация простейшей матрицы
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+Pl_point <- ggplot(points, aes(X, Y))  + geom_segment(aes(x = X, y = Y, xend = c(0, 2), yend = c(1, 0)), linetype = 2) + geom_segment(aes(x = X, y = Y, xend = c(1, 0), yend = c(0, 2)), linetype = 2) + xlim(0, 3) + ylim(0,3) + geom_point(size = 4, color = "red") +  geom_text_repel(aes(label = aes("Object 1", "Object 2"))) + labs(x = "Признак A", y = "Признак В")
+
+Pl_point
+```
+
+## Евклидово расстояние {.smaller}
+Это простейший способ описания расстояния между объектами в пространстве признаков.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE }
+Pl_point + geom_line()
+```
+
+По теореме Пифагора
+
+>-  
+$$
+D = \sqrt{(A_2 - A_1)^2 + (B_2 - B_1)^2}
+$$
+
+
+>- Расстояние между объектами выражается просто числом D = `r as.numeric(dist(points))`
+
+>- **At!** Эта мера различия между объектами не единственная, и далеко не всегда правильная (об этом далее).
+
+
+## Усложняем задачу: объектов становится больше двух
+
+```{r echo=FALSE}
+kable(dat2, col.names = c("Объект", "Признак А", "Признак B"), align = "lcc")
+```
+
+
+## Геометрическая интерпретация
+
+
+```{r echo=FALSE}
+pl7 <- ggplot(dat2, aes(x = x, y = y)) + geom_point(size = 4, color = "red") + theme_bw() + xlim(0, 5) + ylim(0, 11)
+
+# for ( i in 1:nrow(dat2)) for (j in i:nrow(dat2)) pl7 <- pl7 + geom_segment(x = dat2$x[i], y = dat2$y[i], xend = dat2$x[j], yend = dat2$y[j], arrow = NULL, size = 1)
+
+pl7 + geom_text_repel(data = dat2, aes(x = x, y = y, label = dat2$object)) + labs(x = "Признак A", y = "Признак В")
+
+```
+
+## Матрица расстояний (Similarity/Dissimilarity matrix)
+
+Когда объектов больше двух, то расстояния между объектами можно выразить **матрицей расстояний**.
+
+```{r, echo = FALSE}
+round(dist(dat2[,-1], diag = TRUE, upper = TRUE), 1)
+```
+
+Охарактеризуйте эту матрицу
+
+>- Квадратная матрица
+>- Симметричная матрица
+
+
+## Усложняем задачу: признаков становится больше двух 
+
+```{r, echo=FALSE}
+dat_mult <- data.frame(dat2, z = c(100, 258, 122, 10000), k = c(0.1, 0.01, 0.09, 0.15))
+
+kable(dat_mult,  col.names = c("Объект", "Признак А", "Признак B", "Признак С", "Признак D"), align = "lcccc")
+```
+
+
+## Геометрическая интрепретация 
+
+Облако точек в n-мерном пространстве значений признаков. 
+
+**At!** Не пытайтесь представить n-мерный объект... Просто работайте с ним.
+
+
+>- Warning
+<center>
+![](images/Shurik.jpg)
+
+</center>
+
+## Эвклидово расстояние в n-мерном пространстве
+
+$$D = \sqrt{\sum(x_{i,j} - x_{i,k})^2}$$
+
+В n-мерном пространстве соблюдаются те же законы, что и на плоскости. 
+
+
+
+## Три способа изображения матрицы расстояний
+
+```{r, echo = FALSE}
+round(dist(dat_mult[,-1], diag = TRUE, upper = TRUE), 1)
+
+round(dist(dat_mult[,-1], diag = TRUE, upper = F), 1)
+
+round(dist(dat_mult[,-1], diag = F, upper = F), 1)
+
+```
+
+Количество значимых чисел в треугольной матрице:
+
+$$N = \frac{n^2 - n}{2}$$ 
+
+## Матрица расстояний в развернутом виде (Unfolded dissimilarity matrix)  
+
+```{r,echo = FALSE}
+round(dist(dat_mult[,-1], diag = F, upper = F), 1)
+as.vector(round(dist(dat_mult[,-1], diag = F, upper = F), 1))
+```
+
+## Результаты простейшего могомерного анализа {.columns-2 .smaller}
+
+**Исходная матрица признаков**
+
+```{r, echo=FALSE}
+kable(dat_mult,  col.names = c("Объект", "Признак А", "Признак B", "Признак С", "Признак D"), align = "lcccc")
+```
+
+<br>
+**Матрица расстояний**
+
+```{r echo=FALSE}
+
+round(dist(dat_mult[,-1], diag = F, upper = F), 1)
+
+```
+
+
+>- Какие объекты наиболее похожи друг на друга?    
+>- Какие объекты наиболее  различны?
+>- В чем проблема данного анализа?
+
+# Простейший анализ реальных многомерных данных
+
+## Пример: Сообщества бентоса акватории Долгой губы (о. Б. Соловецкий, Белое море)
+
+В этом примере используется сокращенный набор данных о бентосе Долгой губы (Нинбург, 1990; Хайтов и др., 2013) --- только численность наиболее обильных видов на 68 станциях.
+
+<div class="smaller">
+- `dolg_abundance.txt` --- данные об обилии 25 видов
+- `dolg_hydrology.txt` --- данные о 4 гидрологических характеристиках: глубина, Температура придонной воды, Соленость, Степень гидратации грунта
+</div>
+
+```{r, echo=FALSE, fig.height=4, fig.width=4.5, purl=FALSE, message=FALSE, warning=FALSE}
+library(ggmap, verbose = FALSE, quietly = TRUE)
+# if (!file.exists("data/map-solovky-stamen.Rda")) {
+#   map1 <- get_stamenmap(bbox = c(left = 35.47, bottom = 64.89, right = 36.3, top = 65.25), zoom = 10, maptype = "toner-lite", crop = TRUE)
+#   save(map1, file = "data/map-solovky-stamen.Rda")
+# } else {
+#   load("data/map-solovky-stamen.Rda")
+# }
+# ggmap(map1) + ggtitle("Solovetsky island")
+
+if (!file.exists("data/map-solovky-google.Rda")) {
+ map2 <- get_googlemap(center = c(lon = 35.86, lat = 65.070), zoom = 10, crop = TRUE, maptype = "satellite")
+ save(map2, file = "data/map-solovky-google.Rda")
+} else {
+ load("data/map-solovky-google.Rda")
+}
+ggmap(map2) + ggtitle("Соловецкие острова")
+```
+
+## Читаем данные
+
+```{r, echo=TRUE}
+abund <- read.table("data/dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
+hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
+```
+
+
+## Вопрос для многомерного анализа
+
+Существуют ли группировки описаний, сходных по населению? 
+
+Задание: Нарисуйте на бумаге как, по вашему мнению, должны располагаться объекты (описания-станции) в n-мерном пространстве признаков, если существует две группировки.
+
+
+
+## Подготовка данных для анализа
+
+Переменные могут быть измерены в разных шкалах
+
+- численность, биомасса и проективное покрытие разных организмов
+- температура воды, соленость и концентрация биогенов
+- Размеры частей тела, количество частей тела, площадь частей тела
+
+Для таких случаев необходима стандартизация величин.
+Этот прием будет постоянно применяться при многомерных анализах, основанных на матричной алгебре.
+
+$$x_{stand} = \frac{x_i - \bar{x}}{\sigma_x}$$
+
+>- **Вопрос:** Какими свойствами обладают стандартизованные величины?
+- Среднее значение равно нулю.
+- Среднеквадратичное отклонение равно единице.
+
+
+## Подготовка данных для анализа
+
+В ряде случаев (особенно в экологических исследованиях) необходимо перевести абсолютные значения в относительные (доли от суммы или от максимума)
+
+$$x_{rel} = \frac{x_i}{\sum x_i} \times 100 \%$$
+
+$$x_{rel} = \frac{x_i}{max(x_i)} \times 100 \%$$
+
+
+## Подготовка данных для анализа {.smaller}
+
+Часто возникает ситуация, когда один признак (или несколько признаков) имеет существенно более высокие абсолютные значения, чем все остальные, или варьирует в более широких пределах, чем остальные признаки.
+
+```{r, echo = FALSE, fig.width = 7, fig.height=3.5}
+scatterplot3d(x = abund$Aricidea_nolani, y = abund$Pontoporeia_femorata, z = abund$Terebellides_stroemi, scale.y = 3, pch = 21, xlab = "Вид 1", ylab = "Вид 2", zlab = "Вид 3",color = "blue")
+```
+
+В такой ситуации необходима _трансформация_ , которая "уравнивает" силу влияния признаков.
+
+По силе эффекта трансформирующие функции распределяются так:
+
+Отсутствие трансформации $\Rightarrow$ Квадратный корень $\Rightarrow$ Корень четвертой степени $\Rightarrow$ Логарифм $log(x_i +1)$ $\Rightarrow$ Присутствие отсутствие (1, 0)
+
+
+## Задание:
+
+На основе датасета, содержащего данные по обилию видов, создайте матрицу, содержащую относительные величины (доли обилия каждого вида в общем обилии организмов на данной станции)
+
+Hint: Воспользуйтесь функцией `apply()`
+
+## Решение
+
+```{r, echo=TRUE}
+total <- apply(abund[, -1], MARGIN = 1,FUN = sum)
+abund_rel <- abund[, -1] / total
+
+head(abund_rel[,1:3])
+```
+
+
+## Знакомимся с пакетом `vegan` (Oksanen et al., 2015)
+
+```{r, echo=TRUE, message=FALSE}
+library (vegan)
+```
+
+- Пакет `vegan` позволяет проводить много типов многомерных анализов (но не все!). 
+- Ориентирован на экологические данные, отсюда много экологических терминов (признаки -- "species", объекты -- "sites")
+- Исчерпывающее описание методов, реализованных в `vegan`, дается в "Numerical ecology" (Legendre & Legendre, 2012) 
+- Альтернатива -- пакет `ade4`
+
+
+## Подготовка данных в пакете `vegan` 
+
+Относительные величины
+```{r, echo=TRUE}
+abund_rel <- decostand(abund[,-1], method = "total", MARGIN = 1)
+head(abund_rel[, 1:3])
+```
+
+## Задание
+
+С помощью пакета `vegan` создайте еще два датасета:
+
+- `abund_stand` -- Стандартизованные величины обилий видов
+- `abund_log` -- Логарифмированные величины обилий видов
+
+## Решение: стандартизация в `vegan` 
+
+
+```{r, echo=TRUE}
+abund_stand <- decostand(abund[,-1], method = "standardize", MARGIN = 2)
+head(abund_stand[, 1:3])
+```
+
+## Решение: log-трансформация  в `vegan` 
+
+```{r, echo=TRUE}
+abund_log <-  decostand(abund[,-1], method = "log", MARGIN = 2)
+head(abund_log[, 1:3])
+```
+
+
+## Матрицы расстояний в пакете `vegan`
+
+```{r, echo=TRUE}
+dist_init <- vegdist(abund[,-1], method = "euclidean")
+dist_stand <- vegdist(abund_stand, method = "euclidean")
+dist_log <- vegdist(abund_log, method = "euclidean")
+dist_rel <- vegdist(abund_rel, method = "euclidean")
+```
+
+
+## Существуют ли группировки в n-мерном облаке точек? 
+
+Самый простой анализ - частотное распределение расстояний между объектами.    
+Позволяет понять есть ли сгущения в облаке точек в n-мерном пространстве признаков.
+
+**Задание:** Создайте вектор, соответствующий развернутой (unfolded) матрице относительных обилий видов, и постройте частотную гистограмму для этого вектора.    
+
+## Решение
+
+```{r, echo=TRUE}
+disatances <- data.frame(Init = as.numeric(dist_init), 
+                        Stand = as.numeric(dist_stand),
+                        Log = as.numeric(dist_log),
+                        Rel = as.numeric(dist_rel))
+
+
+Pl_hist <- ggplot(disatances) + geom_histogram()
+Pl_init <- Pl_hist + aes(x = Init) + ggtitle("Исходные данные") + labs(x = "Евклидово расстояние")
+Pl_stand <- Pl_hist + aes(x = Stand) + ggtitle("Стандартизация") + labs(x = "Евклидово расстояние")
+Pl_log <- Pl_hist + aes(x = Log)  + ggtitle("Логарифмирование")+ labs(x = "Евклидово расстояние")
+Pl_rel <- Pl_hist + aes(x = Rel) + ggtitle("Относительные величины")+ labs(x = "Евклидово расстояние")
+
+```
+
+## Существуют ли группировки? 
+
+
+```{r, echo=FALSE, fig.height=5}
+grid.arrange(Pl_init, Pl_stand, Pl_log, Pl_rel, ncol = 2 )
+
+```
+
+## Структура облака точек
+
+Если в n-мерном облаке точек присутствуют несколько "сгущений", то расстояния между объектами делятся на внутригрупповые (пик в области малых значений расстояний) и межгрупповые (пик в области высоких значений)
+
+```{r}
+Pl_rel + annotate(geom = "text", x = 0.55, y = 220, label = "Внутригрупповые") + annotate(geom = "text", x = 0.9, y = 120, label = "Межгрупповые") + labs(x = "Мера расстояния", y = "Частота", title = "")
+```
+
+
+
+
+# Меры сходства и различия между объектами (Resemblance coefficients)
+
+## От того в чем измерено различие многое зависит
+
+Мы уже знаем, что от способа выражения признаков очень многое зависит.
+
+Однако еще сильнее анализ зависит от того с помощью какой величины (Resemblance coefficients) описывается степень различия между объектам. 
+
+**Задание:** 
+1. На базе датасета `abund_log`, используя функцию `vegdist()` рассчитайте матрицу различий между объектами (`dist_eucl`), основанную на евклидовом расстоянии.
+
+2. На том же датасете постройте матрицу различий (`dist_bray`), основанную на методе, называемом 'bray'.
+
+3. Разверните обе матрицы в векторы.
+
+4. Постройте для этих векторов частотные диаграммы.
+
+
+## Решение
+
+```{r, echo=TRUE}
+dist_eucl <- vegdist(abund_log, method = "euclidean")
+dist_bray <- vegdist(abund_log, method = "bray")
+
+dists <- data.frame(Euclidean = as.numeric(dist_eucl), 
+                    Bray = as.numeric(dist_bray))
+
+Pl_hist <- ggplot(dists) + geom_histogram()
+Pl_eucl <- Pl_hist + aes(x = Euclidean)
+Pl_bray <- Pl_hist + aes(x = Bray)
+
+```
+
+## Решение
+
+```{r, echo=TRUE}
+grid.arrange(Pl_eucl, Pl_bray, ncol = 2)
+```
+
+
+
+
+
+## Сходства и различия
+
+- Сходство (S) достигает максимума, когда объекты обладают идентичными признаками,
+различиe (D), наоборот - достигает минимума.
+
+- Обычно (но не всегда) коэффициенты сходства распределены от 0 до 1.
+- Тогда $D = 1 - S$, или $D = \sqrt{1 - S}$, или $D = \sqrt{1-S^2}$.
+- Показатели можно нормировать. $D_{norm} = \frac{D}{D_{max}}$, или $D_{norm} = \frac{D - D_{min}}{D_{max} - D_{min}}$.
+
+В большинстве случаев нас будут интересовать меры различия между объектами
+
+
+
+## Проблема двойных нулей (Double zeros probem)
+
+```{r, echo = FALSE}
+dat5 <- (data.frame(Descriptors = c("D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10"), Object1 = c(0, 0, 0, 0, 0, 0, 0, 2, 2, 1), Object2 = c(0, 0, 0, 0, 0, 4, 5, 0, 0, 1)))
+
+dat6 <- data.frame(t(dat5[,-1]))
+names(dat6) <- dat5$Descriptors
+dat6
+```
+
+О чем говорит то, что признаки D1, D2, D3, D4, D5 не были отмечены у двух объектов?
+
+>- Вариант 1. Это ничего не означает. Признаки D1, D2, D3, D4, D5 можно не учитывать при сравнении объектов 1 и 2.
+>- Вариант 2. Отсутствие признака - дополнительное сходство между объектами. Сходство между объектами 1 и 2 повышается так как у них нет признаков D1, D2, D3, D4, D5, которые возможно есть у других объектов.
+
+>- От выбора одного из двух вариантов зависит какой коэффициент использовать в анализе.
+
+
+## Два типа коэффициентов
+
+Меры различия *не учитывающие* двойные нули. Эти коэффициенты не изменяются если в данные будут добавлены двойные нули (например, при увеличении количества описанных объектов).
+
+Примеры:
+
+- Евклидово расстояние
+- расстояние по Манхеттену.
+
+Меры различия *учитывающие* двойные нули. Эти коэффициенты изменяются при появлении двойных нулей. Сходство возрастает за счет того, что отсутствие признака считается тоже сходством.
+
+Пример:
+
+- Коэффициенты корреляции.
+
+
+
+## Меры расстояния, или метрики
+
+Свойства:
+
+- Если $a = b$, то $D(a, b) = 0$
+- Симметричность $D(a, b) = D(b, a)$
+- Справедливо неравенство треугольника $D(a,b) + D(b,c) \geq D(a,c)$
+
+_Важно:_ метрики неадекватно оценивают степень различия при большом количестве нулей.Очень чувствительны к выбросам.
+
+
+## Наиболее популярные меры расстояния
+
+<div class = "columns-2">
+
+**Нестандартизованные**
+
+- Евклидово расстояние:
+
+$$D = \sqrt{\sum(x_{i,j} - x_{i,k})^2}$$
+
+- Расстояние по Манхеттену (Manhattan metric, taxicab metric, city-block metric):
+
+$$D = \sum \mid x_{i,j} - x_{i,k} \mid$$
+
+<br /><br /><br /><br /><br /><br /><br />
+
+**Стандартизованные**
+
+Удобнее так как признаки могут быть измерены в разных шкалах
+
+- Расстояние по Канберре (Canberra metric):
+
+$D = \frac{1} {p} \sum \frac {\mid x_{i,j} - x_{i,k} \mid} {x_{i,j}+ x_{i,k}}$
+
+- Расстояние $\chi^2$
+
+$\chi^2 = \sqrt{ \sum {\frac{1}{c_i}} (x_{i,j} - x_{i,k})^2}$
+
+- Евклидово расстояние, вычисленное по относительным величинам.
+
+</div>
+
+## Неметрические коэффициенты различия
+
+- Корреляция Браве-Пирсона:
+$$ R = \frac {cov(X, Y)}{\sqrt{\sigma_x^2\sigma_y^2}} $$
+
+Коэффициент Браве-Пирсона варьирует от -1 до 1.
+
+Обычно используется в R анализе
+
+- Коэффициент Брея-Куртиса (Bray-Curtis dissimilarity):
+$$D = \frac{\sum \mid x_{i,j} - x_{i,k} \mid} {\sum x_{i,j} + \sum x_{i,k}}$$
+
+Это самый распространенный коэффициент в экологии.
+
+
+## Коэффициенты для бинарных данных
+
+В основе лежит четырехпольная таблица
+
+$$\begin{vmatrix} \, & + & - \\ + & a & b \\ - & c & d \end{vmatrix}$$
+
+- a - сходство объектов по наличию признака
+- b - различие
+- c - различие
+- d - сходство по отсутствию признака
+
+
+## Коэффициенты для бинарных данных
+
+
+- Доля несовпадений:
+
+$$D = \frac{b+c}{a+b+c}$$
+
+- Коэффициент Жаккара:
+
+$$S = \frac{a}{a+b+c}$$
+
+- Коэффициент Сёренсена:
+
+$$S = \frac{2a}{2a + b + c}$$
+
+_NB!_ Коэффициент Сёренсена - это коэффициент Брея-Куртиса, вычисленный для значений, оцененных как 1 или 0.
+
+
+## Коэффициенты для бинарных данных
+
+- $\phi$-корреляция Пирсона
+
+$$\phi = \frac{ad-bc}{(a+b)(c+d)(a+c)(b+d)}$$
+
+Используется в R-анализе
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+## Коэффициент Говера
+
+
+Обобщенный коэффициент, который применяется для случаев, когда одни признаки объекта описаны, как количественные величины, а другие - как бинарные данные (или даже качественные данные).
+
+
+$$ D = \frac{1}{p} \frac{\sum W_i\dfrac{\mid x_{i,j} - x_{i,k} \mid}{\max x_{i,j} - \min x_{i,k}}}{\sum W_i}$$
+
+$W_i$ = 0 Если отсутствует информация o $x_{i,j}$ и/или $x_{i,k}$ отсутствует
+$W_i$ = 1 Если присутствует информация как о $x_{i,j}$ так и о $x_{i,k}$
+
+
+## Отчего зависит выбор коэффициента?
+
+1. От природы материала (признаки могут иметь количественную, бинарную и качественную оценку).
+2. От характера тестируемой гипотезы (какой аспект природы сходства-различия хочет выразить автор).
+3. В экологии: от того, насколько мы хотим учитывать вклад редких и малочисленных видов.
+4. От взглядов исследователя на природу сходства/различия между объектами.
+5. От типа анализа (R или Q)
+
+## Многие показатели взаимосвязаны и, часто, взаимозаменяемы
+
+```{r}
+ggplot(dists, aes(x = Euclidean, y = Bray)) + geom_point() + theme_bw()
+```
+
+
+
+
+# Ординация -- основной метод описания многомерных данных
+
+## Многомерные объекты, их свойства и внешние факторы
+
+Элемент анализа | (син)экология | морфология | молекулярная биология |
+----------------| ------------- | ---------- | --------------------- |
+Объекты | площадки / пробы | особи / клетки и т.п. | особи / клетки и т.п. |
+Собственные свойства объектов | численность / биомасса особей разных видов | измерения, свойства | интенсивность экспрессии гена/пептида |
+Внешние факторы | свойства среды | свойства среды / особей / клеток | свойства среды / особей / клеток |
+
+
+
+**По аналогии с обномерными линейными моделями**
+
+- Объекты -- Измерения   
+- Свойства объектов -- Зависимая переменная
+- Внешние факторы -- Предикторы
+
+
+## Ординация
+
+__Ординация__ (лат. _ordinatio_ --- расположение в порядке) --- это упорядочивание объектов вдоль некоторых осей, определяющих варьирование свойств этих объектов.
+
+Если у объектов всего два свойства, то ординация имеет вид облака точек в двух осях.
+
+```{r}
+ggplot(abund_log, aes(x = Scoloplos_armiger, y = Terebellides_stroemi)) + geom_point(color = "red", size = 4) + labs(x = "Вид 1", y = "Вид 2")
+```
+
+Аналогия ординации с одномерными методами -- просто числовой ряд. 
+
+## Ординация в сокращенном пространстве признаков (Оrdination in reduced space)
+
+Если признаков становится больше двух, то визуализация взаиморасположения объектов в n-мерном пространстве признаков становится невозможной. Для этого применяют разные способы получения "образа" n-мерного облака:
+
+**Старинные методы:**
+
+- Висконсинская полярная ординация
+
+**Современные методы:**
+
+- Метрическое многомерное шкалирование (MDS)
+- Неметричекое многомерное шкалирование (nMDS)
+- Метод главных компонент (PCA)
+- Корреспондентный анализ (CA)
+
+
+## Висконсинская полярная ординация 
+
+Это простейший прием ординации в сокращенном пространстве
+
+Шаг 1. Подготовка данных для анализа.
+
+Логарифмирование мы провели ранее
+
+```{r, echo=TRUE}
+row.names(abund_rel) <- abund$Station
+```
+
+
+## Висконсинская полярная ординация 
+
+Шаг 2. Вычисление матрицы сходства/различия между объектами.   
+Из дидактических соображений возьмем матрицу Евклидовых расстояний. 
+
+```{r, message=FALSE, echo=TRUE}
+library(vegan)
+E_dist <- vegdist(abund_log, method = "euclidean")
+```
+
+
+## Висконсинская полярная ординация 
+
+Шаг 3. Найдем наиболее различающиеся объекты (максимальное Евклидово расстояние между ними). 
+
+```{r, echo=FALSE}
+unfolding <- function(x, method = "euclidean") {
+  n <- nrow(x)
+  N <- (n^2 - n)/2
+  unfold <- data.frame(i = 1:N, Object_j = NA, Object_k = NA, Distance = NA)
+  pos <- 0
+  for(i in 1:(n-1)) for(j in (i+1):n) {
+    pos <- pos + 1
+    unfold$Object_j[pos] <- i
+    unfold$Object_k[pos] <- j
+  }
+  unfold$Distance <- as.vector(vegdist(x, method = method))
+  unfold
+}
+
+polarord <- function(x,...) {
+  dist <- unfolding(x)
+  polar_distance <- max(dist$Distance)
+  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
+  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
+  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
+  for(i in 1:nrow(x)) {
+    
+    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
+    if (i != Object_polus1 & i != Object_polus2) BC <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1 & dist$Object_k == i)]
+    if (i != Object_polus1 & i != Object_polus2) AB <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2 & dist$Object_k == i)]
+    if (i != Object_polus1 & i != Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
+    
+  }
+  Polar_coord$Coord[Object_polus1] <- 0
+  Polar_coord$Coord[Object_polus2] <- polar_distance
+  Polar_coord
+}
+
+
+New_coord <- polarord(abund_log)
+
+```
+
+```{r}
+dist <- unfolding(abund_log) # Пользовательская функция
+
+dist[dist$Distance == max(dist$Distance), ]
+```
+
+Эти два объекта и задают ось, вдоль которой будет производиться ординация.
+
+## Висконсинская полярная ординация 
+
+Шаг 4. Координаты каждого из объектов на этой оси могут быть найдены, согласно правилам треугольника 
+
+Возьмем любую другую точку, например "S2"
+
+```{r, echo=FALSE}
+a <- dist$Distance[dist$Object_j == 44 & dist$Object_k == 57]
+
+b <- New_coord$Coord[New_coord$Object == 2]
+
+c <- sqrt(a^2 - b^2) 
+
+d <- dist$Distance[dist$Distance == max(dist$Distance)]
+
+point <- data.frame(X = c(0, d, b),Y = c(0, 0, c))
+
+ggplot(point, aes(x = X, y = Y))  + 
+  geom_text(aes(0, -4), label = "S44") + 
+  geom_text(aes(d, -4), label = "S57") + 
+  geom_segment(x = 0, xend = d, y = 0, yend = 0, size = 2, color = "red") + 
+  geom_text(x = 15, y = 3, label ="Полярная ось №1") + 
+  geom_segment(x = 0, xend = b, y = 0, yend=c, size = 1, color = "black") + 
+  geom_segment(x = d, xend = b, y = 0, yend = c, size = 1, color = "black") + 
+  geom_point(size = 4, color = "blue") + 
+  geom_text(x = b, y = (c + 4), label = "S2") + 
+  geom_segment(x = b, xend = b, y = 0, yend=c, size = 1, color = "black", linetype = 2) +
+  geom_point(aes(x = b, y = 0), size = 4, shape = 22,  fill ="yellow") + 
+  geom_text(x = 5, y = 8, label = "D 44-2") + 
+  geom_text(x = 25, y = 8, label = "D 57-2") + 
+  geom_text(x = 15, y = -4, label = "D 44-57") + 
+  ggtitle("Координаты точек на полярной оси") + 
+  ylim(-5, 45)
+```
+
+## Висконсинская полярная ординация 
+
+Шаг 5. Вычисляем координаты на полярной оси для каждого объекта. 
+
+```{r, echo=FALSE}
+polarord <- function(x, ...) {
+  dist <- unfolding(x)
+  polar_distance <- max(dist$Distance)
+  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
+  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
+  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
+  for(i in 1:nrow(x)) {
+    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
+    if (i != Object_polus1 & i != Object_polus2) BC <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1 & dist$Object_k == i)]
+    if (i != Object_polus1 & i != Object_polus2) AB <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2 & dist$Object_k == i)]
+    if (i != Object_polus1 & i != Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
+  }
+  Polar_coord$Coord[Object_polus1] <- 0
+  Polar_coord$Coord[Object_polus2] <- polar_distance
+  Polar_coord
+}
+
+New_coord <- polarord(abund_log)
+# 
+# ggplot(New_coord, aes(x=Coord, y =0)) + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 2, color = "red") + geom_point(aes(fill = hydrol$Depth), position = position_jitter(width = 0, height=0.1), size = 4, shape = 21) + ylim(-1, 1) + scale_fill_gradient(low = "cyan", high = "darkblue") + xlab("New coordinate") + ylab("")  + labs(fill = "Depth") 
+# 
+
+
+ggplot(New_coord, aes(x=Coord, y =0)) + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 2, color = "red") + geom_point(fill = "yellow", position = position_jitter(width = 0, height=0), size = 4, shape = 21) + ylim(-1, 1) 
+```
+
+
+## Висконсинская полярная ординация 
+
+Шаг 6. При необходимости, находим следующую пару наиболее несходных объектов и вычисляем координаты для каждой точки на новой оси.  
+
+_At!_ Одновременное изображение информации об обеих полярных осях на одной диаграмме невозможно!  
+Мы не знаем как взаимосвязаны эти оси. Они могут быть неортогональны. 
+
+
+## Интерпретация результатов ординации 
+
+Сама по себе ординация - это лишь визуализация структуры многомерных данных.
+
+Исследователю важно объяснить, с какими внешними факторами связана наблюдаемая ординация. 
+
+## Пример: Структура сообщества и градиент температуры
+
+С помощью Висконсинской полярной ординации мы получили градиент точек на полярной оси.
+
+Этот градиент связан с внешним фактором - температурой.
+
+```{r}
+ggplot(New_coord, aes(x=Coord, y =0)) + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 1, color = "black") + geom_point(aes(fill = hydrol$Temp), position = position_jitter(width = 0, height=0.1), size = 4, shape = 21) + ylim(-1, 1) + scale_fill_gradient(low = "yellow", high = "red") + xlab("Координаты на полярной оси №1") + ylab("")  + labs(fill = "Температура придонной воды") + theme(legend.position = "bottom") 
+ 
+```
+
+
+
+
+
+
+
+## Две схемы интерпретации
+
+Методы интерпретации многомерных данных делят на две большие группы (ter Braak, 1987; Legendre & Legendre, 2014):
+
+- Непрямая интерпретация (*indirect gradient analysis*, *indirect comparison*) 
+
+- Прямая интерпретация (*direct gradient analysis*, *direct comparison*) 
+
+
+## Методы непрямой интерпретации {.columns-2 .smaller}
+
+Синоним -- неограниченная ординация (_unconstrained ordination_).
+
+Мы строим ординацию (или используем иной тип визуализации), основанную на свойствах самих объектов, далее пытаемся связать эту ординацию с внешними факторами. 
+
+
+**Методы неограниченной ординации:**
+
+- Висконсинская полярная ординация
+- неметрическое многомерное шкалирование (_non-Metric Multidimensional Scaling_, nMDS) 
+- анализ главных компонент (_Principal Component Analysis_, PCA)
+- корреспондентный анализ (_Correspondence Analysis_, CA).
+
+После построения ординации на нее накладывают информацию о внешних факторах:    
+
+<br>
+**Простейший способ:** Построить точечные диаграммы, отражающие связь координат осей ординации с той или иной внешней переменной.
+
+
+```{r, fig.width=5}
+Pl_temp <- qplot(hydrol$Temp, New_coord$Coord) + labs(x = "Температура  воды", y = "Координаты на \n полярной оси №1")
+
+Pl_depth <- qplot(hydrol$Depth, New_coord$Coord) + labs(x = "Глубина", y = " ")
+
+grid.arrange(Pl_temp, Pl_depth, ncol = 2)
+
+```
+
+
+
+## Задание
+
+Вычислите значения координат полярной ординации, основанной на относительных обилиях видов (`abund_rel`) и постройте точечную диаграмму, отражающую связь этой ординации с глубиной, температурой? соленостью и обводненностью грунта.
+
+## Решение {.smaller}
+
+```{r, echo=TRUE}
+New_coord2 <- polarord(abund_rel)
+
+Pl_1 <- qplot(hydrol$Temp, New_coord2$Coord) + labs(x = "Температура", y = "Координаты ординации")
+Pl_2 <- qplot(hydrol$Depth, New_coord2$Coord) + labs(x = "Глубина", y = "Координаты ординации")
+Pl_3 <- qplot(hydrol$Sal, New_coord2$Coord) + labs(x = "Соленость", y = "Координаты ординации")
+Pl_4 <- qplot(hydrol$Water_content, New_coord2$Coord) + labs(x = "Обводненность", y = "Координаты ординации")
+
+```
+
+## Решение {.smaller}
+
+```{r, fig.height=5 , echo=TRUE}
+grid.arrange(Pl_1, Pl_2, Pl_3, Pl_4, ncol = 2)
+```
+
+
+
+
+
+
+## Методы прямой интерпретации {.columns-2 .smaller}
+
+Синоним -- ограниченная ординация (_constrained ordination_). 
+
+Для построения ординации в один анализ включаются и свойства объектов и внешние факторы. Итоговая ординация отражает результат взаимосвязи свойств объектов с внешними факторами.       
+
+Методы прямой ординации позволяют тестировать гипотезы о влиянии различных внешних переменных на свойства многомерных объектов:
+
+**Методы ограниченной ординации:**
+
+- анализ избыточности (_Redundancy Analysis_, RDA)
+- канонический корреспондентный анализ (_Canonical Correspondence Analysis_, CCA).
+
+
+## Summary
+
+>- Существует два подхода к анализу многомерных данных:
+    -  подход, основанный на линейной алгебре,
+    -  подход, основанный на исследовании матриц сходства/различия между объектами.
+- Выбор коэффициентов сходств/различия - непростая задача, решение которой зависит от структуры материала и поставленных задач. Разные коэффициенты потенциально могут давать разные результаты. 
+- Получить важную информацию о взаиморасположении объектов можно с помощью некоторых простейших методов. 
+
+
+## Что почитать 
+
+* Legendre P., Legendre L. (1998) Numerical ecology. Second english edition. Elsevier, Amsterdam. (Фундаментальный труд, описывающий большинство методов. Дается исчерпывающее обсуждение разнообразных коэффициентов сходства/различия)
+* Zuur, A. F., Ieno, E. N., Smith, G. M. Analysing Ecological Data. Springer 2007 (Практически все то же самое, что в L&L, но написанное простым языком)
+* Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth. (Очень доходчиво написанное руководство, дающее общее представление о "механике" работы многомерных методов)
+* Миркин Б.М., Розенберг Г.С. Фитоценология. Принципы и методы. М., 1978. (Руководство написано в докомпьютерную эпоху, но простейшие методы изложены очень хорошо)
+* Василевич В.И. Статистические методы в геоботанике. - Л.: Наука, 1969.
+* Дюран Б., Оделл П. Кластерный анализ. М.: Статистика, 1977

@@ -4,18 +4,23 @@ title: Презентации и данные
 
 ## 1. Знакомство с многомерными данными. (14 февраля, ВХ)
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages("vegan") -->
-<!-- ``` -->
+```{r eval=FALSE}
+install.packages("vegan")
+```
 
-<!-- - Презентация [html](01_multivariate_data_and_dissimilarities.html) -->
-<!-- - [код R](01_multivariate_data_and_dissimilarities_code.R) -->
-<!-- - Данные [Protein.txt](data/Protein.txt)  -->
+- Презентация [html](01_multivariate_data_and_dissimilarities.html)
+- [код R](01_multivariate_data_and_dissimilarities_code.R)
+<!-- - Данные [Protein.txt](data/Protein.txt) -->
+- Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt)
 
-<!-- **Данные для самостоятельной работы** -->
 
-<!-- - Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)   -->
-<!-- *Оригинальные данные В. М. Хайтова*    -->
+
+**Данные для самостоятельной работы**
+
+- Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)
+*Оригинальные данные В. М. Хайтова*
+
+
 
 ## 2. nMDS, envfit, ordisurf (21 февраля, МВ)
 
