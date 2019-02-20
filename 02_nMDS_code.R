@@ -15,7 +15,6 @@ library(broom)
 # Графики
 library(ggmap)
 theme_set(theme_bw())
-library(cowplot)
 
 # install.packages("devtools")
 # devtools::install_github("gavinsimpson/ggvegan")

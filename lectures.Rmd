@@ -14,7 +14,6 @@ install.packages("vegan")
 - Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt)
 
 
-
 **Данные для самостоятельной работы**
 
 - Обилие полихет на литорали Белого моря [Polychaetes_species.csv](data/Polychaetes_species.csv) | параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)
@@ -24,17 +23,40 @@ install.packages("vegan")
 
 ## 2. nMDS, envfit, ordisurf (21 февраля, МВ)
 
+```{r eval=FALSE}
+# Чтение файлов
+install.packages(readxl)
+
+# Обработка данных
+install.packages(tidyr)
+install.packages(dplyr)
+install.packages(broom)
+
+# Карты
+install.packages(ggmap)
+
+# Графики из vegan при помощи ggplot2
+install.packages("devtools")
+devtools::install_github("gavinsimpson/ggvegan")
+```
+
+
 <!-- - Презентация [html](02_nMDS.html) -->
-<!-- - [код R](02_nMDS_code.R) -->
-<!-- - Данные [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+- [код R](02_nMDS_code.R)
 
-<!-- **Данные для самостоятельной работы** -->
+- Данные для карты [data/dist_spb.xlsx](data/dist_spb.xlsx) | [dist_spb_dat.RData](data/dist_spb_dat.RData)
+- Данные о симбионтах мидий (Krapivin 2017, Krapivin et al. 2018) [Krapivin_2017_Medulis-symb.tab](data/Krapivin_2017_Medulis-symb.tab)
 
-<!-- - Растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)   -->
-<!-- Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*  -->
 
-<!-- - Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)   -->
-<!-- Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.* -->
+**Данные для самостоятельной работы**
+
+- Фауна Долгой губы [dolg_abundance.txt](data/dolg_abundance.txt) | [dolg_hydrology.txt](data/dolg_hydrology.txt) (Данные В.М.Хайтова)
+
+- Растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)
+Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*
+
+- Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)
+Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.*
 
 ## 3. Связь между наборами данных. Тест Мантела (28 февраля, ВХ)
 

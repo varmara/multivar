@@ -133,7 +133,6 @@ library(broom)
 # Графики
 library(ggmap)
 theme_set(theme_bw())
-library(cowplot)
 
 # Многомерная статистика
 library(vegan)
