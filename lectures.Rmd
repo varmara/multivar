@@ -25,15 +25,15 @@ install.packages("vegan")
 
 ```{r eval=FALSE}
 # Чтение файлов
-install.packages(readxl)
+install.packages("readxl")
 
 # Обработка данных
-install.packages(tidyr)
-install.packages(dplyr)
-install.packages(broom)
+install.packages("tidyr")
+install.packages("dplyr")
+install.packages("broom")
 
 # Карты
-install.packages(ggmap)
+install.packages("ggmap")
 
 # Графики из vegan при помощи ggplot2
 install.packages("devtools")
