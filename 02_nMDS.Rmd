@@ -1,5 +1,5 @@
 ---
-title: "Ординация. Многомерное шкалирование."
+title: "Неметрическое многомерное шкалирование, envfit, ordisurf"
 subtitle: "Анализ и визуализация многомерных данных с использованием R"
 author: Марина Варфоломеева, Вадим Хайтов
 presenters: [{
@@ -11,6 +11,7 @@ output:
   widescreen: true
   css: assets/my_styles.css
   logo: assets/Linmod_logo.png
+  df_print: paged
 ---
 
 ##
@@ -18,7 +19,6 @@ output:
 - Неметрическое многомерное шкалирование
 - Как работает неметрическое многомерное шкалирование
 - Оценка качества подгонки ординации
-- Сравнение ординаций
 - Трактовка результатов ординации
 
 ### Вы сможете
@@ -32,614 +32,710 @@ output:
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+opts_chunk$set(message = FALSE, tidy = FALSE, fig.width = 5, fig.height = 4, warning = FALSE)
 ```
 
-# Общие принципы ординации объектов
+# Проблема изображения многомерных данных
 
-## Классификация методов ординации
+## Облако точек в многомерном пространстве
 
-__Ординация__ (лат. _ordinatio_ --- расположение в порядке) --- это упорядочивание объектов вдоль некоторых осей, определяющих варьирование свойств этих объектов.
+Когда признаков много, можно представить все объекты как облако точек в многомерном пространстве.
 
-Элемент | (син)экология | морфология | молекулярная биология |
---------| ------------- | ---------- | --------------------- |
-Объекты | площадки / пробы | особи / клетки и т.п. | особи / клетки и т.п. |
-Собственные свойства объектов | численность / биомасса особей разных видов | измерения, свойства | интенсивность экспрессии гена/пептида |
-Внешние факторы | свойства среды | свойства среды / особей / клеток | свойства среды / особей / клеток |
+![](./images/Migration-DonMcCullough-Flickr.jpg)
 
-Методы ординации делят на две большие группы (ter Braak, Prentice, 1988):
-
-- Прямая ординация (_direct ordination_ = _direct gradient analysis_) --- когда мы проверяем, влияют ли непосредственно на свойства объектов измеренные внешние факторы.
-
-- Непрямая ординация (_indirect ordination_ = _indirect gradient analysis_) --- когда мы пытаемся найти какие-то закономерности изменения свойств самих объектов, и затем пытаемся связать их с внешними факторами.
-
-## Прямая ординация
-
-__Прямая ординация__ --- упорядочивание объектов с разными свойствами вдоль осей, которые отражают значения переменных. (Например, упорядочение площадок с разным обилием видов в зависимости от параметров среды).
-
-В самом простом случае --- это ординация в осях самих внешних переменных. Но, поскольку обычно переменных больше чем 2--3, обычно пользуются осями, искуственно созданными как функции от нескольких переменных.
-
-Синоним --- ограниченная ординация (_constrained ordination_). 
-
-Методы прямой ординации позволяют тестировать гипотезы о влиянии различных внешних переменных на свойства объектов:
-
-- анализ избыточности (_Redundancy Analysis_, RDA)
-- канонический корреспондентный анализ (_Canonical Correspondence Analysis_, CCA).
-
-## Непрямая ординация
-
-__Непрямая ординация__ --- упорядочивание происходит вдоль направления изменения свойств объектов.
-
-Используются только признаки объектов, и только затем для интерпретации результатов используется информация о значениях других переменных.
-
-Синоним --- неограниченная ординация (_unconstrained ordination_). 
-
-Методы непрямой ординации:
-
-- неметрическое многомерное шкалирование (_non-Metric Multidimensional Scaling_, nMDS)
-- анализ главных компонент (_Principal Component Analysis_, PCA)
-- корреспондентный анализ (_Correspondence Analysis_, CA).
+Migration by Don McCullough
+on [Flickr](https://flic.kr/p/fEFhCj)
 
 
-## Пример: Сообщества бентоса акватории Долгой губы (о. Б. Соловецкий, Белое море)
+## Для изображения N объектов в идеале нужно N-1 измерений
 
-В этом примере используется сокращенный набор данных о бентосе Долгой губы (Нинбург, 1990; Хайтов и др., 2013) --- только численность наиболее обильных видов на 68 станциях.
+- 2 объекта = 1D прямая
+- 3 объекта = 2D плоскость
+- 4 объекта = 3D объем
+- ...
+- N объектов = (N-1)-мерное пространство
 
-<div class="smaller">
-- `dolg_abundance.txt` --- данные об обилии 25 видов
-- `dolg_hydrology.txt` --- данные о 4 гидрологических характеристиках: глубина, Температура придонной воды, Соленость, Степень гидратации грунта
-</div>
+## Многомерное пространство сложно изобразить. Есть два пути:
 
-```{r, echo=FALSE, fig.height=4, fig.width=4.5, purl=FALSE, message=FALSE, warning=FALSE}
-library(ggmap, verbose = FALSE, quietly = TRUE)
-# if (!file.exists("data/map-solovky-stamen.Rda")) {
-#   map1 <- get_stamenmap(bbox = c(left = 35.47, bottom = 64.89, right = 36.3, top = 65.25), zoom = 10, maptype = "toner-lite", crop = TRUE)
-#   save(map1, file = "data/map-solovky-stamen.Rda")
-# } else {
-#   load("data/map-solovky-stamen.Rda")
+- Выбрать наиболее информативную проекцию (не все можно хорошо спроецировать).
+- Сохранить отношения между объектами (придется исказить расстояния).
+
+<img src="images/BlackShadows-FerranJorda-Flickr.jpg" alt="Ежик в тумане" height=400px>
+
+black shadows for a white horses / les negres ombres dels cavalls blancs by  Ferran Jordà
+on [Flickr](https://flic.kr/p/9XJxiL)
+
+
+## Неметрическое многомерное шкалирование
+
+### Nonmetric Multidimensional Scaling (nMDS)
+
+Метод визуализации отношений между объектами в пространстве с небольшим числом измерений (обычно 2).
+
+Исходные данные --- матрица расстояний между объектами в многомерном пространстве.
+
+nMDS ординация старается сохранить отношения между объектами.
+
+## Карта пригородов Санкт-Петербурга
+
+```{r include=FALSE, purl=FALSE}
+# library(readxl)
+# library(tidyr)
+# library(dplyr)
+# library(geonames)
+# dist_spb <- read_excel("data/dist_spb.xlsx", sheet = "dist")
+# D <- dist_spb[, -1] %>%
+#   as.matrix() %>%
+#   `rownames<-`(dist_spb$name) %>%
+#   as.dist()
+# 
+# options(geonamesHost="api.geonames.org", geonamesUsername="username")
+# GNsearchMy <- function(x){
+#   res <- GNsearch(name = x, cities = "cities500")
+#   return(res[1, c("name", "lng", "lat", "population")])
 # }
-# ggmap(map1) + ggtitle("Solovetsky island")
-
-if (!file.exists("data/map-solovky-google.Rda")) {
- map2 <- get_googlemap(center = c(lon = 35.86, lat = 65.070), zoom = 10, crop = TRUE, maptype = "satellite")
- save(map2, file = "data/map-solovky-google.Rda")
-} else {
- load("data/map-solovky-google.Rda")
-}
-ggmap(map2) + ggtitle("Solovetsky island")
+# GNresult <- sapply(dist_spb$name, GNsearchMy, simplify = T)
+# 
+# # Координаты городов
+# coord_spb <- GNresult %>%
+#   t() %>%
+#   as.data.frame() %>%
+  # mutate(name = rownames(.), lng = as.numeric(lng), lat = as.numeric(lat), population = as.numeric(population))
+## Вручную Петербург, Зеленогорск и Павловск
+# 
+# 
+# # Матрица расстояний
+# dist_spb <- read_excel("data/dist_spb.xlsx", sheet = "dist")
+# D <- as.matrix(dist_spb[, -1]) %>%
+#   `rownames<-`(dist_spb$name) %>%
+#   as.dist()
+# 
+# # Координаты городов
+# coord <- read_excel("data/dist_spb.xlsx", sheet = "coord")
+# 
+# # Скачиваем карту в пределах bounding box
+# my <- matrix(c(range(coord$lng), range(coord$lat)) + c(-0.4, 0.8, -0.1, 0.1), 2, 2, dimnames = list(c("x", "y"), c("min", "max")), byrow = T)
+# map_dat <- get_map(location = my, maptype = "watercolor")
+# save(map_dat, file = "data/dist_spb_dat.RData")
 ```
 
-## Читаем данные
+```{r gg-spb, message = FALSE, echo = FALSE, fig.height=5, fig.width=7}
+# Загрузка пакетов ###############################
 
-```{r}
-abund <- read.table("data/dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
-hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
-```
+# Чтение файлов
+library(readxl)
 
-## Задание: Прямая ординация станций в осях Температуры и Солености
+# Обработка данных
+library(tidyr)
+library(dplyr)
+library(broom)
 
-Постройте диаграмму, отражающую ординацию станций в осях Температуры и Солености.
+# Графики
+library(ggmap)
+theme_set(theme_bw())
+library(cowplot)
 
-Модифицируйте график так, чтобы была еще видна связь с суммарным обилием видов в пробах.
-
-
-## Прямая ординация станций в осях Температуры и Солености
-
-### Решение
-
-```{r, fig.width=6, purl=FALSE}
-library(ggplot2)
-tot_abund <- apply(abund[,-1], 1, FUN = sum)
-theme_set(theme_bw(base_size = 16))
-ggplot(hydrol, aes(x = Temp, y = Sal, size = tot_abund)) + geom_point() + labs(size = "Total abundance") 
-```
-
-## Висконсинская полярная ординация 
-
-Это простейший прием непрямой ординации
-
-Шаг 1. Подготовим данные для анализа.
-
-```{r}
-log_abund <- log(abund[,-1] + 1)
-row.names(log_abund) <- abund$Station
-```
-
-
-## Висконсинская полярная ординация 
-
-Шаг 2. Вычисление матрицы сходства/различия между объектами.   
-Из дидактических соображений возьмем матрицу Евклидовых расстояний. 
-
-```{r, message=F}
+# Многомерная статистика
 library(vegan)
-E_dist <- vegdist(log_abund, method = "euclidean")
-# E_dist
+
+# Карта пригородов Санкт-Петербурга ##############
+
+# Матрица расстояний
+dist_spb <- read_excel("data/dist_spb.xlsx", sheet = "dist")
+D <- as.matrix(dist_spb[, -1]) %>%
+  `rownames<-`(dist_spb$name) %>%
+  as.dist()
+
+# Координаты городов
+coord <- read_excel("data/dist_spb.xlsx", sheet = "coord")
+
+# Фон карты
+load(file = "data/dist_spb_dat.RData")
+
+# Карта окрестностей спб
+gg_spb <- ggmap(map_dat) + 
+  geom_point(data = coord, aes(x = lng, y = lat, 
+                               size = population/1000), 
+             alpha = 0.8, colour = "grey20") + 
+  geom_text(data = coord, aes(x = lng, y = lat, 
+                              label = name), 
+            vjust = -0.3, hjust = -0.05) + 
+  theme(legend.position = "none") +
+  labs(x = "Долгота", y = "Широта", 
+       size = "Население,\nтыс. чел.")
+gg_spb
 ```
 
+## Расстояния по автодорогам
 
-## Висконсинская полярная ординация 
+```{r dist-table, echo=FALSE, purl=FALSE, max.print=14}
+as.data.frame(dist_spb)
+```
 
-Шаг 3. Найдем наиболее различающиеся объекты (максимальное Евклидово расстояние между ними). 
+Расстояния по автородогам не совсем "евклидовы": например, из Кронштадта до Санкт-Петербурга нельзя добраться по прямой.
+
+## Обычная проекция исходного пространства на плоскость неудачна {.columns-2}
+
+Карта
+
+```{r, gg-spb, echo=FALSE, purl=FALSE, fig.height=4, fig.width=5}
+```
+<br/><br/><br/><br/><br/><br/>
+
+Проекция при помощи анализа главных координат (PCoA)
+
+```{r pcoa-spb, echo=FALSE, purl=-1, fig.height=3.5, fig.width=5}
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+ordiplot(wcmdscale(d = D, k = 2), type = "t")
+```
+
+>- Карта неудачна: Стрельна, Красное Село и Гатчина сливаются вместе, хотя они не рядом.
+
+## Можно восстановить карту, сохраняя ранги расстояний между объектами {.columns-2}
+
+Карта
+
+```{r, gg-spb, echo=FALSE, purl=FALSE, fig.height=3.5, fig.width=5}
+```
+
+<br/><br/><br/><br/>
+
+Ординация nMDS
+
+```{r ord-spb, echo=FALSE, purl=-1, fig.height=3.5, fig.width=5, results='hide'}
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+spb_ord <- metaMDS(D)
+ordiplot(spb_ord, type = "t")
+```
+
+>- Что странного в этой карте?
+
+
+## Важные свойства nMDS
+
+1. Ординация __сохраняет ранг расстояний между объектами__ (похожие располагаются близко, непохожие --- далеко; если объект А похож на B, больше чем на C, то и на ординации он, скорее всего, окажется ближе к B, чем к C).
+
+2. На ординации имеет смысл только взаиморасположение объектов. Облако точек в осях MDS можно вращать, перемещать, зеркально отражать. Суть ординации от этого не изменится.
+
+3. Значения координат точек в ординации лишены смысла (их вообще можно не приводить на итоговой ординации).
+
+# Как работает nMDS
+
+## Наблюдаемые различия и ожидаемые расстояния
+
+Взаиморасположение точек на плоскости подобно взаиморасположению точек в многомерном пространстве признаков, но значения не полностью совпадают.
 
 ```{r, echo=FALSE}
-unfolding <- function(x, method = "euclidean") {
-  n <- nrow(x)
-  N <- (n^2 - n)/2
-  unfold <- data.frame(i = 1:N, Object_j = NA, Object_k = NA, Distance = NA)
-  pos <- 0
-  for(i in 1:(n-1)) for(j in (i+1):n) {
-    pos <- pos + 1
-    unfold$Object_j[pos] <- i
-    unfold$Object_k[pos] <- j
-  }
-  unfold$Distance <- as.vector(vegdist(x, method = method))
-  unfold
-}
+# Реальные расстояния
+obs_dist <- D %>% tidy() %>% rename("observed" = "distance")
+# Расстояния на ординации
+ord_dist <- vegdist(spb_ord$points, method = "euclidean") %>% tidy() %>% rename("nmds" = "distance")
+# Все вместе (отсортированное)
+distances <- merge(obs_dist, ord_dist) %>% arrange(observed)
 
-polarord <- function(x, method = "euclidean") {
-  dist <- unfolding(x)
-  polar_distance <- max(dist$Distance)
-  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
-  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
-  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
-  for(i in 1:nrow(x)) {
-    
-    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
-    if (i != Object_polus1 & i != Object_polus2) BC <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1 & dist$Object_k == i)]
-    if (i != Object_polus1 & i != Object_polus2) AB <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2 & dist$Object_k == i)]
-    if (i != Object_polus1 & i != Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
-    
-  }
-  Polar_coord$Coord[Object_polus1] <- 0
-  Polar_coord$Coord[Object_polus2] <- polar_distance
-  Polar_coord
-}
-
-
-New_coord <- polarord(log(abund[, -1]+1))
-
+distances
 ```
 
-```{r}
-dist <- unfolding(log_abund) # Пользовательская функция
+## Наблюдаемые различия и ожидаемые расстояния
 
-dist[dist$Distance == max(dist$Distance),]
+Мы можем построить график зависимости расстояний между точками на ординации и соответствующих им значений коэффициентов различия в исходном пространстве.
+
+<div class="columns-2">
+
+```{r, echo=FALSE, fig.height=4, fig.width=5}
+ggplot(distances, aes(x = observed, y = nmds)) + geom_point() + xlab("Observed dissimialrity") + ylab("Ordination distance")
 ```
 
-Эти два объекта и задают ось, вдоль которой будет производиться ординация.
+<br/>
 
-## Висконсинская полярная ординация 
+- По оси X --- значения коэффициентов различий $d_{h,i}$, ранжированные в порядке возрастания
+- По оси Y --- значения расстояний на плоскости ординации --- $\hat d_{h,i}$
 
-Шаг 4. Координаты каждого из объектов на этой оси могут быть найдены, согласно правилам треугольника 
+У хорошей ординации nMDS ранги расстояний должны совпадать с рангами коэффициентов различия в исходном многомерном пространстве.
 
-Возьмем любую другую точку, например "S2"
-
-```{r, echo=FALSE}
-a <- dist$Distance[dist$Object_j == 1 & dist$Object_k == 2]
-
-b <- New_coord$Coord[New_coord$Object == 2]
-
-c <- sqrt(a^2 - b^2) 
-
-d <- dist$Distance[dist$Distance == max(dist$Distance)]
-
-point <- data.frame(X = c(0, d, b),Y = c(0, 0, c))
-
-ggplot(point, aes(x = X, y = Y)) + ylim(-1, 14) +geom_text(aes(0, -1), label = "S1") + geom_text(aes(d, -1), label = "S45") + geom_segment(x = 0, xend = d, y = 0, yend = 0, size = 2, color = "red") + geom_text(x = (b-3), y = 1, label ="Polar axis 1") + geom_segment(x = 0, xend = b, y = 0, yend=c, size = 1, color = "black") + geom_segment(x = d, xend = b, y = 0, yend = c, size = 1, color = "black") + geom_point(size = 4, color = "blue") + geom_text(x = b, y = (c + 1), label = "S2") + geom_segment(x = b, xend = b, y = 0, yend=c, size = 1, color = "black", linetype = 2) + geom_point(aes(x = b, y = 0), size = 4, color="yellow") + geom_text(x = 5, y = 8, label = "D 1-2") + geom_text(x = 17.5, y = 8, label = "D 45-2") + geom_text(x = b, y = -1, label = "D 1-45") + ggtitle("Point's coordinate on the polar axis")
-```
-
-## Висконсинская полярная ординация 
-
-Шаг 5. Вычисляем координаты на полярной оси для каждого объекта. 
-
-```{r, echo=FALSE}
-polarord <- function(x, method = "euclidean") {
-  dist <- unfolding(x)
-  polar_distance <- max(dist$Distance)
-  Object_polus1 <- dist$Object_j[dist$Distance == max(dist$Distance)]
-  Object_polus2 <- dist$Object_k[dist$Distance == max(dist$Distance)]
-  Polar_coord <- data.frame(Object = 1:nrow(x), Coord = NA)
-  for(i in 1:nrow(x)) {
-    AC <- dist$Distance[dist$Object_j == Object_polus1 & dist$Object_k == Object_polus2]
-    if (i != Object_polus1 & i != Object_polus2) BC <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus1)|(dist$Object_j == Object_polus1 & dist$Object_k == i)]
-    if (i != Object_polus1 & i != Object_polus2) AB <- dist$Distance[(dist$Object_j == i & dist$Object_k == Object_polus2)|(dist$Object_j == Object_polus2 & dist$Object_k == i)]
-    if (i != Object_polus1 & i != Object_polus2) Polar_coord$Coord[i] <- (BC^2 + AC^2 - AB^2)/(2 * AC)
-  }
-  Polar_coord$Coord[Object_polus1] <- 0
-  Polar_coord$Coord[Object_polus2] <- polar_distance
-  Polar_coord
-}
-
-New_coord <- polarord(log_abund)
-
-ggplot(New_coord, aes(x=Coord, y =0)) + geom_segment(x = 0, xend = d, y = 0, yend=0, size = 2, color = "red") + geom_point(aes(fill = hydrol$Depth), position = position_jitter(width = 0, height=0.1), size = 4, shape = 21) + ylim(-1, 1) + scale_fill_gradient(low = "cyan", high = "darkblue") + xlab("New coordinate") + ylab("")  + labs(fill = "Depth") 
-```
-
-
-## Висконсинская полярная ординация 
-
-Шаг 6. При необходимости, находим следующую пару наиболее несходных объектов и вычисляем координаты для каждой точки на новой оси.  
-
-_At!_ Одновременное изображение информации об обеих полярных осях на одной диаграмме невозможно!  
-Мы не знаем как взаимосвязаны эти оси. Они могут быть неортогональны. 
-
-# Неметрическое многомерное шкалирование
-
-### Non-metric multidimensional scaling (nMDS)
-
-## Результаты функции `metaMDS()`
-
-```{r}
-library (vegan)
-ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
-ord
-```
-
-## Графическое представление результатов средствами пакета `vegan`
-
-```{r, fig.height=5}
-ordiplot(ord, display = "sites" )
-# text(ord) #Можно добавить обозначения сайтов (объектов)
-```
-
-## Графическое представление результатов средствами `ggplot2` {.columns-2}
-Рассчитанные при помощи nMDS координаты объектов хранятся в элементе `points`
-
-
-```{r, echo=FALSE, eval=TRUE}
-
-ord_MDS <- data.frame(ord$points)
-
-ggplot(ord_MDS, aes(x = MDS1, y = MDS2)) + 
-  geom_point(aes(fill = hydrol$Depth), size = 4, shape = 21) + 
-  scale_fill_gradient(low = "cyan", high = "darkblue")  + 
-  labs(fill = "Depth")
-```
-
-
-```{r, echo=TRUE, eval=FALSE}
-
-ord_MDS <- data.frame(ord$points)
-
-ggplot(ord_MDS, aes(x = MDS1, y = MDS2)) + 
-  geom_point(aes(fill = hydrol$Depth), size = 4, shape = 21) + 
-  scale_fill_gradient(low = "cyan", high = "darkblue")  + 
-  labs(fill = "Depth")
-```
-
-
-## Важные свойства MDS 
-
-1. Ординация __сохраняет ранг расстояний между объектами__ (похожие располагаются близко, непохожие --- далеко; если объект А похож на B, больше чем на C, то и на ординации он окажется ближе к B, чем к C).
-2. Значения координат точек в ординации лишены смысла (их вообще можно не приводить на итоговой ординации), имеет смысл лишь взаиморасположение объектов.
-3. Облако точек в осях MDS можно вращать, перемещать, зеркально отражать. Суть ординации от этого не изменится.
-
-
-# Как работает неметрическое многомерное шкалирование?
-
-## Задание: 
-
-- Создайте датафрейм, содержащий исходные данные (без логарифмирования) только по сайтам S17, S33, S37, S38, S44, S59.
-- Постройте ординацию этих объектов с использованием в качестве меры различия коэффициент Брея-Куртиса.
-- Измерьте линейкой расстояния между точками на ординации
-- Сравните матрицу коэффициентов Брея-Куртиса и матрицу расстояний между точками на ординации.
-
-## Решение
-
-```{r, purl=FALSE}
-obj <- c("S17", "S33", "S37", "S38", "S44", "S59")
-red_abund <- log_abund[abund$Station %in% obj, ]
-row.names(red_abund) <- obj
-ord1 <- metaMDS(red_abund, distance = "bray")
-```
-
-## Решение
-
-```{r, fig.height=5, purl=FALSE}
-ordiplot(ord1, display = "sites", type = "text")
-```
-
-## Решение {.smaller .columns-2}
-
-```{r, fig.height=4, fig.width=4, purl=FALSE}
-ggplot(data.frame(ord1$points), aes(x = MDS1, y = MDS2)) + 
-  geom_point() + 
-  geom_text(aes(label = 
-                  row.names(ord1$points)), vjust = -0.5)
-vegdist(red_abund[])
-```
-
-
-## Взаиморасположение точек на плоскости подобно взаиморасположению точек в многомерном пространстве признаков
-
->- В этом легко убедиться, построив график. Но мы видим, что расстояния не полностью совпадают
-
-```{r, echo=FALSE, fig.height=4, purl=FALSE}
-dist_compare <- data.frame(Bray = as.vector(vegdist(red_abund[, -1])), MDS = as.vector(vegdist(ord1$points, method = "euclidean")))
-
-ggplot(dist_compare, aes(x = Bray, y = MDS)) + geom_point(size = 4) + xlab("Bray-Curtis dissimilarity") + ylab("Distance between points \non ordination")
-```
+</div>
 
 ## Диаграмма Шепарда
 
-__Диаграмма Шепарда__ показывает соответствие расстояний на ординации и расстояний в исходном многомерном пространстве.
+__Диаграмма Шепарда__ показывает соответствие расстояний на ординации и коэффициентов различия в исходном многомерном пространстве.
 
-```{r}
-stressplot(ord1)
+<div class="columns-2">
+
+```{r echo=FALSE, purl=-1, fig.height=4, fig.width=5}
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+stressplot(spb_ord)
 ```
 
-- По оси X - откладываются ранжированные (расположенные в порядке возрастания) значения D (коэффициент Брея-Куртиса)
-- По оси Y- соответствующие им, значения расстояний на плоскости – Z
-- Ломаная линия на диаграмме - это монотонная регрессия.
+<br/>
+
+- По оси X --- значения коэффициентов различий $d_{h,i}$, ранжированные в порядке возрастания
+- По оси Y --- значения расстояний на плоскости ординации --- $\hat d_{h,i}$
+
+В идеале, большим расстояниям в исходном пространстве должны соответствовать большие расстояния на ординации, а меньшим --- меньшие (т.е. должны сохраняться ранги расстояний).
+
+Красная линия --- предсказанные монотонной регрессией значения расстояний на ординации --- монотонно возрастает.
+
+</div>
 
 ## Монотонная регрессия
 
-__Монотонная регрессия__ минимизирует сумму квадратов отклонений значений координат на ординации от значений в исходном многомерном пространстве.
+__Монотонная регрессия__ минимизирует сумму квадратов отклонений значений координат на ординации от значений в исходном многомерном пространстве, сохраняя монотонные отношения между ними.
 
-При одном условии: так, чтобы при этом сохранялись монотонные отношения между ними (если возрастает расстояние в исходном пространстве, то и на ординации оно должно возрастать). Именно это свойство монотонной регрессии позволяет сохранить ранги расстояний при построении ординации.
+<div class="columns-2">
 
-<img src="images/isotonic.gif" alt="Монотонная регрессия" style="height:350px;">
+```{r isoreg-ani, echo=FALSE, fig.width=5, fig.height=4, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop'}
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+plot_isoreg <- function(x, y, n){
+  if (length(x) != length(y)) {
+    stop("length of x and y must be equal") 
+  }
+  if (n < 0) {
+    stop("n must be greater than zero")
+  }
+  if (n > length(x)) {
+    stop("n must be smaller than length of x and y") 
+  }
+  dhat <- isoreg(x[1:n], y[1:n])
+  # координаты концов сегментов
+  yr <- sort(c(dhat$yf, dhat$yf[dhat$iKnots[-length(dhat$iKnots)] + 1]))
+  xr <- sort(c(dhat$x, dhat$x[dhat$iKnots[-length(dhat$iKnots)]]))
+  xx <- dhat$x
+  # основа
+  plot(x, y, pch = 1, cex = 1, col = "blue", xlab = "Observed dissimilarity", ylab = "Ordination distance")
+  # 
+  lines(xr, yr, col = "red", lwd = 2)
+  points(xx[dhat$iKnots], dhat$yf[dhat$iKnots], col = "red", pch = 4, cex = 2, lwd = 2)
+}
 
-<div class="footnote">Иллюстрация из блога Fabian Pedregosa [о монотонной регрессии](http://fa.bianp.net/blog/tag/scikit-learn.html)</div>
+for (i in 0:11) {
+  plot_isoreg(x = 1:11, y = c(1, 2, 3, 6, 4, 5.5, 8, 7, 6, 5, 7), i)
+}
+```
 
-## Stress
+Алгоритм подбора монотонной регрессии называется Pool-Adjacent-Violator-Algorithm (PAVA)
 
-__Stress__ --- мера соответствия ординации на плоскости взаиморасположению точек в многомерном пространстве признаков
+</div>
 
-$$ Stress = \sqrt{\frac{\sum{(Z_i - Zh_i)^2}}{\sum{Z_{i}^2}}}$$
+## Стресс --- мера качества ординации
 
-Для вычисления величины стресса необходимо построить диаграмму Шепарда и подобрать монотонную регресию
+__Стресс (Stress)__ показывает, насколько соответствуют друг другу взаиморасположение точек на плоскости ординации и в исходном многомерном пространстве признаков.
 
+Стресс --- это корень из суммы квадратов остатков монотонной регрессии, отнесенной к сумме квадратов всех коэффициентов различия в исходной матрице.
 
-## Stress. 
+<div class="columns-2">
 
-Чтобы лучше представить себе, откуда берется стресс, оценим его величину для случайно выбранного расположения объектов по сравнению с нашей лучшей ординацией.
-
-Создадим случайную ординацию для этого примера: передвинем все шесть точек на случайное расстояние.
-
-```{r, echo=FALSE, warning=FALSE, purl=FALSE, fig.height=4}
-rnd_ord <- data.frame(ord1$points)
-set.seed(97)
-rnd_ord$RND1 <- rnd_ord$MDS1 - rnorm(nrow(ord1$points), sd = 0.1)
-rnd_ord$RND2 <- rnd_ord$MDS2 - rnorm(nrow(ord1$points), sd = 0.1)
-
-pl1 <- ggplot(rnd_ord, aes(x = MDS1, y = MDS2)) + geom_text(label = row.names(rnd_ord))  + ggtitle("MDS ordination")
-
-pl2 <- ggplot(rnd_ord, aes(x = RND1, y = RND2)) + geom_text(label = row.names(rnd_ord))  + ggtitle("Random ordination")
-
-library(gridExtra)
-grid.arrange(pl1, pl2, ncol = 2)
+```{r echo=FALSE, purl=-1, fig.height=4, fig.width=5}
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+stressplot(spb_ord)
 ```
 
 
-## Построение монотонной регрессии
+$$ Stress(1) = \sqrt{\frac{\sum_{h < i}{(d_{h,i} - \hat d_{h,i})^2}}{\sum_{h < i}{d_{{h,i}}^2}}}$$
 
-Выпишем в развернутом виде матрицу коэффициентов Брея-Куртиса между точками на ординации, а так же между случайно расположенными точками. Отсортируем их в порядке возрастания расстояния на ординации.
+- $d$ --- наблюдаемое значение коэффициента различия между двумя точками
+- $\hat d$ --- значение, предсказанное монотонной регрессией
 
-```{r, echo=FALSE, purl=FALSE}
-# расстояния между точками
-monotonic <- unfolding(red_abund[, -1], method = "bray")
-# расстояния между случайно расположенными точками
-monotonic$RND_Distance <- as.vector(dist(rnd_ord[, 3:4]))
-# сортируем по возрастанию расстояния между точками
-monotonic <- monotonic[order(monotonic$Distance), ]
-monotonic
-```
+Хорошо, когда $Stress(1) < 0.2$.
 
-## Построение монотонной регрессии
-
-Вычисляем последовательно средние значения так, чтобы каждое новое было не меньше предыдущего.
-
-В R это делается при помощи функции `isoreg()`
-
-```{r, echo=FALSE, purl=FALSE, fig.height=5}
-monotonic$Fitted_monotonic <- isoreg(x = monotonic$Distance, y = monotonic$RND_Distance)$yf
-
-pl3 <- ggplot(monotonic, aes(x = Distance)) + geom_line(aes(y = Fitted_monotonic), color = "blue") + geom_point(aes(y = RND_Distance), size = 4) + xlab("Dissimilarity") + ylab("Distance on ordination(Z)")
-
-pl4 <- ggplot(monotonic, aes(x = Distance)) + geom_line(aes(y = Fitted_monotonic), color = "blue") + geom_point(aes(y = RND_Distance), size = 4) + geom_segment(aes(xend = Distance, y = RND_Distance, yend =  Fitted_monotonic)) + xlab("Dissimilarity") + ylab("Distance on ordination(Z)") + geom_text(x = 0.5, y = 1.8, label = "Zh - deviation from \nfitted monotone regession")
-
-grid.arrange(pl3, pl4, ncol = 2)
-```
-
-## Вычисление величины стресса
-
-$$ Stress = \sqrt{\frac{\sum{(Z_i - Zh_i)^2}}{\sum{Z_{i}^2}}}$$
-
-```{r, echo=FALSE}
-stress <- with(
-  monotonic, 
-  sqrt(sum((RND_Distance - Fitted_monotonic)^2) / sum((RND_Distance)^2))
-)
-```
-
-Для данной, случайной, ординации точек Stress = `r stress`   
-
-Для исходной, не случайной, ординации стресс сотавлял Stress = `r ord1$stress`
+</div>
 
 
-## Алгоритм MDS {.columns-2}
+
+## Алгоритм MDS (для двумерного случая) {.columns-2}
+
+<br/>
+
+<img src="images/ezhik.jpg" alt="Ежик в тумане" width=460px>
+
+<!-- Марка СССР Ёжик в тумане (1988, ЦФА №5919). [Википедия](https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:1988_CPA_5919.jpg) -->
+
+<br/><br/><br/><br/>
 
 1. Вычисляем матрицу коэффициентов различия между объектами.
-2. Распределеяем объекты в случайном порядке на плоскости [NB! от первичного распределения точек может зависеть и результат, поэтому на практике используются процедуры оптимального начального размещения точек (PCA)].
-3. Вычисляем значение стресса.
-4. Двигаем точки по плоскости так, чтобы найти минимальное значение стресса.
-5. Повторяем процедуру 2-4 несколько раз для того чтобы избежать локальных минимумов стресса.
-6. Обычно финальную ординацию поворачивают вдоль оси X так, чтобы ось отражала максимальное варьирование.
-
-<img src="images/ezhik.png" alt="Ежик в тумане" height=280px>
+2. Распределеяем объекты на плоскости в случайном порядке (или при помощи PCoA).
+3. Вычисляем стресс.
+4. Сдвигаем точки по плоскости так, чтобы минимизировать стресс.
+5. Повторяем шаги 2-4 несколько раз, чтобы избежать локальных минимумов стресса.
+6. Обычно финальную ординацию поворачивают, чтобы вдоль оси X было максимальное варьирование.
 
 
-## Диаграмма Шепада для реальных данных
+## Ограничения nMDS
 
-Строим диаграмму Шепарда вместе с монотонной регрессией на материале Долгой губы. 
+- nMDS --- метод визуализации данных.
+- Коэффициент различия и трансформация данных должны быть выбраны исходя из того, какие именно свойства объектов должны быть визуализированы.
+- Число измерений, выбранное для решения, может влиять на результат.
 
-```{r, echo=TRUE}
-stressplot(ord)
-```
+# Пример
 
-Stress = `r ord$stress`  
+## Симбионты мидий
 
-## Оценка качества подгонки ординации
+Данные можно скачать [с сайта Pangaea](https://doi.pangaea.de/10.1594/PANGAEA.870537?format=textfile)
 
-+ Stress < 0.05 Ординация отличная. Можно в деталях проанализировать взаиморасположение точек
-+ 0.05 < Stress < 0.1 Хорошая конфигурация.
-+ 0.1 < Stress < 0.2 Приемлемая конфигурация. Надо быть осторожными в интерпретации. 
-+ Stress > 0.2 Возможно, надо проводить ординацию в большем количестве осей. Двумерное изображение неадекватно отражает взаиморасположение точек.
+[Krapivin 2017](https://doi.org/10.1594/PANGAEA.870537), [Krapivin et al. 2018](https://doi.org/10.3354/dao03259)
 
-
-## MDS в трехмерном пространстве
-
-```{r, echo=FALSE, fig.height=4}
-library(scatterplot3d)
-ord3 <- metaMDS(log_abund, k = 3, trace = FALSE)
-scatterplot3d(x = ord3$points[,1], y = ord3$points[,2], z = ord3$points[,3], xlab = "MDS 1", ylab = "MDS 2", zlab = "MDS 3")
-```
-
-Stress = `r ord3$stress`
-
-At! Ни в коем случае не используете координаты 3D MDS для двумерной ординации.
-
-#Выявление связи ординации с "внешним" набором данных
-
-## Постановка проблемы
-
-Мы имеем набор объектов, охарактеризованных двумя сопряженным наборами переменных
-
-- Обилия видов ($M$ видов $\times$ $N$ описаний) и параметры среды ($K$ параметров $\times$ $N$ описаний) 
-- Морфометрические показатели ($M$ признаков $\times$ $N$ объектов) и генетические признаки (Экспрессия $K$ генов $\times$ $N$ объектов)
-- Признаки  хозяина ($M$ признаков $\times$ $N$ объектов) и признки паразита ($K$ признаков $\times$ $N$ объектов) 
-
-
-## Ординация растительности на пастбищах северных оленей {.smaller .columns-2}
-
-Данные из работы  
-Väre, H., Ohtonen, R. and Oksanen, J. (1995) 
-
-<img src="images/Vare et al 1995 map.png" style="height:330px;">
-
-<small>из Väre, Ohtonen & Oksanen (1995)</small>
-
-```{r, message=FALSE}
-library(vegan)
-data(varespec)
-data(varechem)
-```
-
-Два набора данных:
-
-- `varespec` - Описание растительности (обилия отдельных видов)
-- `varechem` - Параметры среды на участках (Концентрации веществ)
-
-<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-
-
-## Задание
-1. Постройте ординацию описаний растительности в осях MDS.  
-2. Вычислите величину стресса  
-3. Раскрасьте точки в соответствии с концентрацией Al    
-
-Hint. В качестве меры различия используйте коэффициент Брея-Куртиса
-
-
-
-## Решение {.columns-2 .smaller}
-```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, include=FALSE}
-veg_ord <- metaMDS(varespec)
-veg_MDS <- as.data.frame(veg_ord$points)
-
-```
-
-```{r, eval=FALSE}
-veg_ord <- metaMDS(varespec)
-veg_MDS <- as.data.frame(veg_ord$points)
-
-```
-
-
-```{r, fig.height=5, fig.width=5, message=FALSE}
-library(ggplot2)
-ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  + 
-  geom_point(shape=21, size =4)+ 
-  theme_bw() + 
-  theme(legend.position = "bottom") + 
-  labs(fill = "Aluminium concentration") + 
-  scale_fill_gradient(high = "red", low = "yellow")
-
-```
-
-
-## Анализ связи с переменными c помощью функции envfit() {.smaller .columns-2}
+## Открываем данные
 
 ```{r}
-env_fit <- envfit(veg_ord, varechem)
-env_fit
+dat <- read.delim("data/Krapivin_2017_Medulis-symb.tab", skip = 36)
+str(dat)
 ```
 
-В основе работы функции лежит регрессионный анализ
+## Приводим в порядок названия переменных
 
->- Колонки `MDS1` и `MDS2` содержат косинусы углов (пропорциональны коэффициентам частной корреляции)    
->- `r2` - $R^2$ из регресcионного анализа     
->- `Pr(>r)` - Пермутационная оценка статистической значимости      
+```{r R.options=list(width = 80)}
+colnames(dat) # Было
 
+colnames(dat) <- gsub("[.]", replacement = "", colnames(dat))
+dat <- rename(dat, L = "MedulisLshellmm", Age = "Medulisagea")
 
-## Визуализация результатов
+colnames(dat) # Стало
+```
 
-```{r, fig.height=4.5, fig.width=4.5}
-plot(veg_ord, display = "site")
-plot(env_fit)
+## Приводим в порядок данные
+
+```{r}
+# Делаем сайт фактором
+dat$Site <- factor(dat$Site, levels = c(2, 3, 1), labels = c("G","L","S"))
+
+# Сливаем редкие виды в одну категорию
+f_remove <- c("Nematoda", "Microsetella", "Copepoda", 
+              "Chironomidae", "Halacaridae", "Jaeraspp",
+              "Ostrac")
+dat$Other <- rowSums(dat[, f_remove])
+
+# Суммарная численность симбионтов
+f_sp <- c("Urastomaspp", "Renicolaspp", "Himasthlaspp",
+          "Metacercaria", "Gymnophallusspp", "Alg",
+          "Other")
+dat$Total  <- rowSums(dat[, f_sp])
+
+# Данные для анализа
+# Только мидии с симбионтами и возрастом от 3 до 8 лет 
+dat <- dat[dat$Total != 0 & dat$Age %in% 3:8, ]
+spec <- dat[, f_sp]                         # виды-симбионты
+env <- dat[, c("Zone", "Site", "L", "Age")] # свойства мидий-хозяев
+```
+
+# Ординация сообществ симбионтов в мидиях
+
+## Задание 1
+
+Постройте ординацию мидий по обилию разных видов-симбионтов с использованием коэффициента различия Брея-Куртиса.
+Следите, чтобы алгоритму удалось найти финальное решение. Если необходимо, настройте вызов `metaMDS()`
+
+Вычислите стресс для получившейся ординации.
+
+Нарисуйте простейший график.
+
+```
+ord_mus <- 
+```
+
+## Решение
+
+```{r eval=FALSE, purl=FALSE}
+ord_mus <- metaMDS(spec, dist = "bray")
+```
+
+По-умолчанию metaMDS() пытается подобрать оптимальную трансформацию, подходящую для анализа сообществ. В данном случае --- извлекает корень и делает двойную висконсинскую стандартизацию.
+
+```
+Square root transformation
+Wisconsin double standardization
+Run 0 stress 0.1319177 
+```
+
+Такая модель не сходится.
+
+```
+*** No convergence -- monoMDS stopping criteria:
+    19: stress ratio > sratmax
+     1: scale factor of the gradient < sfgrmin
+```
+
+## Решение
+
+После отключения автоматического подбора трансформации данных удается найти решение.
+
+```{r purl=FALSE}
+ord_mus <- metaMDS(spec, dist = "bray", autotransform = FALSE)
 ```
 
 
-## Анализ связи с переменными c помощью функции ordisurf() {.columns-2 .smaller}
+## Решение
 
-```{r, echo=FALSE, results='hide', fig.height=5 , fig.width=5}
-env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
-plot(veg_ord, display = "site")
-plot(env_fit2, col = "red")
-ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
-ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
+Хорошее решение, но график нужно украсить.
+
+```{r, purl=FALSE}
+ord_mus$stress
+ordiplot(ord_mus)
 ```
 
 
-В основе работы функции лежит анализ обобщенных аддитивных моделей (General Additive Model)
 
-> Применяется, когда зависимость нелинейна
-> Изолинии характеризуют уровень значения фактора для данной области ординации объектов
+## Украшенный график
+
+```{r fig.height=5, fig.width=6}
+# Палитры
+pal_col <- c("red", "green", "steelblue")
+pal_sh <- c(1, 2, 0)
+
+# Украшенный график
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+```
+
+
+## Украшенный график с центроидами видов
+
+```{r fig.height=5, fig.width=6}
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+text(ord_mus, display = "spec", cex = 0.9, col = "grey20")
+```
+
+# Визуализация ординации в ggplot2
+
+## Задание 2
+
+Используя данные, приведенные ниже, постройте график ординации при помощи `ggplot2`. 
+Покажите точками --- мидий, текстом --- центроиды для видов-симбионтов, цветом --- зону литорали, формой --- сайт, размером маркеров --- размер мидий.
+
+```{r}
+# Координаты точек (мидий)
+ord_mus_pt <- data.frame(env, scores(ord_mus, display = "sites"))
+head(ord_mus_pt, 2)
+
+# Координаты центроидов переменных (видов-симбионтов)
+ord_mus_sp <- data.frame(scores(ord_mus, display = "species"))
+ord_mus_sp$Species <- rownames(ord_mus_sp)
+head(ord_mus_sp, 2)
+```
+
+## Решение: График с точками
+
+```{r fig.width=6}
+gg_ord_mus <- ggplot() +
+  geom_point(data = ord_mus_pt, 
+             aes(x = NMDS1, y = NMDS2, colour = Zone, 
+                 shape = Site, size = L), alpha = 0.5)
+gg_ord_mus
+```
+
+## Решение: График с центроидами видов
+
+```{r fig.width=6}
+gg_ord_mus_sp <- gg_ord_mus +
+  geom_text(data = ord_mus_sp, 
+            aes(x = NMDS1, y = NMDS2, 
+                label = Species))
+gg_ord_mus_sp
+```
+
+
+# Интерпретация ординации: envfit
+
+## Анализ связи с внешними переменными c помощью функции `envfit()`
+
+Функция `envfit()` строит регрессионную модель зависимости переменной среды от координат точек на плоскости ординации.
+
+Модель вот такого вида:
+
+$y_i = \beta_1 \text{NMDS1}_i + \beta_2 \text{NMDS2}_i + \varepsilon_i`$
+
+Значимость зависимости оценивается при помощи пермутационного теста (это позволяет работать в ситуации, когда неполностью выполнены условия применимости).
+
+
+Такой вызов функции позволит подобрать сразу несколько моделей и изобразить их на графике ординации:
+
+```{r}
+ef <- envfit(ord_mus, env[, c("Zone", "Site", "L", "Age")])
+```
+
+## Интерпретация результатов `envfit()` для непрерывных переменных {.columns-2}
+
+```{r}
+ef$vectors
+```
+
+<br/><br/><br/>
+
+- Колонки `MDS1` и `MDS2` содержат информацию о направлении вектора непрерывной переменной. Длина вектора пропорциональна корню из коэффициента детерминации для модели.  
+- `r2` --- $R^2$ из регресcионного анализа.     
+- `Pr(>r)` --- пермутационная оценка статистической значимости.      
+
+## Интерпретация результатов `envfit()` для дискретных переменных {.columns-2}
+
+```{r}
+ef$factors
+```
+
+- Колонки `MDS1` и `MDS2` содержат координаты центроидов для дискретных факторов  (т.е. положение центра облака точек, относящихся к категории фактора).
+- `r2` -- $R^2$ из регресcионного анализа.    
+- `Pr(>r)` --- пермутационная оценка статистической значимости.      
+
+## График с векторами и центроидами, найденными `envfit()`
+
+```{r, fig.width=6, fig.height=5}
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+plot(ef)
+```
+
+## Для ggplot-графика удобно использовать вспомогательный пакет
+
+```{r}
+# install.packages("devtools")
+# devtools::install_github("gavinsimpson/ggvegan")
+library(ggvegan)
+ord_mus_ef <- fortify(ef)
+ord_mus_ef
+```
+
+## ggplot2 версия графика `envfit()` {.smaller}
+
+```{r fig.width=6}
+gg_ord_mus +
+  geom_segment(data = ord_mus_ef[ord_mus_ef$Type == "Vector", ],
+               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               arrow = arrow(length = unit(0.25, "cm"))) +
+  geom_text(data = ord_mus_ef[ord_mus_ef$Type == "Vector", ],
+            aes(x = NMDS1, y = NMDS2, label = Label, hjust = 1.1, vjust = 1)) +
+  geom_text(data = ord_mus_ef[ord_mus_ef$Type == "Centroid", ],
+            aes(x = NMDS1, y = NMDS2, label = Label, hjust = 1.1, vjust = 1))
+```
+
+## Ограничения `envfit()`
+
+- Осторожно! `envfit()` основан на предположении о линейном характере связи между внешней переменной и координатами на ординации. Это не всегда так.
+
+
+# Интерпретация ординации: ordisurf
+
+## Анализ связи с внешними переменными c помощью `ordisurf()`
+
+`ordisurf()` применяется, когда зависимость нелинейна.
+
+В основе работы функции --- общая аддитивная модель (General Additive Model, GAM).
+
+GAM позволяют подобрать нелинейные зависимости, даже если заранее неизвестна их форма.
+
+`ordisurf()` использует пакет `mgcv` для подбора GAM на основе метода тонких пластин (thin plate spline).
+
+## График с поверхностью, найденной `ordisurf()`
+
+Изолинии на графике ординации показывают предсказанное значение зависимой переменной для разных участков ординации.
+
+```{r fig.show='hold', fig.width=7, fig.height=5}
+par(mfrow = c(1, 2))
+os_L <- ordisurf(ord_mus, env$L, method = "REML")
+os_Age <- ordisurf(ord_mus, env$Age, method = "REML")
+par(mfrow = c(1, 1))
+```
+
+## Интерпретация результатов `ordisurf()` {.smaller}
+
+Длина мидий линейно меняется на ординации (эффективное число степеней свободы для сплайна $edf=1.96$). Зависимость довольно хорошо выражена (объясненная девианса 18.7%).
+
+```{r}
+summary(os_L)
+```
+
+## Интерпретация результатов `ordisurf()` {.smaller}
+
+Возраст мидий меняется нелинейно вдоль ординационных осей (эффективное число степеней свободы для сплайна $edf=4.99$). Эта зависимость довольно слабая (объясненная девианса 8.97%).
+
+```{r}
+summary(os_Age)
+```
+
+## Для ggplot-графика понадобится добыть данные о контурах
+
+```{r}
+fortify.ordisurf <- function(model) {
+  # Fortifies an object of class ordisurf to produce 
+  # a dataframe of contour coordinates 
+  # for subsequent plotting in ggplot.
+  xy <- expand.grid(x = model$grid$x, y = model$grid$y)
+  xyz <- cbind(xy, c(model$grid$z))
+  names(xyz) <- c("x", "y", "z")
+  return(na.omit(xyz))
+}
+
+ord_mus_os <- fortify.ordisurf(os_Age)
+head(ord_mus_os, 4)
+```
+
+## ggplot2 версия графика с поверхностью, найденной `ordisurf()`
+
+```{r}
+ggplot(data = ord_mus_os, aes(x = x, y = y, z = z)) +
+  stat_contour(aes(colour = ..level..)) +
+  labs(x = "NMDS1", y = "NMDS2", colour = "Age")
+```
+
+## Ограничения `ordisurf()`
+
+- Осторожно! Для использования `ordisurf()` важно, чтобы в ординации участвовало много объектов и они располагались на плоскости ординации более-менее равномерно. Пустоты и отскоки снижают качество предсказаний.
+
+
+## Финальный график
+
+```{r echo=FALSE, fig.width=8, fig.height=6}
+f_vect <- ord_mus_ef$Type == "Vector" & ord_mus_ef$Label == "L"
+
+
+ggplot(data = ord_mus_pt, aes(x = NMDS1, y = NMDS2)) +
+  stat_contour(data = ord_mus_os, 
+               aes(x = x, y = y, z = z, colour = ..level..),
+               binwidth = 0.25) +
+  geom_point(data = ord_mus_pt, 
+             aes(fill = Zone, shape = Site),
+             alpha = 0.5, size = 3) +
+  scale_shape_manual(values = c(21, 24, 22)) +
+  geom_text(data = ord_mus_sp, 
+            aes(label = Species), size = 5) +
+  geom_segment(data = ord_mus_ef[f_vect, ], 
+               colour = "blue", size = 1,
+               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               arrow = arrow(length = unit(0.25, "cm"))) +
+  geom_text(data = ord_mus_ef[f_vect, ], 
+            colour = "blue", size = 6,
+            aes(label = Label, hjust = 1.1, vjust = 0.7)) +
+  guides(fill = guide_legend(override.aes = list(shape = 22))) +
+  labs(colour = "Age")
+```
+
+
+## Take-home messages
+
++ nMDS --- один из методов ординации в пространстве сниженной размерности. При ординации этим методом сохраняются ранги расстояний между объектами.
++ Мера качества ординации называется "стресс".
++ Значения координат не имеют особенного смысла. Имеет значение только взаиморасположение точек.
++ Результат nMDS зависит от выбора меры различия.
++ Существует несколько способов визуализировать на ординации значения внешних переменных. При выборе между `envfit()` и `ordisurf()` обращайте внимание на форму связи.
+
+## Литература
+
++ Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
++ Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
++ Oksanen, J., 2015. Multivariate analysis of ecological communities in R: vegan tutorial. http://www.cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf
++ Zuur, A. F., Ieno, E. N., Smith, G. M. Analysing Ecological Data. Springer 2007
 
 # Самостоятельная работа
 
-##Задание
-Во всех примерах необходимо    
+## Задание 3
+
+Во всех примерах необходимо:    
 
 1. Разобраться с данными.   
 2. Построить ординацию объектов (описаний, проб и т.п.).      
 3. Визуализировать связь между полученной ординацией и параметрами среды.    
 4. Сделать выводы о наиболее важных факторах.    
 
-**Источники данных**  
-1. Обилие полихет-трубкостроителей на литорали Белого моря (оригинальные данные В.М.Хайтова)  
-2. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, представленные в пакете `ade4`)   
-3. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), представленные в пакете `vegan`)
+**Источники данных**
 
-
-
-
-
-## Take-home messages
-
-+ Существует много методов непрямой ординации.
-+ nMDS - один из методов ординации в пространстве сниженной размерности. При ординации этим методом сохраняются ранги расстояний между объектами.
-+ Оценка качества подгонки ординации производится с помощью величины стресса.
-+ Значения координат не имеют особенного смысла. Имеет значение только взаиморасположение точек.
-+ Результат nMDS зависит от выбора меры различия
-
-## Литература
-
-+ Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
-+ Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
-+ Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.
-+ Zuur, A. F., Ieno, E. N., Smith, G. M. Analysing Ecological Data. Springer 2007  
-+ Миркин Б.М., Розенберг Г.С., Наумова Л.Г. Словарь понятий и терминов современной фитоцентологии. М. Наука, 1989.
+1. Обилие полихет-трубкостроителей на литорали Белого моря (данные В.М.Хайтова).  
+2. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, пакет `ade4`).
+3. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), пакет `vegan`).
 

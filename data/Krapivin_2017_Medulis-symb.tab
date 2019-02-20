@@ -1,0 +1,585 @@
+/* DATA DESCRIPTION:
+Citation:	Krapivin, Vladimir (2017): Sizes, ages and number of symbionts of Mytilus edulis from three sites in the White sea. PANGAEA, https://doi.org/10.1594/PANGAEA.870537, 
+	In supplement to: Krapivin, Vladimir; Bagrov, Sergey V; Varfolomeeva, Marina A (2018): Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of Aquatic Organisms, 130(2), 131-144, https://doi.org/10.3354/dao03259
+Coverage:	MEDIAN LATITUDE: 65.880787 * MEDIAN LONGITUDE: 34.301333 * SOUTH-BOUND LATITUDE: 65.034100 * WEST-BOUND LONGITUDE: 33.604380 * NORTH-BOUND LATITUDE: 66.312980 * EAST-BOUND LONGITUDE: 35.686020
+	DATE/TIME START: 2013-07-15T00:00:00 * DATE/TIME END: 2013-07-15T00:00:00
+	MINIMUM ORDINAL NUMBER: 1 * MAXIMUM ORDINAL NUMBER: 548
+Event(s):	Gorelyi_Isl * LATITUDE: 66.312980 * LONGITUDE: 33.613600 * LOCATION: White Sea * DEVICE: Biological sample (BIOS)
+	Lebajya_Bay * LATITUDE: 66.295280 * LONGITUDE: 33.604380 * LOCATION: White Sea * DEVICE: Biological sample (BIOS)
+	Solovkecki_Isl * LATITUDE: 65.034100 * LONGITUDE: 35.686020 * LOCATION: White Sea * DEVICE: Biological sample (BIOS)
+Comment:	"Up" zone is lower intertidal, "middle" zone is zero-depth, and "down" zone is 3m depth.
+Parameter(s):	Event label (Event) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	DATE/TIME (Date/Time) * GEOCODE * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	ORDINAL NUMBER (Ord No) * GEOCODE * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Area/locality (Area) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Site (Site) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Zone (Zone) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Comment (Comment) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com) * COMMENT: quadrat
+	Mytilus edulis, length shell [mm] (M. edulis L shell) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Mytilus edulis, age [a] (M. edulis age) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Urastoma spp. [#] (Urastoma spp.) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Renicola spp. [#] (Renicola spp.) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Himasthla spp. [#] (Himasthla spp.) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Trematoda, metacercaria [#] (Metacercaria) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com) * COMMENT: sp.
+	Gymnophallus spp. [#] (Gymnophallus spp.) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Bucephalidae [#] (Bucephalidae) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com) * COMMENT: sporocyst
+	Algae [#] (Alg) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com) * COMMENT: green
+	Nematoda [#] (Nematoda) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Microsetella [#] (Microsetella) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Copepoda [#] (Copepoda) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Chironomidae [#] (Chironomidae) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com) * COMMENT: larvae
+	Halacaridae [#] (Halacaridae) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Jaera spp. [#] (Jaera spp.) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+	Ostracoda [#] (Ostrac) * PI: Krapivin, Vladimir (https://orcid.org/0000-0002-7368-3100, tanitolkai@gmail.com)
+License:	Creative Commons Attribution-NonCommercial 3.0 Unported (CC-BY-NC-3.0)
+Size:	10960 data points
+*/
+Event	Date/Time	Ord No	Area	Site	Zone	Comment	M. edulis L shell [mm]	M. edulis age [a]	Urastoma spp. [#]	Renicola spp. [#]	Himasthla spp. [#]	Metacercaria [#]	Gymnophallus spp. [#]	Bucephalidae [#]	Alg [#]	Nematoda [#]	Microsetella [#]	Copepoda [#]	Chironomidae [#]	Halacaridae [#]	Jaera spp. [#]	Ostrac [#]
+Solovkecki_Isl	2013-07	1	B Solovkecki Isl	1	down	1	31.2	1.0	26	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	2	B Solovkecki Isl	1	down	1	41.1	2.0	16	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	3	B Solovkecki Isl	1	down	1	46.4	2.0	19	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	4	B Solovkecki Isl	1	down	1	40.0	3.0	11	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	5	B Solovkecki Isl	1	down	1	34.5	4.0	14	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	6	B Solovkecki Isl	1	down	1	47.6	3.0	16	0	0	0	0	0	0	0	2	1	0	0	0	0
+Solovkecki_Isl	2013-07	7	B Solovkecki Isl	1	down	1	34.3	2.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	8	B Solovkecki Isl	1	down	1	49.6	4.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	9	B Solovkecki Isl	1	down	1	49.8	3.0	11	0	0	0	4	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	10	B Solovkecki Isl	1	down	1	30.0	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	11	B Solovkecki Isl	1	down	1	50.0	3.0	9	0	0	0	0	0	0	0	1	0	0	0	0	0
+Solovkecki_Isl	2013-07	12	B Solovkecki Isl	1	down	1	23.2	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	13	B Solovkecki Isl	1	down	1	53.6	4.0	15	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	14	B Solovkecki Isl	1	down	1	26.3	1.0	5	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	15	B Solovkecki Isl	1	down	1	74.0	6.0	21	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	16	B Solovkecki Isl	1	down	1	94.5	9.0	23	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	17	B Solovkecki Isl	1	down	1	17.4	5.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	18	B Solovkecki Isl	1	down	1	65.0	5.0	1	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	19	B Solovkecki Isl	1	down	1	78.4	9.0	21	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	20	B Solovkecki Isl	1	down	1	61.3	5.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	21	B Solovkecki Isl	1	down	1	34.5	2.0	8	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	22	B Solovkecki Isl	1	down	1	50.0	3.0	20	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	23	B Solovkecki Isl	1	down	1	48.0	5.0	12	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	24	B Solovkecki Isl	1	down	2	44.2	2.0	23	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	25	B Solovkecki Isl	1	down	2	41.4	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	26	B Solovkecki Isl	1	down	2	41.2	2.0	0	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	27	B Solovkecki Isl	1	down	2	54.2	3.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	28	B Solovkecki Isl	1	down	2	83.0	7.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	29	B Solovkecki Isl	1	down	2	20.1	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	30	B Solovkecki Isl	1	down	2	34.7	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	31	B Solovkecki Isl	1	down	2	81.4	6.0	37	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	32	B Solovkecki Isl	1	down	2	84.3	8.0	11	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	33	B Solovkecki Isl	1	down	2	85.7	7.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	34	B Solovkecki Isl	1	down	2	82.3	8.0	3	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	35	B Solovkecki Isl	1	down	2	89.2	8.0	6	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	36	B Solovkecki Isl	1	down	2	44.0	3.0	18	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	37	B Solovkecki Isl	1	down	2	40.0	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	38	B Solovkecki Isl	1	down	2	40.2	3.0	8	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	39	B Solovkecki Isl	1	down	2	47.0	3.0	23	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	40	B Solovkecki Isl	1	down	2	39.4	2.0	5	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	41	B Solovkecki Isl	1	down	2	36.0	3.0	26	0	0	0	0	0	0	0	1	0	0	0	0	0
+Solovkecki_Isl	2013-07	42	B Solovkecki Isl	1	down	2	39.7	3.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	43	B Solovkecki Isl	1	down	2	42.9	3.0	7	1	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	44	B Solovkecki Isl	1	down	3	45.2	5.0	9	62	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	45	B Solovkecki Isl	1	down	3	57.5	5.0	6	0	0	0	2	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	46	B Solovkecki Isl	1	down	3	51.1	4.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	47	B Solovkecki Isl	1	down	3	43.8	3.0	14	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	48	B Solovkecki Isl	1	down	3	47.0	3.0	7	5	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	49	B Solovkecki Isl	1	down	3	50.0	4.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	50	B Solovkecki Isl	1	down	3	32.0	1.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	51	B Solovkecki Isl	1	down	3	66.2	7.0	9	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	52	B Solovkecki Isl	1	down	3	92.3	10.0	16	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	53	B Solovkecki Isl	1	down	3	53.3	4.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	54	B Solovkecki Isl	1	down	3	92.1	8.0	12	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	55	B Solovkecki Isl	1	down	3	91.9	8.0	10	0	0	0	1	0	0	0	2	0	0	0	0	0
+Solovkecki_Isl	2013-07	56	B Solovkecki Isl	1	down	3	87.1	8.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	57	B Solovkecki Isl	1	down	3	76.4	7.0	52	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	58	B Solovkecki Isl	1	down	3	67.3	7.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	59	B Solovkecki Isl	1	down	3	95.0	10.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	60	B Solovkecki Isl	1	down	3	65.0	6.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	61	B Solovkecki Isl	1	down	3	47.6	3.0	9	0	0	0	3	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	62	B Solovkecki Isl	1	down	3	49.4	4.0	12	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	63	B Solovkecki Isl	1	down	3	50.0	3.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	64	B Solovkecki Isl	1	down	3	50.0	6.0	16	2	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	65	B Solovkecki Isl	1	down	3	39.2	3.0	3	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	66	B Solovkecki Isl	1	down	3	39.0	3.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	67	B Solovkecki Isl	1	middle	1	44.4	3.0	5	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	68	B Solovkecki Isl	1	middle	1	43.4	5.0	3	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	69	B Solovkecki Isl	1	middle	1	42.0	3.0	5	0	0	0	0	0	0	2	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	70	B Solovkecki Isl	1	middle	1	40.1	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	71	B Solovkecki Isl	1	middle	1	47.8	3.0	18	0	0	0	0	0	0	0	0	1	0	0	0	0
+Solovkecki_Isl	2013-07	72	B Solovkecki Isl	1	middle	1	43.0	4.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	73	B Solovkecki Isl	1	middle	1	46.4	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	74	B Solovkecki Isl	1	middle	1	41.0	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	75	B Solovkecki Isl	1	middle	1	45.7	4.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	76	B Solovkecki Isl	1	middle	1	41.3	4.0	4	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	77	B Solovkecki Isl	1	middle	1	31.3	2.0	2	1	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	78	B Solovkecki Isl	1	middle	1	53.1	5.0	9	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	79	B Solovkecki Isl	1	middle	1	52.9	5.0	14	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	80	B Solovkecki Isl	1	middle	1	36.9	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	81	B Solovkecki Isl	1	middle	1	61.0	8.0	6	0	0	0	0	0	0	4	0	1	0	1	0	0
+Solovkecki_Isl	2013-07	82	B Solovkecki Isl	1	middle	1	40.6	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	83	B Solovkecki Isl	1	middle	1	29.0	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	84	B Solovkecki Isl	1	middle	1	22.1	1.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	85	B Solovkecki Isl	1	middle	1	47.0	4.0	3	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	86	B Solovkecki Isl	1	middle	1	26.1	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	87	B Solovkecki Isl	1	middle	2	42.3	3.0	3	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	88	B Solovkecki Isl	1	middle	2	48.8	3.0	3	0	0	0	0	0	0	2	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	89	B Solovkecki Isl	1	middle	2	50.0	4.0	8	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	90	B Solovkecki Isl	1	middle	2	40.0	3.0	2	0	0	0	1	0	0	4	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	91	B Solovkecki Isl	1	middle	2	48.0	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	92	B Solovkecki Isl	1	middle	2	49.9	3.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	93	B Solovkecki Isl	1	middle	2	42.5	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	94	B Solovkecki Isl	1	middle	2	40.0	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	95	B Solovkecki Isl	1	middle	2	40.0	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	96	B Solovkecki Isl	1	middle	2	44.4	2.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	97	B Solovkecki Isl	1	middle	2	67.5	7.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	98	B Solovkecki Isl	1	middle	2	81.3	7.0	16	0	0	0	0	0	0	8	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	99	B Solovkecki Isl	1	middle	2	27.1	2.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	100	B Solovkecki Isl	1	middle	2	32.0	2.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	101	B Solovkecki Isl	1	middle	2	49.2	3.0	0	0	0	0	1	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	102	B Solovkecki Isl	1	middle	2	39.0	2.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	103	B Solovkecki Isl	1	middle	2	40.4	3.0	3	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	104	B Solovkecki Isl	1	middle	2	26.0	1.0	3	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	105	B Solovkecki Isl	1	middle	2	51.0	4.0	4	0	0	0	1	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	106	B Solovkecki Isl	1	middle	2	22.2	1.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	107	B Solovkecki Isl	1	middle	3	46.9	3.0	2	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	108	B Solovkecki Isl	1	middle	3	44.0	3.0	10	0	0	0	0	0	0	0	0	1	0	0	0	0
+Solovkecki_Isl	2013-07	109	B Solovkecki Isl	1	middle	3	47.0	4.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	110	B Solovkecki Isl	1	middle	3	48.9	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	111	B Solovkecki Isl	1	middle	3	42.3	3.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	112	B Solovkecki Isl	1	middle	3	46.0	3.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	113	B Solovkecki Isl	1	middle	3	45.0	3.0	6	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	114	B Solovkecki Isl	1	middle	3	44.5	4.0	1	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	115	B Solovkecki Isl	1	middle	3	48.2	4.0	12	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	116	B Solovkecki Isl	1	middle	3	49.2	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	117	B Solovkecki Isl	1	middle	3	65.9	6.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	118	B Solovkecki Isl	1	middle	3	63.0	7.0	24	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	119	B Solovkecki Isl	1	middle	3	57.9	5.0	1	0	0	0	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	120	B Solovkecki Isl	1	middle	3	41.1	3.0	0	0	0	0	1	0	0	2	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	121	B Solovkecki Isl	1	middle	3	27.3	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	122	B Solovkecki Isl	1	middle	3	44.3	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	123	B Solovkecki Isl	1	middle	3	23.3	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	124	B Solovkecki Isl	1	middle	3	53.8	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	125	B Solovkecki Isl	1	middle	3	36.3	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	126	B Solovkecki Isl	1	middle	3	68.1	8.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	127	B Solovkecki Isl	1	up	1	44.2	5.0	0	3	0	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	128	B Solovkecki Isl	1	up	1	47.2	7.0	0	1	0	0	0	0	0	0	0	0	1	0	0	0
+Solovkecki_Isl	2013-07	129	B Solovkecki Isl	1	up	1	45.4	5.0	1	2	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	130	B Solovkecki Isl	1	up	1	45.4	6.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	131	B Solovkecki Isl	1	up	1	41.4	4.0	1	4	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	132	B Solovkecki Isl	1	up	1	45.5	5.0	0	1	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	133	B Solovkecki Isl	1	up	1	47.0	6.0	0	6	1	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	134	B Solovkecki Isl	1	up	1	46.4	6.0	0	1	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	135	B Solovkecki Isl	1	up	1	49.2	6.0	1	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	136	B Solovkecki Isl	1	up	1	41.4	5.0	0	2	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	137	B Solovkecki Isl	1	up	1	50.6	6.0	0	6	2	3	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	138	B Solovkecki Isl	1	up	1	25.3	2.0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	139	B Solovkecki Isl	1	up	1	32.2	3.0	0	0	0	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	140	B Solovkecki Isl	1	up	1	26.3	1.0	0	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	141	B Solovkecki Isl	1	up	1	23.4	1.0	0	1	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	142	B Solovkecki Isl	1	up	1	23.3	1.0	1	0	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	143	B Solovkecki Isl	1	up	1	36.6	2.0	0	2	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	144	B Solovkecki Isl	1	up	1	21.6	1.0	0	5	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	145	B Solovkecki Isl	1	up	1	33.0	2.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	146	B Solovkecki Isl	1	up	1	18.3	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	147	B Solovkecki Isl	1	up	2	44.4	7.0	4	28	0	5	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	148	B Solovkecki Isl	1	up	2	48.0	8.0	3	6	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	149	B Solovkecki Isl	1	up	2	40.0	5.0	1	0	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	150	B Solovkecki Isl	1	up	2	49.2	8.0	1	14	1	1	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	151	B Solovkecki Isl	1	up	2	40.2	6.0	1	3	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	152	B Solovkecki Isl	1	up	2	45.0	7.0	2	2	0	3	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	153	B Solovkecki Isl	1	up	2	43.3	7.0	0	2	0	1	0	0	0	1	1	0	0	0	0	0
+Solovkecki_Isl	2013-07	154	B Solovkecki Isl	1	up	2	44.2	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	155	B Solovkecki Isl	1	up	2	42.0	6.0	1	1	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	156	B Solovkecki Isl	1	up	2	40.0	4.0	2	0	4	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	157	B Solovkecki Isl	1	up	2	27.3	2.0	0	0	0	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	158	B Solovkecki Isl	1	up	2	24.5	1.0	2	0	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	159	B Solovkecki Isl	1	up	2	17.3	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	160	B Solovkecki Isl	1	up	2	31.5	4.0	0	73	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	161	B Solovkecki Isl	1	up	2	20.0	1.0	0	5	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	162	B Solovkecki Isl	1	up	2	33.6	3.0	0	12	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	163	B Solovkecki Isl	1	up	2	32.7	4.0	0	1	0	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	164	B Solovkecki Isl	1	up	2	36.6	4.0	0	2	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	165	B Solovkecki Isl	1	up	2	29.1	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	166	B Solovkecki Isl	1	up	2	35.2	3.0	0	3	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	167	B Solovkecki Isl	1	up	3	46.0	4.0	4	0	0	0	1	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	168	B Solovkecki Isl	1	up	3	43.6	6.0	0	0	0	1	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	169	B Solovkecki Isl	1	up	3	47.5	8.0	0	0	0	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	170	B Solovkecki Isl	1	up	3	42.0	4.0	1	2	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	171	B Solovkecki Isl	1	up	3	48.0	6.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	172	B Solovkecki Isl	1	up	3	42.0	6.0	4	2	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	173	B Solovkecki Isl	1	up	3	41.3	7.0	1	0	1	1	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	174	B Solovkecki Isl	1	up	3	42.3	6.0	0	1	1	1	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	175	B Solovkecki Isl	1	up	3	43.4	7.0	0	0	3	3	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	176	B Solovkecki Isl	1	up	3	46.1	6.0	1	1	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	177	B Solovkecki Isl	1	up	3	50.3	7.0	0	1	0	1	0	0	0	1	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	178	B Solovkecki Isl	1	up	3	52.2	8.0	3	2	1	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	179	B Solovkecki Isl	1	up	3	50.9	9.0	0	0	0	4	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	180	B Solovkecki Isl	1	up	3	29.6	4.0	1	3	0	0	0	1	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	181	B Solovkecki Isl	1	up	3	32.0	3.0	1	0	0	2	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	182	B Solovkecki Isl	1	up	3	24.3	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	183	B Solovkecki Isl	1	up	3	27.0	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	184	B Solovkecki Isl	1	up	3	10.5	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	185	B Solovkecki Isl	1	up	3	50.0	9.0	1	0	0	4	0	0	0	0	0	0	0	0	0	0
+Solovkecki_Isl	2013-07	186	B Solovkecki Isl	1	up	3	37.3	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	187	B. Gorelyi isl.	2	down	1	41.2	3.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	188	B. Gorelyi isl.	2	down	1	47.4	5.0	3	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	189	B. Gorelyi isl.	2	down	1	48.9	5.0	13	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	190	B. Gorelyi isl.	2	down	1	43.7	6.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	191	B. Gorelyi isl.	2	down	1	47.0	7.0	12	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	192	B. Gorelyi isl.	2	down	1	44.3	6.0	24	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	193	B. Gorelyi isl.	2	down	1	44.3	7.0	16	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	194	B. Gorelyi isl.	2	down	1	43.0	4.0	2	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	195	B. Gorelyi isl.	2	down	1	47.3	6.0	1	0	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	196	B. Gorelyi isl.	2	down	1	42.6	5.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	197	B. Gorelyi isl.	2	down	1	51.1	7.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	198	B. Gorelyi isl.	2	down	1	24.6	2.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	199	B. Gorelyi isl.	2	down	1	57.1	6.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	200	B. Gorelyi isl.	2	down	1	33.3	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	201	B. Gorelyi isl.	2	down	1	29.7	4.0	0	3	4	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	202	B. Gorelyi isl.	2	down	1	53.3	6.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	203	B. Gorelyi isl.	2	down	1	16.0	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	204	B. Gorelyi isl.	2	down	1	36.4	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	205	B. Gorelyi isl.	2	down	1	32.0	2.0	5	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	206	B. Gorelyi isl.	2	down	1	36.1	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	207	B. Gorelyi isl.	2	down	2	40.5	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	208	B. Gorelyi isl.	2	down	2	43.3	4.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	209	B. Gorelyi isl.	2	down	2	43.5	4.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	210	B. Gorelyi isl.	2	down	2	49.2	4.0	1	0	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	211	B. Gorelyi isl.	2	down	2	42.3	3.0	22	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	212	B. Gorelyi isl.	2	down	2	45.4	5.0	8	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	213	B. Gorelyi isl.	2	down	2	45.4	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	214	B. Gorelyi isl.	2	down	2	47.0	5.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	215	B. Gorelyi isl.	2	down	2	40.4	4.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	216	B. Gorelyi isl.	2	down	2	42.5	5.0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	217	B. Gorelyi isl.	2	down	2	52.5	5.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	218	B. Gorelyi isl.	2	down	2	31.3	7.0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	219	B. Gorelyi isl.	2	down	2	57.4	6.0	12	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	220	B. Gorelyi isl.	2	down	2	29.4	2.0	12	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	221	B. Gorelyi isl.	2	down	2	30.4	2.0	27	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	222	B. Gorelyi isl.	2	down	2	18.3	0.5	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	223	B. Gorelyi isl.	2	down	2	27.0	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	224	B. Gorelyi isl.	2	down	2	38.2	3.0	3	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	225	B. Gorelyi isl.	2	down	2	53.7	6.0	4	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	226	B. Gorelyi isl.	2	down	2	31.4	2.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	227	B. Gorelyi isl.	2	down	3	44.2	5.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	228	B. Gorelyi isl.	2	down	3	41.3	4.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	229	B. Gorelyi isl.	2	down	3	47.0	5.0	5	0	0	0	0	0	0	0	0	0	0	0	1	0
+Gorelyi_Isl	2013-07	230	B. Gorelyi isl.	2	down	3	42.4	3.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	231	B. Gorelyi isl.	2	down	3	47.2	5.0	5	0	0	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	232	B. Gorelyi isl.	2	down	3	40.9	5.0	17	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	233	B. Gorelyi isl.	2	down	3	45.3	5.0	11	0	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	234	B. Gorelyi isl.	2	down	3	49.3	3.0	16	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	235	B. Gorelyi isl.	2	down	3	40.5	5.0	15	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	236	B. Gorelyi isl.	2	down	3	47.0	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	237	B. Gorelyi isl.	2	down	3	37.0	3.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	238	B. Gorelyi isl.	2	down	3	22.4	1.0	5	0	0	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	239	B. Gorelyi isl.	2	down	3	37.4	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	240	B. Gorelyi isl.	2	down	3	26.4	2.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	241	B. Gorelyi isl.	2	down	3	51.0	6.0	8	0	0	1	1	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	242	B. Gorelyi isl.	2	down	3	34.8	5.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	243	B. Gorelyi isl.	2	down	3	35.3	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	244	B. Gorelyi isl.	2	down	3	36.0	3.0	11	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	245	B. Gorelyi isl.	2	down	3	22.0	1.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	246	B. Gorelyi isl.	2	down	3	28.4	2.0	8	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	247	B. Gorelyi isl.	2	middle	1	42.1	5.0	11	0	0	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	248	B. Gorelyi isl.	2	middle	1	47.1	3.0	1	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	249	B. Gorelyi isl.	2	middle	1	40.0	3.0	5	0	0	0	0	0	0	0	0	0	1	0	0	0
+Gorelyi_Isl	2013-07	250	B. Gorelyi isl.	2	middle	1	43.7	2.0	16	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	251	B. Gorelyi isl.	2	middle	1	42.0	4.0	2	0	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	252	B. Gorelyi isl.	2	middle	1	41.4	3.0	2	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	253	B. Gorelyi isl.	2	middle	1	41.0	5.0	6	0	6	0	0	0	0	0	1	0	1	0	0	0
+Gorelyi_Isl	2013-07	254	B. Gorelyi isl.	2	middle	1	49.8	6.0	1	0	0	0	0	0	0	0	1	0	0	1	0	0
+Gorelyi_Isl	2013-07	255	B. Gorelyi isl.	2	middle	1	42.0	7.0	1	0	0	0	0	0	0	0	1	0	0	1	0	0
+Gorelyi_Isl	2013-07	256	B. Gorelyi isl.	2	middle	1	43.1	3.0	1	0	1	0	0	0	0	0	1	0	0	1	0	0
+Gorelyi_Isl	2013-07	257	B. Gorelyi isl.	2	middle	1	51.0	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	258	B. Gorelyi isl.	2	middle	1	52.5	5.0	3	1	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	259	B. Gorelyi isl.	2	middle	1	36.2	4.0	1	1	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	260	B. Gorelyi isl.	2	middle	1	29.2	3.0	9	1	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	261	B. Gorelyi isl.	2	middle	1	13.3	0.5	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	262	B. Gorelyi isl.	2	middle	1	35.5	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	263	B. Gorelyi isl.	2	middle	1	36.6	2.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	264	B. Gorelyi isl.	2	middle	1	30.0	4.0	0	5	4	0	0	0	3	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	265	B. Gorelyi isl.	2	middle	1	21.4	1.0	0	0	1	0	0	0	1	1	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	266	B. Gorelyi isl.	2	middle	1	25.7	1.0	2	0	3	0	0	0	0	0	0	0	0	1	0	0
+Gorelyi_Isl	2013-07	267	B. Gorelyi isl.	2	middle	2	49.0	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	268	B. Gorelyi isl.	2	middle	2	40.3	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	269	B. Gorelyi isl.	2	middle	2	43.0	4.0	1	0	1	1	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	270	B. Gorelyi isl.	2	middle	2	44.0	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	271	B. Gorelyi isl.	2	middle	2	44.1	3.0	4	0	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	272	B. Gorelyi isl.	2	middle	2	42.4	2.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	273	B. Gorelyi isl.	2	middle	2	41.7	2.0	2	0	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	274	B. Gorelyi isl.	2	middle	2	43.7	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	275	B. Gorelyi isl.	2	middle	2	47.2	4.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	276	B. Gorelyi isl.	2	middle	2	42.3	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	277	B. Gorelyi isl.	2	middle	2	55.0	5.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	278	B. Gorelyi isl.	2	middle	2	35.1	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	279	B. Gorelyi isl.	2	middle	2	34.1	2.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	280	B. Gorelyi isl.	2	middle	2	21.0	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	281	B. Gorelyi isl.	2	middle	2	50.3	4.0	0	0	1	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	282	B. Gorelyi isl.	2	middle	2	39.0	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	283	B. Gorelyi isl.	2	middle	2	33.0	2.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	284	B. Gorelyi isl.	2	middle	2	31.0	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	285	B. Gorelyi isl.	2	middle	2	29.8	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	286	B. Gorelyi isl.	2	middle	2	54.1	5.0	0	0	0	0	0	0	1	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	287	B. Gorelyi isl.	2	middle	3	42.9	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	288	B. Gorelyi isl.	2	middle	3	49.3	3.0	1	0	0	0	0	0	1	1	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	289	B. Gorelyi isl.	2	middle	3	49.3	5.0	0	3	5	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	290	B. Gorelyi isl.	2	middle	3	40.1	4.0	2	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	291	B. Gorelyi isl.	2	middle	3	41.5	5.0	0	0	0	0	0	0	0	0	4	0	0	0	0	0
+Gorelyi_Isl	2013-07	292	B. Gorelyi isl.	2	middle	3	40.4	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	293	B. Gorelyi isl.	2	middle	3	47.9	4.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	294	B. Gorelyi isl.	2	middle	3	46.3	6.0	1	0	2	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	295	B. Gorelyi isl.	2	middle	3	44.3	4.0	0	1	1	0	0	0	0	0	1	1	0	0	0	0
+Gorelyi_Isl	2013-07	296	B. Gorelyi isl.	2	middle	3	45.3	3.0	0	0	8	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	297	B. Gorelyi isl.	2	middle	3	54.3	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	298	B. Gorelyi isl.	2	middle	3	52.0	5.0	0	0	1	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	299	B. Gorelyi isl.	2	middle	3	38.1	4.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	300	B. Gorelyi isl.	2	middle	3	35.5	4.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	301	B. Gorelyi isl.	2	middle	3	29.0	3.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	302	B. Gorelyi isl.	2	middle	3	33.4	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	303	B. Gorelyi isl.	2	middle	3	35.1	4.0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	304	B. Gorelyi isl.	2	middle	3	30.0	2.0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	305	B. Gorelyi isl.	2	middle	3	48.9	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	306	B. Gorelyi isl.	2	middle	3	30.5	2.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	307	B. Gorelyi isl.	2	up	1	40.0	7.0	0	3	0	1	0	0	0	0	0	1	0	0	0	0
+Gorelyi_Isl	2013-07	308	B. Gorelyi isl.	2	up	1	45.0	6.0	0	5	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	309	B. Gorelyi isl.	2	up	1	45.1	5.0	0	15	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	310	B. Gorelyi isl.	2	up	1	38.0	4.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	311	B. Gorelyi isl.	2	up	1	39.3	6.0	0	14	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	312	B. Gorelyi isl.	2	up	1	38.9	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	313	B. Gorelyi isl.	2	up	1	37.2	8.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	314	B. Gorelyi isl.	2	up	1	36.3	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	315	B. Gorelyi isl.	2	up	1	37.2	5.0	0	5	2	0	0	0	3	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	316	B. Gorelyi isl.	2	up	1	36.0	3.0	0	2	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	317	B. Gorelyi isl.	2	up	1	33.0	6.0	0	1	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	318	B. Gorelyi isl.	2	up	1	36.0	5.0	0	5	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	319	B. Gorelyi isl.	2	up	1	33.2	6.0	0	13	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	320	B. Gorelyi isl.	2	up	1	28.2	5.0	0	1	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	321	B. Gorelyi isl.	2	up	1	35.0	4.0	0	11	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	322	B. Gorelyi isl.	2	up	1	24.0	4.0	0	0	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	323	B. Gorelyi isl.	2	up	1	32.0	7.0	0	0	8	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	324	B. Gorelyi isl.	2	up	1	30.0	4.0	0	0	1	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	325	B. Gorelyi isl.	2	up	1	33.0	4.0	0	1	2	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	326	B. Gorelyi isl.	2	up	1	20.3	3.0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	327	B. Gorelyi isl.	2	up	2	39.0	6.0	0	13	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	328	B. Gorelyi isl.	2	up	2	37.0	8.0	0	0	4	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	329	B. Gorelyi isl.	2	up	2	36.5	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	330	B. Gorelyi isl.	2	up	2	38.3	4.0	0	0	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	331	B. Gorelyi isl.	2	up	2	37.5	4.0	0	2	0	0	0	0	3	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	332	B. Gorelyi isl.	2	up	2	36.2	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	333	B. Gorelyi isl.	2	up	2	36.0	6.0	0	3	1	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	334	B. Gorelyi isl.	2	up	2	33.4	5.0	0	5	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	335	B. Gorelyi isl.	2	up	2	34.1	5.0	0	2	1	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	336	B. Gorelyi isl.	2	up	2	33.3	4.0	1	0	3	0	0	0	0	1	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	337	B. Gorelyi isl.	2	up	2	32.2	4.0	0	13	3	0	0	0	0	0	0	0	0	0	1	0
+Gorelyi_Isl	2013-07	338	B. Gorelyi isl.	2	up	2	32.5	4.0	0	0	0	0	0	0	0	1	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	339	B. Gorelyi isl.	2	up	2	23.0	2.0	0	1	0	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	340	B. Gorelyi isl.	2	up	2	24.4	3.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	341	B. Gorelyi isl.	2	up	2	21.4	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	342	B. Gorelyi isl.	2	up	2	30.0	3.0	0	5	5	1	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	343	B. Gorelyi isl.	2	up	2	31.6	4.0	0	13	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	344	B. Gorelyi isl.	2	up	2	27.2	5.0	0	0	1	0	0	0	0	1	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	345	B. Gorelyi isl.	2	up	2	21.3	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	346	B. Gorelyi isl.	2	up	2	16.0	2.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	347	B. Gorelyi isl.	2	up	3	41.0	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	348	B. Gorelyi isl.	2	up	3	41.4	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	349	B. Gorelyi isl.	2	up	3	41.5	4.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	350	B. Gorelyi isl.	2	up	3	42.3	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	351	B. Gorelyi isl.	2	up	3	44.0	4.0	0	0	3	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	352	B. Gorelyi isl.	2	up	3	43.2	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	353	B. Gorelyi isl.	2	up	3	40.0	5.0	0	5	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	354	B. Gorelyi isl.	2	up	3	38.4	5.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	355	B. Gorelyi isl.	2	up	3	38.3	6.0	0	3	2	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	356	B. Gorelyi isl.	2	up	3	41.8	5.0	0	3	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	357	B. Gorelyi isl.	2	up	3	36.0	5.0	0	19	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	358	B. Gorelyi isl.	2	up	3	53.9	4.0	0	1	0	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	359	B. Gorelyi isl.	2	up	3	36.3	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	360	B. Gorelyi isl.	2	up	3	27.0	4.0	0	6	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	361	B. Gorelyi isl.	2	up	3	33.3	5.0	0	6	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	362	B. Gorelyi isl.	2	up	3	23.0	5.0	0	1	3	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	363	B. Gorelyi isl.	2	up	3	21.4	7.0	0	1	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	364	B. Gorelyi isl.	2	up	3	36.4	6.0	0	4	1	0	0	0	0	0	1	0	0	0	0	0
+Gorelyi_Isl	2013-07	365	B. Gorelyi isl.	2	up	3	20.0	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	366	B. Gorelyi isl.	2	up	3	38.0	5.0	0	6	1	0	0	0	0	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	367	B. Gorelyi isl.	2	up	3	37.3	5.0	0	1	0	0	0	0	1	0	0	0	0	0	0	0
+Gorelyi_Isl	2013-07	368	B. Gorelyi isl.	2	up	3	35.0	4.0	0	3	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	369	Lebajya Bay	3	down	1	46.3	7.0	9	0	1	0	0	0	4	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	370	Lebajya Bay	3	down	1	39.9	7.0	9	0	0	0	0	0	5	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	371	Lebajya Bay	3	down	1	40.3	9.0	3	0	0	0	0	0	4	1	0	1	0	0	0	0
+Lebajya_Bay	2013-07	372	Lebajya Bay	3	down	1	47.9	8.0	4	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	373	Lebajya Bay	3	down	1	49.3	8.0	6	50	0	0	0	0	3	1	0	1	0	0	0	0
+Lebajya_Bay	2013-07	374	Lebajya Bay	3	down	1	42.4	4.0	2	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	375	Lebajya Bay	3	down	1	43.1	9.0	4	0	0	0	0	0	2	0	0	1	0	0	0	0
+Lebajya_Bay	2013-07	376	Lebajya Bay	3	down	1	49.0	7.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	377	Lebajya Bay	3	down	1	47.2	5.0	18	0	0	0	0	0	2	5	0	0	0	0	0	0
+Lebajya_Bay	2013-07	378	Lebajya Bay	3	down	1	45.3	5.0	2	0	0	0	0	0	1	0	0	0	0	0	0	1
+Lebajya_Bay	2013-07	379	Lebajya Bay	3	down	1	37.0	5.0	3	0	0	0	0	0	5	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	380	Lebajya Bay	3	down	1	30.6	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	381	Lebajya Bay	3	down	1	38.6	5.0	2	0	0	0	0	0	3	5	0	0	0	0	0	0
+Lebajya_Bay	2013-07	382	Lebajya Bay	3	down	1	43.0	5.0	6	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	383	Lebajya Bay	3	down	1	53.5	8.0	1	3	0	0	0	0	4	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	384	Lebajya Bay	3	down	1	37.6	3.0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	385	Lebajya Bay	3	down	1	37.7	8.0	1	0	0	0	0	0	3	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	386	Lebajya Bay	3	down	1	37.3	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	387	Lebajya Bay	3	down	1	34.3	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	388	Lebajya Bay	3	down	1	60.3	8.0	0	1	0	0	0	0	4	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	389	Lebajya Bay	3	down	2	42.3	5.0	7	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	390	Lebajya Bay	3	down	2	40.0	6.0	8	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	391	Lebajya Bay	3	down	2	41.0	5.0	10	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	392	Lebajya Bay	3	down	2	43.3	5.0	21	0	0	0	0	0	0	2	0	1	0	0	0	0
+Lebajya_Bay	2013-07	393	Lebajya Bay	3	down	2	45.7	6.0	14	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	394	Lebajya Bay	3	down	2	42.4	6.0	11	0	0	0	0	0	3	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	395	Lebajya Bay	3	down	2	45.1	5.0	8	0	0	0	0	0	2	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	396	Lebajya Bay	3	down	2	41.4	4.0	17	0	0	0	0	0	2	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	397	Lebajya Bay	3	down	2	46.5	7.0	10	0	0	0	0	0	3	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	398	Lebajya Bay	3	down	2	42.1	5.0	11	0	0	0	0	0	0	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	399	Lebajya Bay	3	down	2	31.8	5.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	400	Lebajya Bay	3	down	2	51.2	9.0	17	0	0	0	0	0	4	9	0	0	0	0	0	0
+Lebajya_Bay	2013-07	401	Lebajya Bay	3	down	2	37.9	5.0	3	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	402	Lebajya Bay	3	down	2	51.4	6.0	9	0	0	0	0	0	4	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	403	Lebajya Bay	3	down	2	35.4	4.0	26	0	0	0	0	0	1	4	0	0	0	0	0	0
+Lebajya_Bay	2013-07	404	Lebajya Bay	3	down	2	36.0	4.0	4	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	405	Lebajya Bay	3	down	2	48.0	7.0	2	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	406	Lebajya Bay	3	down	2	35.9	3.0	11	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	407	Lebajya Bay	3	down	2	32.1	3.0	15	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	408	Lebajya Bay	3	down	2	37.7	5.0	13	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	409	Lebajya Bay	3	down	3	47.6	5.0	1	0	0	0	0	0	0	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	410	Lebajya Bay	3	down	3	41.0	7.0	4	0	0	0	0	0	4	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	411	Lebajya Bay	3	down	3	44.1	4.0	11	0	0	0	0	0	0	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	412	Lebajya Bay	3	down	3	46.0	8.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	413	Lebajya Bay	3	down	3	40.0	5.0	2	0	0	0	0	0	0	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	414	Lebajya Bay	3	down	3	40.3	5.0	7	1	1	0	0	0	4	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	415	Lebajya Bay	3	down	3	45.4	6.0	4	0	0	0	0	0	4	4	0	0	0	0	0	0
+Lebajya_Bay	2013-07	416	Lebajya Bay	3	down	3	45.3	7.0	1	0	0	0	0	0	4	3	0	0	0	0	0	0
+Lebajya_Bay	2013-07	417	Lebajya Bay	3	down	3	42.6	6.0	2	0	1	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	418	Lebajya Bay	3	down	3	45.0	5.0	1	0	0	0	0	0	3	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	419	Lebajya Bay	3	down	3	60.0	10.0	3	1	0	0	0	0	3	3	0	0	0	0	0	0
+Lebajya_Bay	2013-07	420	Lebajya Bay	3	down	3	33.5	5.0	5	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	421	Lebajya Bay	3	down	3	40.4	4.0	0	0	1	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	422	Lebajya Bay	3	down	3	50.1	7.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	423	Lebajya Bay	3	down	3	53.3	8.0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	424	Lebajya Bay	3	down	3	54.1	10.0	2	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	425	Lebajya Bay	3	down	3	39.2	5.0	0	0	0	0	0	0	3	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	426	Lebajya Bay	3	down	3	38.0	5.0	1	0	0	0	0	0	4	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	427	Lebajya Bay	3	down	3	28.4	3.0	6	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	428	Lebajya Bay	3	down	3	29.2	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	429	Lebajya Bay	3	middle	1	38.0	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	430	Lebajya Bay	3	middle	1	49.3	4.0	0	2	0	0	0	0	1	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	431	Lebajya Bay	3	middle	1	46.9	4.0	0	0	3	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	432	Lebajya Bay	3	middle	1	38.0	3.0	2	0	1	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	433	Lebajya Bay	3	middle	1	44.0	5.0	0	0	0	1	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	434	Lebajya Bay	3	middle	1	41.0	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	435	Lebajya Bay	3	middle	1	41.0	5.0	0	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	436	Lebajya Bay	3	middle	1	45.3	4.0	4	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	437	Lebajya Bay	3	middle	1	46.9	5.0	1	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	438	Lebajya Bay	3	middle	1	44.1	4.0	1	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	439	Lebajya Bay	3	middle	1	51.2	3.0	1	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	440	Lebajya Bay	3	middle	1	41.4	4.0	1	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	441	Lebajya Bay	3	middle	1	33.1	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	442	Lebajya Bay	3	middle	1	35.3	4.0	0	0	0	0	0	0	4	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	443	Lebajya Bay	3	middle	1	37.6	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	444	Lebajya Bay	3	middle	1	30.4	2.0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	445	Lebajya Bay	3	middle	1	35.0	1.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	446	Lebajya Bay	3	middle	1	32.3	2.0	3	51	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	447	Lebajya Bay	3	middle	1	34.2	3.0	1	0	2	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	448	Lebajya Bay	3	middle	1	33.0	2.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	449	Lebajya Bay	3	middle	2	47.0	5.0	10	0	0	0	0	0	1	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	450	Lebajya Bay	3	middle	2	42.5	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	451	Lebajya Bay	3	middle	2	40.5	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	452	Lebajya Bay	3	middle	2	45.4	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	453	Lebajya Bay	3	middle	2	45.4	5.0	1	2	1	1	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	454	Lebajya Bay	3	middle	2	41.6	6.0	1	1	0	0	0	0	3	1	0	0	0	0	0	0
+Lebajya_Bay	2013-07	455	Lebajya Bay	3	middle	2	48.8	9.0	2	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	456	Lebajya Bay	3	middle	2	45.3	5.0	4	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	457	Lebajya Bay	3	middle	2	41.0	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	458	Lebajya Bay	3	middle	2	42.4	5.0	3	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	459	Lebajya Bay	3	middle	2	50.4	4.0	3	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	460	Lebajya Bay	3	middle	2	37.2	5.0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	461	Lebajya Bay	3	middle	2	34.6	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	462	Lebajya Bay	3	middle	2	54.4	7.0	7	0	1	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	463	Lebajya Bay	3	middle	2	35.1	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	464	Lebajya Bay	3	middle	2	50.3	4.0	0	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	465	Lebajya Bay	3	middle	2	41.1	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	466	Lebajya Bay	3	middle	2	35.0	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	467	Lebajya Bay	3	middle	2	33.6	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	468	Lebajya Bay	3	middle	2	36.0	4.0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	469	Lebajya Bay	3	middle	3	44.4	7.0	1	0	0	0	0	0	2	1	0	0	0	1	0	0
+Lebajya_Bay	2013-07	470	Lebajya Bay	3	middle	3	44.1	4.0	0	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	471	Lebajya Bay	3	middle	3	44.9	4.0	5	0	0	0	0	0	0	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	472	Lebajya Bay	3	middle	3	45.3	8.0	1	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	473	Lebajya Bay	3	middle	3	42.2	4.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	474	Lebajya Bay	3	middle	3	40.0	5.0	0	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	475	Lebajya Bay	3	middle	3	42.0	4.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	476	Lebajya Bay	3	middle	3	41.5	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	477	Lebajya Bay	3	middle	3	43.3	5.0	2	1	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	478	Lebajya Bay	3	middle	3	41.7	6.0	1	0	0	0	0	0	4	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	479	Lebajya Bay	3	middle	3	52.3	6.0	0	0	0	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	480	Lebajya Bay	3	middle	3	38.3	3.0	1	1	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	481	Lebajya Bay	3	middle	3	30.3	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	482	Lebajya Bay	3	middle	3	36.4	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	483	Lebajya Bay	3	middle	3	38.0	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	484	Lebajya Bay	3	middle	3	36.0	5.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	485	Lebajya Bay	3	middle	3	30.3	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	486	Lebajya Bay	3	middle	3	49.3	5.0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	487	Lebajya Bay	3	middle	3	27.4	6.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	488	Lebajya Bay	3	middle	3	35.3	3.0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	489	Lebajya Bay	3	up	1	42.0	6.0	0	0	7	0	0	0	0	0	2	0	0	0	0	0
+Lebajya_Bay	2013-07	490	Lebajya Bay	3	up	1	41.8	5.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	491	Lebajya Bay	3	up	1	39.3	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	492	Lebajya Bay	3	up	1	36.0	7.0	0	1	9	0	0	0	3	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	493	Lebajya Bay	3	up	1	40.0	7.0	0	0	1	0	0	0	3	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	494	Lebajya Bay	3	up	1	39.4	7.0	0	0	1	0	0	0	0	0	2	0	0	0	0	0
+Lebajya_Bay	2013-07	495	Lebajya Bay	3	up	1	39.0	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	496	Lebajya Bay	3	up	1	38.4	5.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	497	Lebajya Bay	3	up	1	35.4	8.0	0	0	2	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	498	Lebajya Bay	3	up	1	36.9	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	499	Lebajya Bay	3	up	1	34.4	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	500	Lebajya Bay	3	up	1	36.0	7.0	0	0	1	0	0	0	0	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	501	Lebajya Bay	3	up	1	36.0	5.0	0	0	4	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	502	Lebajya Bay	3	up	1	33.6	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	503	Lebajya Bay	3	up	1	32.2	6.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	504	Lebajya Bay	3	up	1	31.0	8.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	505	Lebajya Bay	3	up	1	35.5	6.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	506	Lebajya Bay	3	up	1	31.2	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	507	Lebajya Bay	3	up	1	33.5	6.0	0	1	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	508	Lebajya Bay	3	up	1	24.3	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	509	Lebajya Bay	3	up	2	39.2	9.0	0	0	5	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	510	Lebajya Bay	3	up	2	42.6	7.0	0	0	2	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	511	Lebajya Bay	3	up	2	39.3	6.0	0	1	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	512	Lebajya Bay	3	up	2	41.1	6.0	0	0	2	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	513	Lebajya Bay	3	up	2	40.5	7.0	0	0	3	0	0	0	2	0	0	0	1	0	0	0
+Lebajya_Bay	2013-07	514	Lebajya Bay	3	up	2	37.3	8.0	0	0	2	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	515	Lebajya Bay	3	up	2	36.6	9.0	0	0	5	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	516	Lebajya Bay	3	up	2	37.3	6.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	517	Lebajya Bay	3	up	2	36.4	5.0	0	0	0	0	0	0	0	0	2	0	0	0	0	0
+Lebajya_Bay	2013-07	518	Lebajya Bay	3	up	2	35.0	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	519	Lebajya Bay	3	up	2	32.0	7.0	0	0	2	0	0	0	3	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	520	Lebajya Bay	3	up	2	34.0	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	521	Lebajya Bay	3	up	2	35.3	4.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	522	Lebajya Bay	3	up	2	30.2	3.0	0	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	523	Lebajya Bay	3	up	2	33.2	3.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	524	Lebajya Bay	3	up	2	34.1	4.0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	525	Lebajya Bay	3	up	2	33.0	6.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	526	Lebajya Bay	3	up	2	26.9	3.0	0	0	0	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	527	Lebajya Bay	3	up	2	34.3	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	528	Lebajya Bay	3	up	2	35.0	9.0	0	1	0	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	529	Lebajya Bay	3	up	3	35.0	4.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	530	Lebajya Bay	3	up	3	35.3	5.0	0	0	4	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	531	Lebajya Bay	3	up	3	35.3	6.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	532	Lebajya Bay	3	up	3	34.6	7.0	0	0	1	0	0	0	2	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	533	Lebajya Bay	3	up	3	43.5	9.0	0	1	8	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	534	Lebajya Bay	3	up	3	32.4	4.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	535	Lebajya Bay	3	up	3	39.2	5.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	536	Lebajya Bay	3	up	3	39.6	6.0	0	0	8	0	0	0	1	0	1	0	0	0	0	0
+Lebajya_Bay	2013-07	537	Lebajya Bay	3	up	3	32.4	6.0	0	0	5	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	538	Lebajya Bay	3	up	3	43.0	8.0	0	0	1	0	0	0	1	0	0	1	0	0	0	0
+Lebajya_Bay	2013-07	539	Lebajya Bay	3	up	3	31.7	3.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	540	Lebajya Bay	3	up	3	29.7	3.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	541	Lebajya Bay	3	up	3	32.5	7.0	0	0	2	0	0	0	2	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	542	Lebajya Bay	3	up	3	37.3	8.0	0	1	3	0	0	0	0	2	0	0	0	0	0	0
+Lebajya_Bay	2013-07	543	Lebajya Bay	3	up	3	32.8	5.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	544	Lebajya Bay	3	up	3	36.4	6.0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	545	Lebajya Bay	3	up	3	36.0	6.0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	546	Lebajya Bay	3	up	3	29.7	5.0	0	0	5	0	0	0	0	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	547	Lebajya Bay	3	up	3	32.9	5.0	0	0	2	0	0	0	1	0	0	0	0	0	0	0
+Lebajya_Bay	2013-07	548	Lebajya Bay	3	up	3	33.3	6.0	0	0	2	0	0	0	0	0	0	0	0	0	0	0

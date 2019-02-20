@@ -1,261 +1,342 @@
-# ---
-# title: "Ординация. Многомерное шкалирование."
+# title: "Неметрическое многомерное шкалирование, envfit, ordisurf"
 # subtitle: "Анализ и визуализация многомерных данных с использованием R"
 # author: Марина Варфоломеева, Вадим Хайтов
-# ---
 
-# install.packages(scatterplot3d)
-# install.packages(gridExtra)
+# Загрузка пакетов ###############################
 
-## Пример: Сообщества бентоса акватории Долгой губы (о. Б. Соловецкий, Белое море)
-# Нинбург, 1990; Хайтов и др., 2013
+# Чтение файлов
+library(readxl)
 
-abund <- read.table("data/dolg_abundance.txt", skip = 1, header = TRUE, sep = ";")
-hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
+# Обработка данных
+library(tidyr)
+library(dplyr)
+library(broom)
 
-log_abund <- log(abund[,-1] + 1)
+# Графики
+library(ggmap)
+theme_set(theme_bw())
+library(cowplot)
 
-row.names(log_abund) <- abund[,1]
+# install.packages("devtools")
+# devtools::install_github("gavinsimpson/ggvegan")
+library(ggvegan)
 
-# ## Задание: Прямая ординация станций в осях Температуры и Солености
-# Постройте диаграмму, отражающую ординацию станций в осях Температуры и Солености.
-# Модифицируйте график так, чтобы была еще видна связь с суммарным обилием видов в пробах.
-
-library(ggplot2)
-
-tot_abund <- apply(  , MARGIN = 1, FUN = )
-
-ggplot(hydrol, aes(x = , y = ,  = tot_abund)) + geom_ () + labs(  = "Total abundance")
-
-
-
-
-
-
-
-# Неметрическое многомерное шкалирование (nMDS)
-# Трансформируем данные
-log_abund <- log(abund[,-1] + 1)
-row.names(log_abund) <- abund$Station
-
-library (vegan)
-
-ord <- metaMDS(log_abund, distance = "bray", k = 2) # результаты сохраняются в объекте ord
-
-
-ordiplot(ord, display = "sites")
-
-
-ordiplot(ord, display = "species", type = "t")
-
-str(ord)
-
-
-
-# Вычисленные координаты
-ord$points
-
-ordiplot(ord, display = "species", type = "t")
-
-## Графическое представление результатов средствами пакета `vegan`
-ordiplot(ord, display = "sites" )
-
-
-# Вытаскиваем из объекта ord координаты точек
-str(ord)
-
-ord$points
-
-points <- as.data.frame(ord$points)
-
-
-ggplot(points, aes(x = MDS1, y = MDS2, color = hydrol$Sal)) + geom_point(size = 4) + scale_color_gradient(low = "yellow", high = "red")
-
-
-# Задание
-# Создайте датафрейм, содержащий исходные данные (без логарифмирования) только по сайтам S17, S33, S37, S38, S44, S59.
-# Постройте ординацию этих объектов с использованием в качестве меры различия коэффициент Брея-Куртиса.
-
-obj <- ("S17", "S33", "S37", "S38", "S44", "S59")
-
-red_abund <- log_abund[abund$Station %in%  , ]
-
-row.names(red_abund) <- obj
-
-ord1 <- metaMDS( , distance = )
-
-
-ordiplot(  ,  = "sites", type = "text")
-
-
-
-stressplot(ord1)
-
-
-
-
-env_fit <- envfit(ord, hydrol[ ,-1], na.rm = T )
-
-plot(ord, display = "sites")
-plot(env_fit, col = "blue")
-
-
-
-
-
-env <- envfit(ord, hydrol[,-1], na.rm = T )
-
-plot(ord, display = "sites")
-plot(env)
-
-
-plot(ord, display = "sites")
-
-ordisurf(ord, hydrol$Depth, add = TRUE, col="blue")
-
-
-
-plot(ord, display = "sites")
-
-ordisurf(ord, hydrol$Sal, add = TRUE, col="blue")
-ordisurf(ord, hydrol$Depth, add = TRUE, col="green")
-ordisurf(ord, hydrol$Temp, add = TRUE, col="red")
-
-
-
-plot(ord, display = "sites")
-
-ordisurf(ord, hydrol$Temp, add = TRUE, col="blue")
-
-
-
-ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
-ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
-`
-## Задание:
-# - Создайте датафрейм, содержащий исходные данные (без логарифмирования) только по сайтам S17, S33, S37, S38, S44, S59.
-# - Постройте ординацию этих объектов с использованием в качестве меры различия коэффициент Брея-Куртиса.
-# - Измерьте линейкой расстояния между точками на ординации
-# - Сравните матрицу коэффициентов Брея-Куртиса и матрицу расстояний между точками на ординации.
-
-obj <- c("S17", "S33", "S37", "S38", "S44", "S59")
-
-
-red_abund <- log_abund[abund$Station %in% obj, ]
-
-ord1 <- metaMDS(red_abund)
-
-plot(ord1, display = "site", type = "t")
-
-## Взаиморасположение точек на плоскости подобно взаиморасположению точек в многомерном пространстве признаков
-library(ggplot2)
-dist_compare <- data.frame(Bray = as.vector(vegdist(red_abund[, -1])), MDS = as.vector(vegdist(ord1$points, method = "euclidean")))
-ggplot(dist_compare, aes(x = Bray, y = MDS)) + geom_point(size = 4) + xlab("Bray-Curtis dissimilarity") + ylab("Distance between points on ordination")
-
-## Диаграмма Шепарда
-stressplot(ord1)
-
-## Задание:
-# Постройте диаграмму Шепарда вместе с монотонной регрессией на полном материале по Долгой губе. Найдите величину стресса.
-# Надежна ли такая ординация?
-
-stressplot(metaMDS(log_abund))
-
-metaMDS(log_abund)$stress
-
-## MDS в трехмерном пространстве
-library(scatterplot3d)
-ord3 <- metaMDS(log_abund, k = 3, trace = FALSE)
-scatterplot3d(x = ord3$points[,1], y = ord3$points[,2], z = ord3$points[,3], xlab = "MDS 1", ylab = "MDS 2", zlab = "MDS 3")
-
-
-# Трактовка результатов ординации
-th <- theme( panel.background = element_rect(fill = "white", color = "black"), axis.ticks.x = element_blank(), axis.ticks.y = element_blank(), axis.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title = element_blank(), legend.position = "bottom")
-
-pl6 <- ggplot(data.frame(ord$points), aes(x = MDS1, y = MDS2, fill = hydrol$Depth)) + geom_point(shape = 21, size = 4) + scale_fill_gradient(low = "white", high = "black") + labs(fill = "Depth") + th
-
-pl7 <- ggplot(data.frame(ord$points), aes(x = MDS1, y = MDS2, fill = hydrol$Sal)) + geom_point(shape = 21, size = 4)  + scale_fill_gradient(low = "cyan", high = "darkblue") + labs(fill = "Salinity")+ th
-
-pl8 <- ggplot(data.frame(ord$points), aes(x = MDS1, y = MDS2, fill = hydrol$Temp)) + geom_point(shape = 21, size = 4) + scale_fill_gradient(low = "yellow", high = "red")  + labs(fill = "Temperature")+ th
-
-pl9 <- ggplot(data.frame(ord$points), aes(x = MDS1, y = MDS2, fill = hydrol$Water_content)) + geom_point(shape = 21, size = 4) + scale_fill_gradient(low = "green", high = "black")  + labs(fill = "Water content") + th
-
-library(gridExtra)
-grid.arrange(pl6, pl7, pl8, pl9, ncol = 2)
-
-
-
-#########################
-pol <- read.table("data/Polychaetes_species.csv", header = TRUE, sep = ";")
-str(pol)
-
-polenv <- read.table("data/Polychaeta_env.csv", header = TRUE, sep = ";")
-
-
-
-
-logpol <- log(pol[, -c(1:3)] + 1)
-
-logpol <- logpol[apply(logpol, 1, sum) >0, ]
-
-envpol <- polenv[apply(logpol, 1, sum) >0, ]
-
-
-poldist <- vegdist(logpol)
-
-pol_ord <- metaMDS(poldist)
-
-
-plot(pol_ord, display = "sites")
-
-envpol <-
-
-
-
-hydrol <- read.table("data/dolg_hydrology.txt", skip = 1, header = TRUE, sep = ";")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Растительные сообщества Франции
-plant <- read.csv("mafragh_species.csv")
-env <- read.csv("mafragh_env.csv")
-
-
-str(plant)
-plant <- plant[, -1]
-
-
-
-
+# Многомерная статистика
 library(vegan)
-ord_plant <- metaMDS(plant)
 
 
-plot(ord_plant, display = "sites")
+# Неметрическое многомерное шкалирование ##########
 
-env_plant <- envfit(ord_plant, env[,-1])
+# Карта пригородов Санкт-Петербурга
+
+# Матрица расстояний
+dist_spb <- read_excel("data/dist_spb.xlsx", sheet = "dist")
+D <- as.matrix(dist_spb[, -1]) %>%
+  `rownames<-`(dist_spb$name) %>%
+  as.dist()
+
+# Координаты городов
+coord <- read_excel("data/dist_spb.xlsx", sheet = "coord")
+
+# Фон карты
+load(file = "data/dist_spb_dat.RData")
+
+# Карта окрестностей спб
+gg_spb <- ggmap(map_dat) +
+  geom_point(data = coord, aes(x = lng, y = lat,
+                               size = population/1000),
+             alpha = 0.8, colour = "grey20") +
+  geom_text(data = coord, aes(x = lng, y = lat,
+                              label = name),
+            vjust = -0.3, hjust = -0.05) +
+  theme(legend.position = "none") +
+  labs(x = "Долгота", y = "Широта",
+       size = "Население,\nтыс. чел.")
+gg_spb
 
 
-plot(ord_plant, display = "sites")
-plot(env_plant)
+# ## Расстояния по автодорогам
 
-plot(ord_plant, display = "sites")
-ordisurf(ord_plant, env$Elevation)
-plot(env_plant)
+# Проекция при помощи анализа главных координат (PCoA)
+ordiplot(wcmdscale(d = D, k = 2), type = "t")
+
+# Ординация nMDS
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
+spb_ord <- metaMDS(D)
+ordiplot(spb_ord, type = "t")
+
+# >- Что странного в этой карте?
+
+
+
+
+# # Как работает nMDS #############################
+
+
+# Реальные расстояния
+obs_dist <- D %>% tidy() %>% rename("observed" = "distance")
+# Расстояния на ординации
+ord_dist <- vegdist(spb_ord$points, method = "euclidean") %>% tidy() %>% rename("nmds" = "distance")
+# Все вместе (отсортированное)
+distances <- merge(obs_dist, ord_dist) %>% arrange(observed)
+
+distances
+
+# график зависимости расстояний между точками на ординации и соответствующих им значений коэффициентов различия в исходном пространстве
+ggplot(distances, aes(x = observed, y = nmds)) + geom_point() + xlab("Observed dissimialrity") + ylab("Ordination distance")
+
+
+# ## Диаграмма Шепарда
+stressplot(spb_ord)
+
+# ## Монотонная регрессия
+
+# ## Стресс --- мера качества ординации
+spb_ord$stress
+
+
+# # Пример #######################################
+
+# ## Симбионты мидий
+
+# Данные можно скачать [с сайта Pangaea](https://doi.pangaea.de/10.1594/PANGAEA.870537?format=textfile)
+
+# [Krapivin 2017](https://doi.org/10.1594/PANGAEA.870537), [Krapivin et al. 2018](https://doi.org/10.3354/dao03259)
+
+# ## Открываем данные
+
+dat <- read.delim("data/Krapivin_2017_Medulis-symb.tab", skip = 36)
+str(dat)
+
+# ## Приводим в порядок названия переменных
+
+colnames(dat) # Было
+
+colnames(dat) <- gsub("[.]", replacement = "", colnames(dat))
+dat <- rename(dat, L = "MedulisLshellmm", Age = "Medulisagea")
+
+colnames(dat) # Стало
+
+# ## Приводим в порядок данные
+
+# Делаем сайт фактором
+dat$Site <- factor(dat$Site, levels = c(2, 3, 1), labels = c("G","L","S"))
+
+# Сливаем редкие виды в одну категорию
+f_remove <- c("Nematoda", "Microsetella", "Copepoda",
+              "Chironomidae", "Halacaridae", "Jaeraspp",
+              "Ostrac")
+dat$Other <- rowSums(dat[, f_remove])
+
+# Суммарная численность симбионтов
+f_sp <- c("Urastomaspp", "Renicolaspp", "Himasthlaspp",
+          "Metacercaria", "Gymnophallusspp", "Alg",
+          "Other")
+dat$Total  <- rowSums(dat[, f_sp])
+
+# Данные для анализа
+
+# Только мидии с симбионтами и возрастом от 3 до 8 лет
+dat <- dat[dat$Total != 0 & dat$Age %in% 3:8, ]
+spec <- dat[, f_sp]                         # виды-симбионты
+env <- dat[, c("Zone", "Site", "L", "Age")] # свойства мидий-хозяев
+
+
+
+# # Ординация сообществ симбионтов в мидиях
+#
+# ## Задание 1 ------------------------------------
+#
+# Постройте ординацию мидий по обилию разных
+# видов-симбионтов с использованием коэффициента
+# различия Брея-Куртиса.
+# Следите, чтобы алгоритму удалось найти финальное
+# решение. Если необходимо, настройте вызов
+# `metaMDS()`
+#
+# Вычислите стресс для получившейся ординации.
+#
+# Нарисуйте простейший график.
+
+# ord_mus <-
 
 
 
 
 
+
+
+
+
+
+
+# Палитры
+pal_col <- c("red", "green", "steelblue")
+pal_sh <- c(1, 2, 0)
+
+# Украшенный график
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+
+# ## Украшенный график с центроидами видов
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+text(ord_mus, display = "spec", cex = 0.9, col = "grey20")
+
+# # Визуализация ординации в ggplot2
+#
+# ## Задание 2 -----------------------------------
+#
+# Используя данные, приведенные ниже, постройте
+# график ординации при помощи `ggplot2`.
+# Покажите точками --- мидий, цветом --- зону
+# литорали, формой --- сайт, размером маркеров ---
+# размер мидий.
+# Добавьте текстом центроиды переменных.
+
+# Координаты точек (мидий)
+ord_mus_pt <- data.frame(env, scores(ord_mus, display = "sites"))
+head(ord_mus_pt, 2)
+
+# Координаты центроидов переменных (видов-симбионтов)
+ord_mus_sp <- data.frame(scores(ord_mus, display = "species"))
+ord_mus_sp$Species <- rownames(ord_mus_sp)
+head(ord_mus_sp, 2)
+
+
+# ## Решение: График с точками
+
+# gg_ord_mus <-
+
+
+
+
+# ## Решение: График с точками и центроидами видов-симбионтов
+
+# gg_ord_mus_sp <-
+
+
+
+
+
+
+
+
+
+
+
+# # Интерпретация ординации: envfit #############
+
+ef <- envfit(ord_mus, env[, c("Zone", "Site", "L", "Age")])
+
+ef$vectors
+
+ef$factors
+
+
+# ## График с векторами и центроидами, найденными `envfit()`
+
+ordiplot(ord_mus, type = "n")
+points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+plot(ef)
+
+# ## Для ggplot-графика удобно использовать вспомогательный пакет
+# install.packages("devtools")
+# devtools::install_github("gavinsimpson/ggvegan")
+library(ggvegan)
+ord_mus_ef <- fortify(ef)
+ord_mus_ef
+
+# ## ggplot2 версия графика `envfit()` {.smaller}
+gg_ord_mus +
+  geom_segment(data = ord_mus_ef[ord_mus_ef$Type == "Vector", ],
+               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               arrow = arrow(length = unit(0.25, "cm"))) +
+  geom_text(data = ord_mus_ef[ord_mus_ef$Type == "Vector", ],
+            aes(x = NMDS1, y = NMDS2, label = Label, hjust = 1.1, vjust = 1)) +
+  geom_text(data = ord_mus_ef[ord_mus_ef$Type == "Centroid", ],
+            aes(x = NMDS1, y = NMDS2, label = Label, hjust = 1.1, vjust = 1))
+
+
+
+# # Интерпретация ординации: ordisurf #########################
+
+# ## График с поверхностью, найденной `ordisurf()`
+
+par(mfrow = c(1, 2))
+os_L <- ordisurf(ord_mus, env$L, method = "REML")
+os_Age <- ordisurf(ord_mus, env$Age, method = "REML")
+par(mfrow = c(1, 1))
+
+
+# ## Интерпретация результатов `ordisurf()`
+
+summary(os_L)
+
+summary(os_Age)
+
+# ## Для ggplot-графика понадобится добыть данные о контурах
+
+fortify.ordisurf <- function(model) {
+  # Fortifies an object of class ordisurf to produce
+  # a dataframe of contour coordinates
+  # for subsequent plotting in ggplot.
+  xy <- expand.grid(x = model$grid$x, y = model$grid$y)
+  xyz <- cbind(xy, c(model$grid$z))
+  names(xyz) <- c("x", "y", "z")
+  return(na.omit(xyz))
+}
+
+ord_mus_os <- fortify.ordisurf(os_Age)
+head(ord_mus_os, 4)
+
+# ## ggplot2 версия графика с поверхностью, найденной `ordisurf()`
+
+ggplot(data = ord_mus_os, aes(x = x, y = y, z = z)) +
+  stat_contour(aes(colour = ..level..)) +
+  labs(x = "NMDS1", y = "NMDS2", colour = "Age")
+
+
+# ## Финальный график
+f_vect <- ord_mus_ef$Type == "Vector" & ord_mus_ef$Label == "L"
+
+
+ggplot(data = ord_mus_pt, aes(x = NMDS1, y = NMDS2)) +
+  stat_contour(data = ord_mus_os,
+               aes(x = x, y = y, z = z, colour = ..level..),
+               binwidth = 0.25) +
+  geom_point(data = ord_mus_pt,
+             aes(fill = Zone, shape = Site),
+             alpha = 0.5, size = 3) +
+  scale_shape_manual(values = c(21, 24, 22)) +
+  geom_text(data = ord_mus_sp,
+            aes(label = Species), size = 5) +
+  geom_segment(data = ord_mus_ef[f_vect, ],
+               colour = "blue", size = 1,
+               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               arrow = arrow(length = unit(0.25, "cm"))) +
+  geom_text(data = ord_mus_ef[f_vect, ],
+            colour = "blue", size = 6,
+            aes(label = Label, hjust = 1.1, vjust = 0.7)) +
+  guides(fill = guide_legend(override.aes = list(shape = 22))) +
+  labs(colour = "Age")
+
+
+
+# # Самостоятельная работа ############################
+#
+# ## Задание 3 -----------------------------------
+#
+# Во всех примерах необходимо:
+#
+# 1. Разобраться с данными.
+# 2. Построить ординацию объектов (описаний, проб и т.п.).
+# 3. Визуализировать связь между полученной ординацией и параметрами среды.
+# 4. Сделать выводы о наиболее важных факторах.
+#
+# **Источники данных**
+#
+# 1. Обилие полихет-трубкостроителей на литорали Белого моря (данные В.М.Хайтова).
+# 2. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, пакет `ade4`).
+# 3. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), пакет `vegan`).
 
