@@ -40,8 +40,7 @@ install.packages("devtools")
 devtools::install_github("gavinsimpson/ggvegan")
 ```
 
-
-<!-- - Презентация [html](02_nMDS.html) -->
+- Презентация [html](02_nMDS.html)
 - [код R](02_nMDS_code.R)
 
 - Данные для карты [data/dist_spb.xlsx](data/dist_spb.xlsx) | [dist_spb_dat.RData](data/dist_spb_dat.RData)
