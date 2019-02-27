@@ -59,17 +59,26 @@ devtools::install_github("gavinsimpson/ggvegan")
 
 ## 3. Связь между наборами данных. Тест Мантела (28 февраля, ВХ)
 
+
 <!-- - Презентация [html](03_Mantel_correlation-based_methods.html) -->
-<!-- - [код R](03_Mantel_correlation-based_methods.R) -->
-<!-- - Данные [Coordinates.txt](data/Coordinates.txt) |  -->
+- [код R](03_Mantel_correlation-based_methods.R)
+- Данные [Coordinates.txt](data/Coordinates.txt) |
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- - Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv)   -->
-<!-- Данные из работы *Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308*    -->
 
-<!-- - Сообщества макробентоса в друзах мидий [mussel_patches.csv](data/mussel_patches.csv)   -->
-<!-- Данные из работы *Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами  Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.*    -->
+```{r eval=FALSE}
+# Пермутационные тесты
+install.packages("coin")
+```
+
+- Растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) | параметры среды [mafragh_env.csv](data/mafragh_env.csv)
+Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*
+
+- Деревья на острове Barro Colorado [BCI_species.csv](data/BCI_species.csv) | параметры среды [BCI_env.csv](data/BCI_env.csv)
+Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.*
+
+
 
 ## 4. ANOSIM, SIMPER (7 марта, ВХ)
 
