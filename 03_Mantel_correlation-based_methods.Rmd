@@ -12,6 +12,16 @@ output:
   css: assets/my_styles.css
   logo: assets/Linmod_logo.png
 ---
+<style>
+div#before-column p.forceBreak {
+    break-before: column;
+}
+div#after-column p.forceBreak {
+    break-after: column;
+}
+</style>
+
+
 
 ## Вы сможете
 
@@ -54,53 +64,77 @@ data(varechem)
 <br /><br /><br /><br /><br /><br /><br />
 
 
-<!-- ## Задание -->
-<!-- 1. Постройте ординацию описаний растительности в осях MDS.   -->
-<!-- 2. Вычислите величину стресса   -->
-<!-- 3. Раскрасьте точки в соответствии с концентрацией Al     -->
+## Задание
+1. Постройте ординацию описаний растительности в осях MDS.
+2. Вычислите величину стресса
+3. Раскрасьте точки в соответствии с концентрацией Al
 
-<!-- Hint. В качестве меры различия используйте коэффициент Брея-Куртиса -->
-
-
-
-<!-- ## Решение {.columns-2 .smaller} -->
-<!-- ```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, include=FALSE} -->
-<!-- veg_ord <- metaMDS(varespec) -->
-<!-- veg_MDS <- as.data.frame(veg_ord$points) -->
-
-<!-- ``` -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- veg_ord <- metaMDS(varespec, trace = 0) -->
-<!-- veg_MDS <- as.data.frame(veg_ord$points) -->
-
-<!-- ``` -->
+Hint. В качестве меры различия используйте коэффициент Брея-Куртиса
 
 
-<!-- ```{r, fig.height=5, fig.width=5, message=FALSE} -->
-<!-- library(ggplot2) -->
-<!-- ggplot(veg_MDS, aes(x = MDS1, y = MDS2, fill = varechem$Al))  +  -->
-<!--   geom_point(shape=21, size =4)+  -->
-<!--   theme_bw() +  -->
-<!--   theme(legend.position = "bottom") +  -->
-<!--   labs(fill = "Aluminium concentration") +  -->
-<!--   scale_fill_gradient(high = "red", low = "yellow") -->
-
-<!-- ``` -->
 
 
-## Анализ связи с переменными c помощью функции envfit() {.smaller .columns-2}
+## Решение {.columns-2 .smaller}
+
+
+<!-- :::::::::::::: {.columns} -->
+
+::: {.column}
+```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, include=FALSE}
+veg_ord <- metaMDS(varespec)
+veg_MDS <- as.data.frame(veg_ord$points)
+
+```
+
+```{r, eval=FALSE}
+veg_ord <- metaMDS(varespec, trace = 0)
+veg_MDS <- as.data.frame(veg_ord$points)
+
+```
+
+:::
+
+
+::: {.column}
+
+```{r, fig.height=5, fig.width=5, message=FALSE}
+library(ggplot2)
+ggplot(veg_MDS, aes(x = MDS1, y = MDS2, 
+                    fill = varechem$Al))  +
+  geom_point(shape=21, size =4)+
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(fill = "Aluminium concentration") +
+  scale_fill_gradient(high = "red", low = "yellow")
+
+```
+:::
+
+<!-- :::::::::::::: -->
+
+## Анализ связи с переменными c помощью функции envfit() {.columns-2 .smaller}
+
+
+::: {.column}
+
+```{r}
+env_fit <- envfit(veg_ord ~ ., data = varechem)
+```
+:::
+
+
+::: {.column}
 
 ```{r, fig.height=4.5, fig.width=4.5}
-env_fit <- envfit(veg_ord ~ ., data = varechem)
-
 ordiplot(veg_ord, display = "site")
 plot(env_fit)
 ```
+:::
 
 
 ## Анализ связи с переменными c помощью функции ordisurf() {.columns-2 .smaller}
 
+::: {.column}
 ```{r, echo=FALSE, results='hide', fig.height=5 , fig.width=5, fig.align='center'}
 env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
 plot(veg_ord, display = "site")
@@ -108,8 +142,13 @@ plot(env_fit2, col = "red")
 ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
 ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
 ```
+:::
 
-**Вопрос:** Сможем ли мы на основе данных, полученных с помощью функций `envfit()` или `ordisurf()`, построить оптимальную модель, описывающую связь структуры сообществ и параметров среды?
+
+::: {.column}
+**Вопрос:**   
+Сможем ли мы на основе данных, полученных с помощью функций `envfit()` или `ordisurf()`, построить оптимальную модель, описывающую связь структуры сообществ и параметров среды?
+:::
 
 # Тест Мантела
 
@@ -165,10 +204,7 @@ mant + geom_point(size = 3) + xlab ("Biological dissimilarity") + ylab ("Chemica
 
 # Пермутационные методы оценки статистической значимости {.smaller}
 <p style="text-align:right">
-– Друг мой, – отвечал Диоталлеви, – ты никогда ничего не поймешь.   
-Да, это правда, что Тора – я имею в виду, разумеется,    
-видимую Тору – есть лишь одна из перестановок-*пермутаций* букв,     
-составляющих вековечную Тору, какою создал ее Творец и какой ее дал Адаму.
+-- Друг мой, -- отвечал Диоталлеви, -- ты никогда ничего не поймешь. Да, это правда, что Тора -- я имею в виду, разумеется, видимую Тору -- есть лишь одна из перестановок-*пермутаций* букв, составляющих вековечную Тору, какою создал ее Творец и какой ее дал Адаму.
 Умберто Эко    
 "Маятник Фуко"
 </p>
@@ -217,11 +253,13 @@ t
 Что означает выражение p-value=`r t$p.value`?
 
 
-## Пермутационный подход к тестированию
+## Пермутационный подход к тестированию 
 
 Если две сравниваемые выборки взяты из одной совокупности (справедлива $H_0$), то обмен элементами между ними ничего не изменит. Степень различия между выборками (значение статистики) останется более или менее тем же самым.   
 
-Пермутации - это перестановки.
+<p class="forceBreak"></p>
+
+**Пермутации - это перестановки.**
 
 Полное количество пермутаций (при равном количестве объектов в двух группах) будет вычисляться по следующей формуле: 
 
@@ -230,6 +268,7 @@ $$K= \frac{(2n)!}{(2!(n!)^2)}$$
 При большом объеме выборок это огромное число! 
 
 В таких случаях используют метод Монте-Карло. 
+
 
 ## Пермутационный метод вручную
 
@@ -393,11 +432,11 @@ spearman_test( V1 ~ V2, data = dat, distribution = approximate(B=9999))
 
 ## Проверка статистической значимости Мантеловской корреляции {.smaller}
 
-Для оценки достоверности Мантеловской корреляции применяется пермутационная процедура. Эта процедура реализована в функции mantel()
+Для оценки достоверности Мантеловской корреляции применяется пермутационная процедура. Эта процедура реализована в функции `mantel()` из пакета `vegan`
 
 ```{r}
 options(digits=4)
-mant <- mantel(dist_com, dist_chem, method="spearman", permutations = 999)
+mant <- mantel(dist_com, dist_chem, method="pearson", permutations = 999)
 mant
 ```
 
@@ -426,9 +465,11 @@ dist_geo <- vegdist(geo[, -1],
 ## Частная Мантеловская корреляция  {.smaller}
 
 ```{r}
-mantel_partial <- mantel.partial(dist_com, dist_chem, dist_geo, method = "pearson", permutations = 9999)
+mantel_partial <- mantel.partial(xdis = dist_com, ydis = dist_chem, zdis = dist_geo, method = "pearson", permutations = 9999)
 mantel_partial
 ```
+
+
 
 # Тестирование гипотезы о соответствии ожидаемому паттерну: метод модельных матриц
 
@@ -474,9 +515,13 @@ library(ggplot2)
 library(gridExtra)
 theme_set(theme_bw())
 
-Pl1 <- ggplot(mds_vor2_com, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика сообщества")
+Pl1 <- ggplot(mds_vor2_com, aes(x=MDS1, y=MDS2)) + geom_point() + 
+  geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + 
+  ggtitle("Динамика сообщества")
 
-Pl2 <- ggplot(mds_vor2_ascam, aes(x=MDS1, y=MDS2)) + geom_point() + geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + ggtitle("Динамика размерной структуры")
+Pl2 <- ggplot(mds_vor2_ascam, aes(x=MDS1, y=MDS2)) + geom_point() + 
+  geom_path() + geom_text(label = com$Year[com$Bank == "Vor2"]) + 
+  ggtitle("Динамика размерной структуры")
 
 grid.arrange(Pl1, Pl2)
 ```
