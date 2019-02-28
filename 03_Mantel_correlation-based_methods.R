@@ -37,7 +37,11 @@ plot(env_fit)
 
 # Анализ связи с переменными c помощью функции `ordisurf()`
 
+<<<<<<< HEAD
 env_fit2 <- envfit()
+=======
+env_fit2 <- envfit(veg_ord ~ N, data = varechem)
+>>>>>>> a918506dd7dd35f63c5419f434544ceccbbbf314
 plot(veg_ord, display = "site")
 plot(env_fit2, col = "red")
 

@@ -64,6 +64,13 @@ devtools::install_github("gavinsimpson/ggvegan")
 - [код R](03_Mantel_correlation-based_methods.R)
 - Данные [Coordinates.txt](data/Coordinates.txt) |
 
+
+<!-- - Презентация [html](04_ANOSIM_SIMPER.html) -->
+<!-- - [код R](04_ANOSIM_SIMPER.R) -->
+- Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv)
+
+
+
 **Данные для самостоятельной работы**
 
 
