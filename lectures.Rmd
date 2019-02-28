@@ -60,7 +60,7 @@ devtools::install_github("gavinsimpson/ggvegan")
 ## 3. Связь между наборами данных. Тест Мантела (28 февраля, ВХ)
 
 
-<!-- - Презентация [html](03_Mantel_correlation-based_methods.html) -->
+- Презентация [html](03_Mantel_correlation-based_methods.html)
 - [код R](03_Mantel_correlation-based_methods.R)
 - Данные [Coordinates.txt](data/Coordinates.txt) |
 
