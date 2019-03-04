@@ -20,15 +20,32 @@ sum(is.na(varespec))
 
 
 # Код для построения ординаци в осях nMDS
-veg_ord <-
+log_varespec <- decostand(varespec, method = "log")
+
+veg_ord <- metaMDS(log_varespec, autotransform = FALSE)
+
+plot(veg_ord)
+
+stressplot(veg_ord)
+
+veg_ord$stress
+
+scores(veg_ord, display = "sites")
+scores(veg_ord, display = "species")
+
+mds_points <- as.data.frame(scores(veg_ord, display = "sites"))
+
+ggplot(mds_points, aes(x = NMDS1, y = NMDS2)) + geom_point(aes(color = varechem$Al), size = 4) + scale_color_gradient(low = "yellow", high = "red")
+
 
 
 
 
 # Применяем функцию envfit()
-env_fit <- envfit(  )
+env_fit <- envfit(veg_ord ~ ., data = varechem)
 
 env_fit
+
 
 # Визуализация результатов
 ordiplot(veg_ord, display = "site")
@@ -65,11 +82,20 @@ dist_chem <- vegdist(varechem, method = "euclidean")
 x <- as.vector(dist_com)
 y <- as.vector(dist_chem)
 
-plot(x, y)
+qplot(x, y) + geom_smooth(se = F, method = "lm")
 
 
 
 R <- round(cor(x, y, method = "pearson"), 3)
+
+
+cor.test(x, y, method = "pearson")
+
+
+
+
+
+
 
 
 xy <- data.frame (x, y)
@@ -78,14 +104,104 @@ mant + geom_point(size=3) + xlab ("Biological dissimilarity") + ylab ("Chemical 
 
 
 
-mant <- mantel(dist_com, dist_chem, method="pearson", permutations = 999)
+
+set.seed(12345)
+
+male <- rnorm(100, 130, 5)
+female <- rnorm(100, 129,5)
+
+t.test(male, female)
+
+
+
+
+SE_m <- sd(male) / sqrt(length(male))
+SE_f <- sd(female) / sqrt(length(female))
+
+t_initial <- (mean(male) - mean(female))/sqrt(SE_m^2 + SE_f^2)
+
+
+f <- female
+m <- male
+
+num_perm <- sample(1:100,1)
+order_m <- sample (1:100, num_perm)
+order_f <- sample (1:100, num_perm)
+
+f[order_f] <- male[order_f]
+m[order_m] <- female[order_f]
+
+SE_m <- sd(m) / sqrt(length(m))
+SE_f <- sd(f) / sqrt(length(f))
+
+t_p <- (mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
+
+
+Nperm=10000
+
+tperm <- rep(NA, Nperm)
+
+set.seed(12345)
+
+for (i in 1:(Nperm-1))
+{
+  BOX <- c(male,female)
+  ord <-sample(1:200, 200)
+  f <- BOX[ord[1:100]]
+  m <- BOX [ord[101:200]]
+  SE_m <- sd(m) / sqrt(length(m))
+  SE_f <- sd(f) / sqrt(length(f))
+  tperm[i]=(mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
+}
+
+
+head(tperm)
+tail(tperm)
+
+tperm [Nperm] <- t_initial
+
+tdf <- data.frame(t = tperm)
+
+ggplot(tdf, aes(x =t)) + geom_histogram(fill="blue", color = "black") + geom_vline(xintercept = c(t_initial, -t_initial))
+
+
+p_value <- mean(tperm <= -t_initial |tperm >= t_initial )
+
+
+
+
+library(coin)
+
+library(MASS)
+
+set.seed(1234567)
+
+mu <- c(10, 20) #Вектор средних значений
+
+Sigma <- matrix(.7, nrow=2, ncol=2)
+
+diag(Sigma) <- c(1, 3)
+
+# Sigma Коварационная матрица
+
+dat <- as.data.frame(mvrnorm(n=100, mu=mu, Sigma=Sigma))
+
+qplot(dat$V1, dat$V2)
+
+cor.test(dat$V1, dat$V2, method = "spearman")
+
+spearman_test( V1 ~ V2, data = dat, distribution = approximate(B=99999))
+
+
+
+mant <- mantel(dist_com, dist_chem, method="pearson", permutations = 9999)
 mant
 
 
 # Частная мантеловская корреляция
 
 # Матрица координат описаний
-geo <- read.table("Coordinates.txt",header = TRUE, sep = "\t")
+geo <- read.table("data/Coordinates.txt",header = TRUE, sep = "\t")
 
 # Матрица расстояний между точками
 dist_geo <- vegdist(geo[, -1], method = "euclidean")
@@ -102,6 +218,24 @@ ncol(varechem)
 
 
 
+com <- read.csv("data/mussel_beds.csv",
+                sep=';', header = T)
+
+ascam <- read.csv("data/ASCAM.csv",
+                  sep=';', header = T)
+
+
+dist_com <- vegdist(log(com[com$Bank == "Vor2",-c(1:3)]+1))
+
+dist_ascam <- vegdist(logascam[ascam$Bank == "Vor2",-c(1:2)], method = "euclidean")
+
+
+mantel(dist_com, dist_ascam)
+
+
+
+
+
 
 ## Градиентная модельная матрица
 gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
@@ -112,10 +246,10 @@ dist_vor2_com <- vegdist(vor2_log_com, method = "bray")
 dist_vor2_ascam <- vegdist(vor2_log_ascam, method = "euclidean")
 
 ### 1) Наличие градиента в структуре сообщества
-mantel(dist_vor2_com, gradient_model)
+mantel(dist_com, gradient_model)
 
 ### 2) Наличие градиента в размерной структуре мидий
-mantel(dist_vor2_ascam, gradient_model)
+mantel(dist_ascam, gradient_model)
 
 ## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
 
@@ -149,10 +283,10 @@ cycl_model <- round(vegdist(cycmod(nrow(mds_vor2_ascam)), method = "euclidean"))
 cycl_model
 
 ## Выявляется ли циклическая составляющая в динамике размерной структуры?
-mantel(dist_vor2_ascam, cycl_model)
+mantel(dist_ascam, cycl_model)
 
 ## Более корректная оценка
-mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
+mantel.partial(dist_ascam, cycl_model, gradient_model)
 
 
 
@@ -161,10 +295,21 @@ mantel.partial(dist_vor2_ascam, cycl_model, gradient_model)
 
 # Функция `bioenv()`из пакета `vegan`
 
+2^ncol(varechem)-1
+
+
+
+
+
 BioEnv <- bioenv(varespec, varechem, method = "spearman", index = "bray")
+
 BioEnv
 
 
+
+plot(veg_ord)
+
+plot(envfit(veg_ord ~ N + P + Al + Mn + Baresoil, data = varechem  ))
 
 
 # Оценка достоверности результатов BIO-ENV
@@ -203,4 +348,10 @@ hist + geom_histogram (bin=0.1, fill="blue", colour="black")+geom_vline(xinterce
 
 # dev.off()
 #------------------------------------
+
+
+read.table(data/mafragh_species.csv, header = TRUE)
+
+library(ade4)
+data(package = "ade4")
 

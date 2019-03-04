@@ -25,6 +25,9 @@ options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
 opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+
+library(ggplot2)
+theme_set(theme_bw())
 ```
 
 ## Вспомним основы {.columns-2 }
@@ -48,192 +51,10 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 Если $H_0$ истинна, то…  
 
 
-#Пермутационные методы тестирования
-
-##Тестирование простейшей гипотезы
-Создадим две выборки из популяций с нормальным распределением признака, с заведомо отличающимися средними значениями
-
-```{r}
-set.seed(12345)
-
-male <- rnorm(100, 130, 5)
-female <- rnorm(100, 129,5)
-```
-
-##Частотное распределение этих двух выборок выглядит так
-```{r, echo=FALSE, fig.height=5, fig.width=7, message=FALSE}
-library(ggplot2)
-size <- data.frame(L=1:200, gender=1:100)
-size$L <- male
-size$gender <- "m"
-size$L[101:200] <- female
-size$gender[101:200] <- "f"
-size$gender <- as.factor(size$gender)
-pl <- ggplot(size, aes(x=L, ..density..))
-pl <- pl + theme_bw()  + geom_histogram(binwidth = 5, fill = "gray", color = "black") + facet_grid(gender~.) 
-pl 
-```
-
-##Сравним две выборки с помощью t-критерия Стьюдента
-
-Какая статистика используется в t-критерии?
-
->- $t= \frac {X1-X2} {SE}$
-
-##Сравним две выборки с помощью t-критерия Стьюдента
-
-Результаты
-
-```{r}
-t <- t.test(male, female)
-t
-```
-
-
-Что означает выражение p-value=`r t$p.value`?
-
-
-##Пермутационный подход к тестированию
-
-Если две сравниваемые выборки взяты из одной совокупности (справедлива $H_0$), то обмен элементами между ними ничего не изменит. Степень различия между выборками (значение статистики) останется более или менее тем же самым.   
-
-Пермутации - это перестановки.
-
-Полное количество пермутаций (при равном количестве объектов в двух группах) будет вычисляться по следующей формуле: 
-$$K= \frac{(2n)!}{(2!(n!)^2)}$$
-
-При большом объеме выборок это огромное число! 
-
-В таких случаях используют метод Монте-Карло. 
-
-##Пермутационный метод вручную
-
-Применим этот метод (на очень примитивном уровне) к нашим двум выборкам, описывающим размеры мальчиков и девочек (векторы male и female). 
-
-
-```{r}
-head (male)
-head (female)
-```
-
-##Пермутационный метод вручную
-
-Введем статистику 
-
-$$t= \frac {X_1 - X_2}{ \sqrt {SE_1^2+SE_2^2}}$$
-
-Вычислим значение этой статистики при сравнении векторов male и female
-
-
-```{r}
-SE_m <- sd(male) / sqrt(length(male))
-SE_f <- sd(female) / sqrt(length(female))
-t_initial <- (mean(male) - mean(female))/sqrt(SE_m^2 + SE_f^2)
-```
-
-
-Полученное значение t = `r t_initial`
-
-
-##Пермутационный метод вручную
-
-При пермутациях мы должны поменять местами, например, male[10] = `r male[10]` и female[20] = `r female[20]`. А еще лучше поменять случайное количество элементов одной выборки на случайное количество элементов из другой выборки.
-
-
-```{r}
-f <- female
-m <- male
-num_perm <- sample(1:100,1)
-order_m <- sample (1:100, num_perm)
-order_f <- sample (1:100, num_perm)
-f[order_f] <- male[order_f]
-m[order_m] <- female[order_f]
-SE_m <- sd(m) / sqrt(length(m))
-SE_f <- sd(f) / sqrt(length(f))
-t_p=(mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
-```
-
-После этой пермутации у нас получилось значение $t_{perm}$ = `r t_p`, а исходное значение было t = `r t_initial` 
-
-
-
-##Пермутационный метод вручную
-
-Теперь нужно провести процедуру пермутации много раз и получить распределение значений статистики $t_{perm}$      
-
-```{r, echo=TRUE}
-Nperm=10000
-tperm <- rep(NA, Nperm)
-
-set.seed(12345)
-for (i in 1:(Nperm-1)) 
-  {
-  BOX <- c(male,female)
-  ord <-sample(1:200, 200)
-  f <- BOX[ord[1:100]]
-  m <- BOX [ord[101:200]]
-  SE_m <- sd(m) / sqrt(length(m))
-  SE_f <- sd(f) / sqrt(length(f))
-  tperm[i]=(mean(m) - mean(f))/sqrt(SE_m^2 + SE_f^2)
-  }
-head(tperm)
-```
-
-
-##Пермутационный метод вручную
-
-Посмотрим в конец этого вектора
-
-```{r}
-tail (tperm)
-```
-
-Последнее 10000-е значение не заполнено!   
-В него надо вписать исходное, полученное до пермутаций, значение t = `r t_initial`. Это необходимо, так как мы тестируем гипотезу о принадлежности этого значения случайному распределению.
-
-```{r}
-tperm [Nperm] <- t_initial
-```
-
-
-##Пермутационный метод вручную
-
-Построим частотное распределение пермутированных значений статистики $t_{perm}$
-
-```{r, echo=FALSE,fig.width=7, fig.height=5, warning=FALSE, message=FALSE}
-tperm <- as.data.frame(tperm)
-names(tperm) <- "t_p" 
-tperm_pl <- ggplot(tperm, aes(x=t_p))
-tperm_pl <- tperm_pl + geom_histogram (bin=0.4, fill="blue", colour="black") + theme_bw() + xlab("Пермутационные значения статистики") + geom_vline(xintercept=c(t_initial, -t_initial), linetype=2)
-
-tperm_pl
-```
-
-
-##Пермутационный метод вручную
-
-
-Рассчитаем величину уровня значимости $p_{perm}= \frac{N_{t_{perm}>=t}}{N_{perm}}$
-
-
-```{r, warning=FALSE}
-p_perm <- length(tperm[tperm >= t_initial] | tperm[tperm <= -t_initial] ) / Nperm
-```
-
-Мы получили уровень значимости $p_{perm}$ = `r p_perm` 
-
-Сравним его с уровнем значимости, вычисленным с помощью параметрического t-критерия p=`r t$p.value`
-
-Они оба близки и оба выявляют достоверные различия!
-
-
-
-
-
 
 # ANOSIM: Analysis Of Similarity
 
-## Пример: Динамика сообществ мидиевых банок {.columns-2}
+## Пример: Динамика сообществ мидиевых банок {.columns-2 . smaller}
 
 Существуют ли различия в сообществах мидиевых банок, сформированных старыми и молодыми мидиями (Khaitov, 2013)?
 
@@ -275,8 +96,11 @@ MDS <- data.frame(ord_log_com$points)
 
 Обратите внимание, здесь есть две группы расстояний между точками
 
-```{r, fig.width=10, fig.height=4}
-ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Mussel_size)) + geom_point(shape = 21, size = 4) + scale_fill_manual(values = c("red", "blue")) + labs(fill = "Mussel size structure type") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
+```{r, fig.width=6, fig.height=3.5}
+ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Mussel_size)) + 
+  geom_point(shape = 21, size = 4) + 
+  scale_fill_manual(values = c("red", "blue")) + 
+  labs(fill = "Mussel size structure type") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
 ```
 
 ## Расстояния между объектами {.columns-2}
@@ -312,15 +136,160 @@ $$R_{global} = \frac{R_b-R_w}{n(n-1)/4}$$
 
 Эта статистика распределена в интервале -1 < $R_{global}$ < 1
 
-Статистическая значимость этой величины оценивается пермутационным методом
+$R_{global}$ - оценивает степень разделенности групп в пространстве признаков.
+
+$R_{global} > 0$  -- как минимум есть тенденция к разделению групп
+
+$R_{global} \rightarrow 1$  -- группы разделяются хорошо
+
+$R_{global} \leq 0$  -- нет разделения на группы
 
 
-## Процедура ANOSIM в пакете `vegan`
+
+<!-- Статистическая значимость этой величины оценивается пермутационным методом -->
+
+# ANOSIM вручную
+
+## Ранги расстояний в пространстве признаков
+
+**Задание:**
+
+1. Вычислите матрицу коэффициентов Брея-Куртиса на основе матрицы `log_com`
+2. Разверните полученную матрицу в вектор. 
+3. На основе полученного вектора создайте вектор, содержащий ранги расстояний.
+
+
+## Решение
+
+```{r}
+dist_com <- vegdist(log_com, method = "bray")
+
+rank_dist_com <- rank(dist_com)
+
+```
+
+## Внутри- и межгрупповые расстояния
+
+**Задание:**
+
+4. Создайте треугольную матрицу `dummy_dist`, той же размерности, что и матрица `dist_com`, в которой `0` будет с стоять в тех ячейках, которые соответствуют межгрупповым расстояниями, а   `1` -- внутригрупповым.    
+
+## Решение
+
+```{r}
+dummy_dist <- dist(as.numeric(com$Mussel_size))
+
+dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
+
+```
+
+
+## R-статистка
+
+**Задание:**
+
+5. Вычислите средние значения рангов внутри- и межгрупповых расстояний
+6. Вычислите R-статистику
+
+
+
+## Решение
+
+
+```{r}
+dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
+
+library(dplyr)
+
+mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
+
+n <- nrow(log_com)
+
+R_glob <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4) 
+```
+
+
+Вопрос: Каков дальнейший ход процедуры `ANOSIM`?
+
+
+## Пермутации
+
+
+**Задание:**
+
+7. Напишите пользовательскую функцию (пусть она будет называться `R_perm`), которая пермутировала бы принадлежность каждого объекта к той или иной группе и вычисляла бы значение R-статистики для новой комбинации.
+8. Используя функцию `for()` вычислите 10000 значений  R-статистики и запишите их в вектор.
+
+
+## Решение
+
+
+```{r}
+# функция. Весь код почти такой же, как написали ранее.
+R_perm <- function(comm, group){
+  require(vegan)
+  dist_com <- vegdist(comm)
+  rank_dist_com <- rank(dist_com)
+  dummy_dist <- dist(sample(as.numeric(group))) #Перемешиваем группы
+  dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
+  dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
+  require(dplyr)
+  mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
+  n <- nrow(log_com)
+  R_perm <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4) 
+  R_perm
+} 
+
+
+R_perms <-  rep(NA, 10000)
+
+for(i in 1:9999) R_perms[i] <- R_perm(comm = log_com, group = com$Mussel_size)
+
+```
+
+
+Вопрос: Что надо добавить в вектор R_prems?
+
+
+
+## Распределение пермутационных оценок R-статистики
+
+**Задание:**
+
+9. Постройте частотную гистограмму, характеризующую распределение пермутационных оценок.
+10. Нанесите на нее полученное значение $R_{global}$.
+10. Вычислите уровень значимости.
+
+## Решение
+
+```{r}
+R_perms[10000] <- R_glob
+
+Pl_manual <- ggplot(data.frame(R_perms), aes(x = R_perms)) + 
+  geom_histogram(binwidth = 0.01) + 
+  geom_vline(xintercept = R_glob, linetype = 2) + xlim(-0.4, 0.4) 
+Pl_manual
+```
+
+## Решение
+
+Вычисляем уровень значимости
+
+```{r}
+p_level <- mean(R_perms >= R_glob)
+p_level
+```
+
+
+
+# Процедура ANOSIM в пакете `vegan`
+
+## Специализированная функция `anosim()`
 
 ```{r}
 com_anosim <- anosim(log_com, 
            grouping = com$Mussel_size, 
-           permutations = 999, 
+           permutations = 9999, 
            distance = "bray")
 ```
 
@@ -331,16 +300,27 @@ com_anosim <- anosim(log_com,
 
 ## Решение
 
-```{r r-global, eval=FALSE}
+```{r r-global, eval=TRUE}
+
 anosim_perm <- data.frame(perm = com_anosim$perm)
+
 anosim_perm[(com_anosim$permutations + 1), 1] <- com_anosim$statistic
-ggplot(anosim_perm, aes(x = perm)) + geom_histogram(binwidth = 0.01, color = "black", fill = "blue") + geom_vline(xintercept = com_anosim$statistic, linetype = 2)
+
+Pl_prof <- ggplot(anosim_perm, aes(x = perm)) + 
+  geom_histogram(binwidth = 0.01, color = "black", fill = "blue") + 
+  geom_vline(xintercept = com_anosim$statistic, linetype = 2)  + xlim(-0.4, 0.4)
+Pl_prof
+
 ```
 
-## Результаты оценки статистики $R_{global}$ при пермутациях
+## Сравним результаты ручной и автоматической обработки
 
-```{r r-global, eval=TRUE, echo=FALSE}
+```{r, echo=FALSE, fig.height=4}
+library(gridExtra)
+grid.arrange(Pl_manual, Pl_prof, ncol = 1)
 ```
+
+
 
 ## Результаты процедуры ANOSIM
 
@@ -350,14 +330,14 @@ summary(com_anosim)
 
 ## Ограничения (Assumptions) для применения ANOSIM
 
-### 1) Внутригрупповые расстояния (ранги) должны иметь приблизительно равные медианы и пределы варьирования.
+### 1) Внутригрупповые расстояния (ранги) для разных групп должны иметь приблизительно равные медианы и пределы варьирования.
 
 Для проверки этого допущения надо сравнить распределения внутригрупповых и межгрупповых расстояний (рангов)
 
 Распределение расстояний имеет следующий вид
 
 ```{r fig.width=5, fig.height=3.5, warning=FALSE}
-plot(com_anosim, main = "Dissimilarity ranks \n between and within classes")
+plot(com_anosim)
 ```
 
 ## ANOSIM позволяет сравнивать одновременно и несколько групп
@@ -376,7 +356,9 @@ plot(com_anosim, main = "Dissimilarity ranks \n between and within classes")
 
 Но при больших объемах выборки даже незначительные различия будут достоверны. Важно обращать внимание не только на оценку статистической значимости, но и на значения R! 
 
-NB! Для сравнения нескольких групп многомерных объектов, есть более мощное средство - PERMANOVA 
+**Важно!** При множественных сравнениях придется вводить поправку Бонферрони.
+
+NB! Для сравнения нескольких групп многомерных объектов, есть более мощное средство - **PERMANOVA** 
 
 
 ## Задание
@@ -389,10 +371,13 @@ NB! Для сравнения нескольких групп многомерн
 
 ## Решение
 
-### График ординации
+### График ординации {.smaller}
 
 ```{r fig.height = 4, fig.width=5}
-ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Bank)) + geom_point(shape = 21, size = 4) + scale_fill_manual(values = c("red", "blue", "green")) + labs(fill = "Mussel beds") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
+ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Bank)) + 
+  geom_point(shape = 21, size = 4) + 
+  scale_fill_manual(values = c("red", "blue", "green")) + 
+  labs(fill = "Mussel beds") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
 ```
 
 ## Решение
@@ -446,6 +431,43 @@ anosim(log_com [com$Bank %in% c("Vor4", "Vor5"),], grouping = com$Bank[com$Bank 
 
 
 
+## Модельные матрицы и ANOSIM
+
+При проверке гипотезы о значимости различий между группами можно использовать тест Мантела. В этой ситуации модельная матрица будет содержать отрицательную константу, если расстояние внутригрупповое, и положительную константу если расстояние межгрупповое.
+
+Для внутригрупповых расстояний: $const = \frac{-1}{N_{betw} \cdot (n(1-n)/4)}$
+
+
+Для межгрупповых расстояний: $const = \frac{1}{N_{with} \cdot (n(1-n)/4)}$
+
+
+
+*Задание* 
+
+1. Напишите код, который создал бы модельную матрицу для этого анализа. 
+2. Вычислите Мантеловскую корреляцию между матрицей `dist_com` и полученной модельной матрицей
+
+
+## Решение
+
+```{r}
+
+n <- length(com$Bank)
+
+m <- vegdist(as.numeric(com$Bank), method = "euclidean") 
+mm <- m
+mm[m > 0] <- (1/sum(m > 0))/(n*(n-1)/4)
+mm[m == 0] <- (-1/sum(m == 0))/(n*(n-1)/4)
+
+mantel(vegdist(log_com), mm, method = "spearman")
+```
+
+Значения теста Мантела будут очень близки к $R_{global}$
+
+
+
+
+
 # SIMPER: Similarity Percentages
 
 ## Какие признаки зависимой матрицы вносят наибольший вклад в формирование различий между группами?
@@ -477,7 +499,6 @@ summary(simper(log_com, group = com$Bank, permutations = 999 ))
 
 ## Summary
 
-+ Помимо классических статистических тестов, можно применять тесты, основанные на пермутациях. 
 + ANOSIM --- простейший вариант сравнения нескольких групп объектов, охарактеризованных по многим признакам.
 + С помощью процедуры SIMPER можно оценить вклад отдельных переменных в формирование различий между группами. 
 
