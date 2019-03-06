@@ -66,8 +66,7 @@ com <- read.csv("data/mussel_beds.csv", sep=';', header = T)
 ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
 ```
 
-`com` --- усредненные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).  
-
+`com` --- усредненные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).         
 `ascam` --- (averaged size class abundance matrix) средние плотности поселения мидий разных размеров (`r ncol(ascam[, -c(1:2)])`] размерных классов) 
 
 

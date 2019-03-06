@@ -123,8 +123,13 @@ summary (log_com_simper)
 # Выявитие виды, отвечающие за различия в сообществах разых банок
 
 
+library(ade4)
+data(package = "ade4")
+
+data(chickenk)
+
+chickenk$Mortality
 
 
-
-
+chickenk$FarmStructure
 
