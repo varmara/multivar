@@ -96,9 +96,9 @@ install.packages("coin")
 **Данные для самостоятельной работы**
 
 
-<!-- - Сообщества лишайников на стволах сосен и елей в Северной Швеции [Backlund_et_al_2016_PLOS.XLSX](data/Backlund_et_al_2016_PLOS.XLSX)  -->
+- Сообщества лишайников на стволах сосен и елей в Северной Швеции [Backlund_et_al_2016_PLOS.XLSX](data/Backlund_et_al_2016_PLOS.XLSX)
 
-<!-- Данные из работы *Bäcklund, S., Jönsson, M., Strengbom, J., Frisch, A., & Thor, G. (2016). A pine is a pine and a spruce is a spruce–the effect of tree species and stand age on epiphytic lichen communities. PloS one, 11(1), e0147004.* -->
+Данные из работы *Bäcklund, S., Jönsson, M., Strengbom, J., Frisch, A., & Thor, G. (2016). A pine is a pine and a spruce is a spruce–the effect of tree species and stand age on epiphytic lichen communities. PloS one, 11(1), e0147004.*
 
 
 - Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий [mussel_experiment.csv](data/mussel_experiment.csv)
