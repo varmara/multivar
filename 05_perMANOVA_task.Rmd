@@ -23,14 +23,21 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 library(readxl)
 coord <- read_excel("data/Grazing_Magierowski_et_al_2015.xls", sheet = "coord")
 centroid <- colMeans(coord[, c("lon", "lat")])
+bb <- as.vector(t(sapply(coord[, c("lon", "lat")], range))) + c(-0.5, -0.5, 0.5, 0.5)
+names(bb) <- c("left", "bottom", "right", "top")
 # Get the Google basemap
 library(ggmap, quietly = TRUE)
-my_map <- get_map(location = c(lon = centroid[1], lat = centroid[2]), color = "color", source = "google", maptype = "satellite", zoom = 7)
+
+# my_map <- get_stamenmap(bbox = bb, color = "color", maptype = "terrain", zoom = 7)
+# save(my_map, file = "data/05_perMANOVA_Tasmania.RData")
+
+load("data/05_perMANOVA_Tasmania.RData")
+
 map_small <- ggmap(my_map) +
   geom_point(aes(x = lon, y = lat),
              data = coord, shape = 19,
              colour = "orange") +
-  xlim(144.7, 148.3) + ylim(-41.9, -40.5) +
+  xlim(144.8, 148.3) + ylim(-41.9, -40.5) +
   labs(x = "Longitude", y = "Latitude", title = "Tasmania")
 ```
 

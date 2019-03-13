@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -77,8 +77,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -94,7 +100,6 @@ body {
   padding-top: 65px;
   margin-top: -65px;
 }
-
 .section h2 {
   padding-top: 65px;
   margin-top: -65px;
@@ -114,6 +119,43 @@ body {
 .section h6 {
   padding-top: 65px;
   margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -135,18 +177,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -267,15 +368,17 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li><a href="index.html">О курсе</a></li>
         <li><a href="lectures.html">Презентации и данные</a></li>
-        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li>
+<!--/        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li> -->
+       <li><a href="resources.html">Ссылки и ресурсы</a></li>
+       <li><a href="coding_practices.html">Правила хорошего кода</a></li>
+<!--/
         <li class="dropdown">
           <a href="appendix" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Полезности<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
              <li><a href="supplement.html">Дополнительные темы</a></li>
-             <li><a href="resources.html">Ссылки и ресурсы</a></li>
-             <li><a href="coding_practices.html">Правила хорошего кода</a></li>
           </ul>
         </li>
+-->
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -296,7 +399,7 @@ div.tocify {
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/27071105@N04/32354260361/in/photolist-Ri33pc-5uNfPj-6A8k6J-98bmkJ-dDvMNj-9a4qPT-dM5V1Z-ccNRTf-5FitNE-6A8mCs-7pJWJ7-fSc6SR-L8mAp-j4nNJ2-7W7e4d-8i7HdF-ajQziw-ihNL3k-7pLroX-NTWrrn-bFi48H-bsoas7-gQjAhM-ajMM46-ajMMEi-ihPhNN-RjSkjn-dp5SQN-b9pDnM-reAnaJ-nWbDDp-tLk7N-tLkmD-tLkfd-86pFRn-u8gnJG-tLkdH-9gkeyN-i3miUc-4qN1Gv-4qN426-8zVD3e-tLkiZ-6aAec5-8gVYSN-tEsAP-3UN759-2KKfrg-i3jRND-qYhQc2" title="Tasmania"><img src="https://c1.staticflickr.com/1/584/32354260361_bbb927147e_n.jpg" width="320" height="180" alt="Tasmania" style="display:block;margin:auto;"></a>
 <script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
 <p>Чтобы проверить, как выпас скота в масштабах территории водосбора влияет на население дна рек, летом 2008–9 и 2009-10 были взяты пробы бентоса и измерены различные характеристики среды в 27 речных сайтах в северной Тасмании. Данные в файле <code>Grazing_Magierowski_et_al_2015.xls</code>: лист “env” — характеристики среды; лист “fauna” — фауна.</p>
-<p><img src="03_2_perMANOVA_task_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="05_perMANOVA_task_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><strong>Задание 1</strong>. При помощи perMANOVA проверьте, меняется ли фауна в реках Тасмании в зависимости от уровня выпаса скота в зоне водосбора (переменная <code>GrazingRank</code>).</p>
 <p><code>GrazingRank</code> — доля территории водосбора, занятой выпасом скота (Low — 0-10%; Medium – 10-50%; Severe &gt;50%)</p>
 <p><strong>Источник</strong>: Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</p>
@@ -322,10 +425,7 @@ div.tocify {
 <li><code>OthG_ABS</code> — число прочих гранулоцитов</li>
 </ul>
 <p>Известно, что гематологическая картина у ящериц зависит в том числе от общего физиологического состояния, которое косвенно можно оценить при помощи индекса, описывающего размеры тела, вернее, отклонение от обычных размеров (переменная <code>LBSI</code> — Linear Body Size Index, остаток от RMA-регрессии логарифма массы от логарифма длины тела).</p>
-<div class="figure">
-<img src="images/Sleepy%20lizards.png" />
-
-</div>
+<p><img src="images/Sleepy%20lizards.png" /></p>
 <p>Упрощенные варианты анализа:</p>
 <p><strong>Задание 1</strong>: Различается ли состав крови ящериц из немодифицированного и сильно модифицированного ландшафтов?</p>
 <p><strong>Задание 2</strong>: Проверьте, различается ли состав крови ящериц в разных местообитаниях в сильно модифицированном ландшафте</p>
@@ -363,7 +463,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

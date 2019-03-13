@@ -114,23 +114,23 @@ install.packages("coin")
 
 ## 5. PERMANOVA (14 марта, МВ)
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages("readxl") -->
-<!-- ``` -->
+```{r eval=FALSE}
+install.packages("readxl")
+```
 
 <!-- - Презентация [html](05_perMANOVA.html) -->
-<!-- - [код R](05_perMANOVA.R) -->
-<!-- - Данные [pesch.csv](data/pesch.csv) | [simulated_data.csv](data/simulated_data.csv)  -->
+- [код R](05_perMANOVA.R)
+- Данные [pesch.csv](data/pesch.csv) | [simulated_data.csv](data/simulated_data.csv)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- [Пояснения к датасетам и задание](07_perMANOVA_task.html) -->
+[Пояснения к датасетам и задание](05_perMANOVA_task.html)
 
-<!-- - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)   -->
-<!-- *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
+- Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)
+*Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.*
 
-<!-- - Гематология сонных ящериц _Tiliqua rugosa_ [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx)   -->
-<!-- *Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.* -->
+- Гематология сонных ящериц _Tiliqua rugosa_ [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx)
+*Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.*
 
 
 ## 6. Кластерный анализ (21 марта, МВ)
