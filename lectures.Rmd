@@ -135,16 +135,16 @@ install.packages("readxl")
 
 ## 6. Кластерный анализ (21 марта, МВ)
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust")) -->
-<!-- ``` -->
+```{r eval=FALSE}
+install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
+```
 
 <!-- - Презентация [html](06_cluster_analysis.html) -->
-<!-- - [код R](06_cluster_analysis.R) -->
+- [код R](06_cluster_analysis.R)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- С прошлого занятия. -->
+С прошлого занятия.
 
 ## 7. Основы матричной алгебры. SVD. (28 марта, ВХ)
 
