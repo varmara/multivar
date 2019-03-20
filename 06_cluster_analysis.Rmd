@@ -27,7 +27,7 @@ output:
 
 ### Вы сможете
 
-- Выбирать подходящий метод аггрегации (алгоритм кластеризации)
+- Выбирать подходящий метод агрегации (алгоритм кластеризации)
 - Строить дендрограммы
 - Оценивать качество кластеризации (Кофенетическая корреляция, ширина силуэта, поддержка ветвей)
 - Сопоставлять дендрограммы, полученные разными способами, при помощи танглграмм
@@ -55,7 +55,7 @@ par(par_spbu)
 
 ## Какие бывают методы построения деревьев?
 
-### Методы класстеризации на основании расстояний (о них сегодня)
+### Методы кластеризации на основании расстояний (о них сегодня)
   - Метод ближайшего соседа
   - Метод отдаленного соседа
   - Метод среднегруппового расстояния
@@ -87,7 +87,7 @@ library(candisc)
 data("Wolves")
 ```
 
-## Знакомимся с даннымиw
+## Знакомимся с данными
 
 ```{r}
 dim(Wolves)
@@ -160,7 +160,7 @@ gg_i
 ```
 
 
-# Методы класстеризации на основании расстояний
+# Методы кластеризации на основании расстояний
 
 ## Этапы кластеризации
 
@@ -254,10 +254,65 @@ gg_single
 
 ## Как работает метод ближайшего соседа
 
-<img src="images/Min_Link_Clustering.jpg" alt="Single link clustering" height=450px>
-<img src="images/Min_Link_Dendogramm.jpg" alt="Single link dendrogram" width=260px>
+```{r ani-dat, include=FALSE, cache=TRUE}
+# Данные
+dat <- data.frame(x = c(8, 18, 27, 32, 38, 50), y = c(40, 38, 10, 30, 60, 35))
+rownames(dat) <- LETTERS[1:6]
+# Кластеризация
+hc_s <- hclust(dist(dat), method = "single")
+hc_c <- hclust(dist(dat), method = "complete")
+hc_a <- hclust(dist(dat), method = "average")
 
-<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
+cluster_ani <- function(dat, gg_dat, dist_fun = "vegdist", dist_method = "euclidean", hclust_method = "average", k = nrow(dat)){
+  library(vegan)
+  library(ggplot2)
+  library(ggalt)
+  library(dendextend)
+  library(cowplot)
+  if (dist_fun == "vegdist") {
+    d <- vegdist(dat, method = dist_method)
+  } else if (dist_fun == "dist") {
+    d <- vegdist(dat, method = dist_method)
+  } else {
+    stop("dist_fun should be either `vegdist` or `dist`")
+  }
+
+  hc <- hclust(d, method = hclust_method)
+  den <- as.dendrogram(hc)
+    # ordination plot
+    gg_ord <- ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
+      geom_point() +
+      geom_text(hjust = 1.1, vjust = 1.1) +
+      geom_encircle(aes(group = cutree(hc, k = k)), colour = "red", s_shape = 0, expand = 0.01) +
+      scale_y_continuous(expand=c(0.1,0.1))
+
+    # dendrogram plot
+    par(mar = c(2, 2, 0, 0))
+    if (k == 1) {
+      plot(den)
+    } else {
+      plot(den)
+      rect.dendrogram(den, k = k, lty = 1, lwd = 1, border = "red")
+    }
+    gg_tree <- recordPlot()
+    # together
+    plot_grid(gg_ord, gg_tree, nrow = 1, rel_widths = c(0.6, 0.4), hjust = 0, vjust = 1, scale = c(0.8, 0.9))
+}
+
+suppressWarnings(ord <- metaMDS(dat, distance = "euclidean", autotransform = FALSE))
+gg_dat <- data.frame(ord$points)
+
+gg_list_s <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "single", k = x))
+gg_list_c <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "complete", k = x))
+gg_list_a <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "average", k = x))
+gg_list_w <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "ward.D2", k = x))
+```
+
+
+```{r single-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+sapply(gg_list_s, plot)
+```
+
 
 ## Метод отдаленного соседа
 
@@ -281,10 +336,9 @@ gg_complete
 
 ## Как работает метод отдаленного соседа
 
-<img src="images/Max_Link_Clustering.jpg" alt="Complete link clustering" height=450px>
-<img src="images/Max_Link_Dendogramm.jpg" alt="Complete link dendrogram" width=260px>
-
-<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
+```{r complete-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+sapply(gg_list_c, plot)
+```
 
 ## Метод невзвешенного попарного среднего
 
@@ -308,10 +362,9 @@ gg_average
 
 ## Как работает метод среднегруппового расстояния
 
-<img src="images/Group_Average_Clustering.jpg" alt="UPGMA clustering" height=450px>
-<img src="images/Group_Average_Dendogramm.jpg" alt="UPGMA dendrogram" width=260px>
-
-<small>http://www-m9.ma.tum.de/material/felix-klein/clustering/Methoden/Hierarchisches_Clustern_Beispiel.php</small>
+```{r average-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+sapply(gg_list_a, plot)
+```
 
 ## Метод Варда
 
@@ -331,6 +384,11 @@ gg_ward
 
 - метод годится и для неевклидовых расстояний несмотря на то, что внутригрупповая дисперсия расстояний рассчитывается так, как будто это евклидовы расстояния
 
+## Как работает метод Варда
+
+```{r ward-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+sapply(gg_list_w, plot)
+```
 
 # Кластерный анализ в R
 
@@ -432,11 +490,11 @@ plot(den_w2)
 
 ## Кофенетическая корреляция
 
-__Кофенетическая корреляция__ - мера качества отображения многомерных данных на дендрограмме. Кофенетическую корреляцию можно рассчитать как пирсоновскую корреляцию (обычную) между матрицами исходных и кофенетических расстояний между всеми парами объектов
+__Кофенетическая корреляция__ - мера качества отображения многомерных данных на дендрограмме. Кофенетическую корреляцию можно рассчитать как Пирсоновскую корреляцию (обычную) между матрицами исходных и кофенетических расстояний между всеми парами объектов
 
 __Кофенетическое расстояние__ - расстояние между объектами на дендрограмме
 
-Метод аггрегации, который дает наибольшую кофенетическую корреляцию, дает кластеры, лучше всего отражающие исходные данные
+Метод агрегации, который дает наибольшую кофенетическую корреляцию, дает кластеры, лучше всего отражающие исходные данные
 
 Можно рассчитать при помощи функции из пакета `ape`
 
@@ -479,7 +537,7 @@ $-1 \le s_i \le 1$ --- чем больше $s_i$, тем "лучше" объек
 - Средняя ширина силуэта по всем данным --- оценивает общее качество классификации.
 - Чем больше к 1, тем лучше. Если меньше 0.25, то можно сказать, что нет структуры.
 
-## Как расчитывается ширина силуэта
+## Как рассчитывается ширина силуэта
 
 Оценим ширину силуэта для 3 кластеров
 
@@ -574,7 +632,7 @@ axisPhylo()
 ```
 
 
-## Take home messages
+## Take-home messages
 
 - Результат кластеризации зависит не только от выбора коэффициента, но и от выбора алгоритма.
 - Качество кластеризации можно оценить разными способами.
