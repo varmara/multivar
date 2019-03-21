@@ -130,7 +130,7 @@ siris <- iris[ids, ]
 ## Решение: Волки
 
 ```{r}
-library(vegan, quietly = TRUE)
+library(vegan)
 library(ggplot2); theme_set(theme_bw())
 s_w <- scale(Wolves[, 4:ncol(Wolves)]) ## стандартизируем
 ord_w <- metaMDS(comm = s_w, distance = "euclidean", autotransform = FALSE)
@@ -254,9 +254,9 @@ gg_single
 
 ## Как работает метод ближайшего соседа
 
-```{r ani-dat, include=FALSE, cache=TRUE}
+```{r ani-dat, include=FALSE, cache=TRUE, purl=FALSE}
 # Данные
-dat <- data.frame(x = c(8, 18, 27, 32, 38, 50), y = c(40, 38, 10, 30, 60, 35))
+dat <- data.frame(x = c(9, 19, 27, 32, 38, 50), y = c(42, 40, 10, 30, 60, 35))
 rownames(dat) <- LETTERS[1:6]
 # Кластеризация
 hc_s <- hclust(dist(dat), method = "single")
@@ -281,6 +281,7 @@ cluster_ani <- function(dat, gg_dat, dist_fun = "vegdist", dist_method = "euclid
   den <- as.dendrogram(hc)
     # ordination plot
     gg_ord <- ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
+      coord_fixed() +
       geom_point() +
       geom_text(hjust = 1.1, vjust = 1.1) +
       geom_encircle(aes(group = cutree(hc, k = k)), colour = "red", s_shape = 0, expand = 0.01) +
@@ -308,8 +309,17 @@ gg_list_a <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "a
 gg_list_w <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "ward.D2", k = x))
 ```
 
+```{r fig.width=5, fig.height=5, echo=FALSE, purl=FALSE}
+ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
+      geom_point() +
+      geom_text(hjust = 1.1, vjust = 1.1) +
+      scale_y_continuous(expand=c(0.1,0.1))
+```
 
-```{r single-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+
+## Как работает метод ближайшего соседа
+
+```{r single-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_s, plot)
 ```
 
@@ -336,7 +346,16 @@ gg_complete
 
 ## Как работает метод отдаленного соседа
 
-```{r complete-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r fig.width=5, fig.height=5, echo=FALSE, purl=FALSE}
+ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
+      geom_point() +
+      geom_text(hjust = 1.1, vjust = 1.1) +
+      scale_y_continuous(expand=c(0.1,0.1))
+```
+
+## Как работает метод отдаленного соседа
+
+```{r complete-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_c, plot)
 ```
 
@@ -362,7 +381,7 @@ gg_average
 
 ## Как работает метод среднегруппового расстояния
 
-```{r average-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r average-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_a, plot)
 ```
 
@@ -386,7 +405,7 @@ gg_ward
 
 ## Как работает метод Варда
 
-```{r ward-ani, echo=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=2, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r ward-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_w, plot)
 ```
 
