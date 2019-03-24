@@ -88,6 +88,8 @@ Vec
 #' ##Решение
 
 
+
+
 #' ## Матричное умножение матрицы на вектор {.smaller .columns-2}
 
 #' Пусть, есть матрица
@@ -157,7 +159,8 @@ retailer <- matrix(c(0.1, 0.15, 0.05, 0.05,
 #'
 #' Начальная система расположения точек
 #'
-## ---- purl=TRUE----------------------------------------------------------
+
+
 y = c(2,2,3,3,2,2,3,4,5,6,6,5,4,3,2)
 x = c(2,3,4,5,6,7,7,7,6,5,4,3,2,2,2)
 
@@ -181,6 +184,39 @@ qplot(Image_trans[,1], Image_trans[,2] ) +
 
 
 
+
+
+# Поворот изображения ##########################3
+
+load("data/face.rda")
+
+faceData
+
+library(reshape2)
+
+faceData_XY <- melt(faceData) ## Переводим матрицу в два вектора координат и вектор значений интенсивности заливки
+
+ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+
+
+# Задание Поверните изображение на угол 30 градусов
+
+
+angle <-  30*pi/180 #Задаем угол поворота в радианах
+
+# Вращающая матрица
+  Rot <- matrix(c(cos(angle), sin(angle),
+                  -sin(angle), cos(angle)), nrow = 2)
+
+Image_rot <-   data.frame(t((Rot)  t(  )), faceData_XY[3]) #Надо заполнить пропуски
+
+ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
+
+
+
+
+
+
 #' Масштабирующая матрица
 Scale <- matrix(c(1, 0, 0, 2), nrow = 2)
 
@@ -188,6 +224,22 @@ Image_trans2 <-   t((Scale) %*% t(Image_trans))
 
 qplot(Image_trans2[,1], Image_trans2[,2] ) +
   geom_polygon(fill = "red") + coord_fixed()
+
+
+########################
+
+# Еще преобразованя за счет матричных опреаций
+
+Scale <- matrix(c(1, 0, 0.8, 1), nrow = 2)
+
+Image_trans <- data.frame(t((Scale) %*% t(faceData_XY[ ,1:2])), faceData_XY[3])
+
+ggplot(Image_trans, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
+
+
+
+
+
 
 #' ## Ковариационная матрица
 
@@ -314,7 +366,7 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
 #' ## Вращение осей {.smaller .columns-2}
 
 #' Вращающая матрица
-## ---- purl=TRUE----------------------------------------------------------
+
 angle <- - acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
 
 Rot <- matrix(c(cos(angle), sin(angle),
@@ -366,13 +418,14 @@ load("data/face.rda")
 gg_face <- function(x) {
   library(reshape)
   library(ggplot2)
-    rotate <- function(x) t(apply(x, 2, rev))
+  rotate <- function(x) t(apply(x, 2, rev))
   dd <- rotate(x)
   ddd <- melt(dd)
   ggplot(ddd, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 }
 
 gg_face(faceData)
+
 
 
 SVD_face <- svd(faceData)
@@ -384,4 +437,7 @@ V <- SVD_face$v
 #' ##Рекоструируем изображение, используя только часть информации
 
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
-gg_face(reduction(4))
+gg_face(reduction(23))
+
+
+

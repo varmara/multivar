@@ -22,15 +22,22 @@ output:
 # output options
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+
+
 # chunk default options
 opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+
+ar <- arrow(type = "closed", length = unit(0.15,"cm"))
 ```
 
-# Зачем нужны матрицы?
+# Level 1: Зоопарк матричных объектов
 
-##Матричные объекты
-- Есть много типов объектов, для которых такое выражение оказывается наиболее етсественным (изображения, описания многомерных объектов и т.д.)
-- В матрицах, как и в обычных числах, скрыта информация, которую можно извлекать и преобразовывать по определнным правилам
+## Матричные объекты
+- Есть много типов объектов, для которых такое выражение оказывается наиболее естественным (изображения, описания многомерных объектов и т.д.)
+- В матрицах, как и в обычных числах, скрыта информация, которую можно извлекать и преобразовывать по определенным правилам
 
 
 ## Структура матриц
@@ -47,16 +54,17 @@ a_{r1} & a_{r2} & \cdots & a_{rc}
 
 ## Разновидности матриц 
 
-Вектор-строка (row matrix)
-$$ \textbf {a} =
+
+$$ 
+\textbf {a} =
 \begin{pmatrix}
 1 & 2 & 3 
 \end{pmatrix}
 $$
+Вектор-строка (Row matrix)
 
-Вектор-столбец (column matrix)
-
-$$ \textbf {b} =
+$$ 
+\textbf {b} =
 \begin{pmatrix}
 1 \\
 4 \\    
@@ -64,12 +72,15 @@ $$ \textbf {b} =
 10 
 \end{pmatrix}
 $$
+Вектор-столбец (column matrix)
+
 
 ## Разновидности матриц 
 
-Прямоугольные матрицы (rectangular matrices)
 
-$$ \textbf {C} =
+
+$$ 
+\textbf {C} =
 \begin{pmatrix}
 1 & 2 & 3 \\
 4 & 5 & 6 \\    
@@ -81,21 +92,25 @@ $$
 
 
 
-$$ \textbf {D} =
+$$ 
+\textbf {D} =
 \begin{pmatrix}
 1 & 2 & 3 \\
 4 & 5 & 6     
 \end{pmatrix}
 $$
 
-В таком виде обычно представляются исходные данные при многомерном анализе. 
+> Прямоугольные матрицы (rectangular matrices)
+
+
+> В таком виде обычно представляются исходные данные при многомерном анализе. 
 
 В такой матрице столбцы - признаки (p), а строки - объекты (n).
 
 Лучше, когда n > p, то есть когда объектов больше, чем признаков.
 
 
-##Квадратные матрицы (square matrices) {.smaller}
+## Квадратные матрицы (square matrices) {.smaller}
 
 Это наиболее "операбельные" матрицы
 
@@ -118,7 +133,7 @@ $$ \textbf {F} =
 \end{pmatrix}
 $$
 
-##Квадратные матрицы (square matrices) {.smaller}
+## Квадратные матрицы (square matrices) {.smaller}
 
 Треугольные матрицы (triangular matrices)
 $$ \textbf {H} =
@@ -141,7 +156,7 @@ $$ \textbf {H} =
 \end{pmatrix}
 $$
 
-##Квадратные матрицы (square matrices) {.smaller}
+## Квадратные матрицы (square matrices) {.smaller}
 
 Единичная матрица (identity matrix)
 
@@ -184,7 +199,7 @@ $$
 $$
 
 
-##Матрицы ассоциации 
+## Матрицы ассоциации 
 
 Это симметричные квадратные матрицы  
 
@@ -202,91 +217,71 @@ $$
 
 Большинство многомерных методов имеет дело именно с такими матрицами
 
-##Особенность квадратных матриц
+## Особенность квадратных матриц
 
 Для квадратных матриц могут быть найдены (но не обязательно существуют) некоторые важные для матричной алгебры показатели: *определитель*, *инверсия*, *собственные значения* и *собственные векторы*
 
 
+ 
+ 
+ 
 
-
-##Задание
+## Задание
 Создайте с помощью R следующие матрицы
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 matrix(1:12, ncol = 3)
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 diag(rep(1,5))
 ```
 
 
 
-#Операции с матрицами
+# Level 2: Простейшие операции с матричными объектами
 
-##Транспонирование матриц
 
-```{r}
+
+## Транспонирование матриц
+
+```{r, purl=TRUE}
 A <- matrix(1:12, ncol = 3)
 A
 ```
 
-Транспонированная матрица $\textbf{B} = \textbf{A'}$ синонимичная запись $\textbf{B} = \textbf{A}^{T}$
+Транспонированная матрица $\textbf{B} = \textbf{A}'$ синонимичная запись $\textbf{B} = \textbf{A}^{T}$
 
-```{r}
+```{r, purl=TRUE}
 B <- t(A)
 B
 ```
 
-##Сложение матриц
-```{r}
+## Сложение матриц
+```{r, purl=TRUE}
 A + 4
 ```
 
-```{r}
+```{r, purl=TRUE}
 A + A
 ```
 
 Но! Нельзя складывать матрицы разных размеров
-```{r, eval=FALSE}
+```{r, eval=FALSE, purl=TRUE}
 A + B
 ```
 
-##Биологическое приложение
-Предположим, что мы подсчитывали двумя разными методами крупных и мелких животных  трех  видов в одних и тех же пробах
-
-```{r, echo = FALSE}
-Large <- data.frame(Sp1 = round(rnorm(5, 10, 2)), Sp2 = round(rnorm(5, 10, 3)), Sp3 = round(rnorm(5, 10, 2))) 
-
-rownames(Large) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
-
-Small <- data.frame(Sp1 = round(rnorm(5, 50, 5)), Sp2 = round(rnorm(5, 50, 5)), Sp3 = round(rnorm(5, 50, 5))) 
-
-rownames(Small) <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5" )
-
-```
-
-```{r, echo=FALSE}
-Large
-Small
-```
 
 
-Общее обилие 
-```{r}
-Large + Small
-```
-
-
-##Простое умножение 
+## Простое умножение 
 Умножение на число
-```{r}
+```{r, purl=TRUE}
 A * 4
 ```
 
 Простое умножение матрицы на вектор возможно только если число элементов в векторе равно числу строк в матрице
 
-```{r}
+```{r, purl=TRUE}
 A * c(10, 11, 12, 13)
 
 ```
@@ -294,16 +289,28 @@ A * c(10, 11, 12, 13)
 Все элементы первой строки матрицы умножаются на первый элемент вектора, все элементы второй строки на второй элемент вектора и т.д.  
 
 
-##Биологическое применение
-Допустим, учет организмов в части описаний проходил не на всей выборке, а лишь в ее части.
-```{r}
-Rpocessed_portion <- c(1, 1, 1/2, 1/3, 1/4)
-Processed_Factor <- 1/Rpocessed_portion
+
+
+# Level 3: Векторы
+
+## Интерпретация вектора{.columns-2 .smaller}
+
+Вектор -- это последовательность чисел: $(x_1, x_2, ..., x_n)$.
+
+Геометрической интерпретацией вектора является направленный отрезок в n-мерном пространстве с началом в точке $(0, 0 .... 0)$. 
+
+Если в векторе всего два числа, то это направленный отрезок на плоскости.
+
+Пример: `vec = (1, 5)`
+
+```{r fig.width=4}
+vec <- data.frame(x = c(0, 1), y = c(0, 5))
+ggplot(vec, aes(x, y)) + geom_point() + geom_path(arrow = arrow(), size = 2, color = "red") + labs(x="Первое число вектора", y ="второе число вектора")  
+  
+  
 ```
 
-```{r}
-Small * Processed_Factor
-```
+
 
 ## Длина вектора 
 
@@ -313,33 +320,16 @@ $$
 ||\textbf{b}|| = \sqrt{b_1^2 + b_2^2 + \dots + b_n^2}
 $$
 
-Нормализованный вектор
-$$
-\textbf{c} = \textbf{b} \cdot 1/||\textbf{b}||
-$$
+Длина вектора 
 
-##Задание 
-
-Найдите нормализованный вектор для следующего вектора
-
-```{r}
+```{r, purl=TRUE}
 Vec <- 1:5
-Vec
+
+sqrt(sum(Vec^2))
+
+norm(t(Vec), type = "F") #Аналогчное решение
 ```
 
-##Решение
-```{r}
-Vec/sqrt(sum(Vec^2))
-```
-
-Аналогичное решение 
-```{r}
-norm_Vec <- Vec/norm(t(Vec), type = "F")
-```
-
-Найдите длину нормализованного вектора
-
->- Длина нормализованных векторов равна 1. Это важное свойство для многомерных методов. 
 
 
 
@@ -347,7 +337,7 @@ norm_Vec <- Vec/norm(t(Vec), type = "F")
 Допустимо только для векторов одинаковой размерности
 
 $$
-\textbf{a} \bullet \textbf{b} =  
+\textbf{a} \cdot \textbf{b} =  
 \begin{pmatrix}
 a_1 \\
 a_3 \\    
@@ -371,219 +361,344 @@ $$
 Результат этой операции - число (скаляр)
 
 
-##Биологическое применение
-Сколько особей родится в популяции, если мы знаем репродуктивные характеристики всех возрастных групп?
-$$
-\begin{pmatrix}
-N_1 \\
-N_3 \\    
-N_4 \\
-N_5 \\
-N_6 \\
-N_7
-\end{pmatrix}
-\times
-\begin{pmatrix}
-F_1 & F_2 & F_3 & F_4 & F_5 & F_6 & F_7
-\end{pmatrix}
-$$
-
-```{r}
-N <- c(20, 40, 32, 45, 80, 50, 10)
-Fert <- c( 0,  0,   1,   2,   2,   0,   0)
-
-t(N) %*% (Fert)
+## Зачем это нужно? 
+### Бытовой пример
 
 
+В доме есть следующие электроприборы.
+
+Электроприбор | Количество | Мощность (Вт) |    
+--------------|------------|---------------|     
+Чайник        | 2 шт       |       1200    |     
+Обогреватели  | 3 шт.      |    1300       |
+Осушитель     | 1 шт.      |     1100 |
+Стиральная машина | 1 шт.| 1500 |
+Фен | 2 шт. | 800 |
+
+Вопрос: Какова будет суммарная мощность всех электроприборов, если их включить одновременно?
+
+## Решение
+
+```{r, purl=TRUE}
+a <- c(2, 3, 1, 1, 2)
+b <- c(1200, 1300, 1100, 1500, 800)
+
+a %*% b
 ```
 
-##Геометрическая интерпретация скалярного произведения векторов
+
+
+
+## Геометрическая интерпретация скалярного произведения векторов
 
 Скалярное произведение равно произведению длин векторов на $cos$ угла между ними
 
 $$
-\textbf{a} \bullet \textbf{b} =  ||\textbf{b}|| \times ||\textbf{b}|| \times cos(\alpha)
+\textbf{a} \cdot \textbf{b} =  ||\textbf{a}|| \times ||\textbf{b}|| \times \cos(\alpha)
 $$
 
-Если угол между веторами равен 90 градусов, то такие векторы называются ортогональными.
+Если угол между векторами равен 90 градусов, то такие векторы называются ортогональными.
 
-У таких веторов скалярное произведение $\textbf{a} \bullet \textbf{b} = 0$
+У таких векторов скалярное произведение $\textbf{a} \cdot \textbf{b} = 0$
 
 ## Задание
 
 Выясните, являются ли ортогональными следующие векторы?
 
-```{r}
+```{r, purl=TRUE}
 a <- c(0, 1)
 b <- c(1, 0)
 c <- c(1, 1)
 d <- c(1, -1)
 ```
 
-##Решение {.smaller .columns-2}
-
-Аналитическое решение 
-
-```{r}
+## Решение {.smaller .columns-2}
+Аналитическое решение
+```{r, purl=FALSE}
 (a) %*% (b) #Ортогональны
 (c) %*% (a) #Неортогональны
 (c) %*% (b) #Неортогональны
 (d) %*% (c) #Ортогональны
 (c) %*% (a) #неортогональны
+(b) %*% (d) #неортогональны
+
 
 ```
 
 Геометрическое решение
-```{r, echo=FALSE}
-library(ggplot2)
+```{r, echo=FALSE, fig.height=2.5, purl=FALSE }
+
 ggplot() + geom_vline(xintercept = 0) + geom_hline(yintercept = 0) + geom_segment(aes(x = 0, xend = 1, y = 0, yend = 0), arrow = arrow(), size = 2, color = "red")  + geom_segment(aes(x = 0, xend = 0, y = 0, yend = 1), arrow = arrow(), size = 2, color = "blue")   + geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), arrow = arrow(), size = 2, color = "green")  + geom_segment(aes(x = 0, xend = 1, y = 0, yend = -1), arrow = arrow(), size = 2, color = "red") + xlim(-1.2, 1.2) + ylim(-1.2,1.2) + coord_equal() + geom_text(aes(x=c(1.1, 0.1, 1.1, 1.1), y = c(0.1, 1.1, 1.1, -1.1), label=c("a", "b", "c", "d")))
 ```
 
 
+## Угол между векторами
+Пусть, векторы отражают признаки.   
+Что характеризует угол между векторами?  
 
-##Умножение матриц {.columns-2}
-Умножать можно только в том случае, если число строк одной матрицы равно числу столбцов другой матрицы
+```{r, echo=FALSE, purl=TRUE}
+Dat <- matrix(c(c(0.5, 0.5), c(0, 3)), nrow = 2)
 
-```{r}
+row.names(Dat) <- c("Object1", "Object2")
+colnames(Dat) <- c("Tr1", "Tr2") 
+
+Dat_df <- as.data.frame(t(Dat))
+Dat_df
+
+ggplot(Dat_df) + geom_vline(xintercept = 0) + geom_hline(yintercept = 0) + geom_segment(aes(x = 0, xend = Object1, y = 0, yend = Object2), arrow = arrow(), size = 2, color = "red") + labs(x = "Объект 1", y = "Объект 2") + xlim(0, 3) + coord_fixed()
+ 
+```
+
+## Угол между векторами
+### Длина векторов
+
+```{r, purl=TRUE}
+norm(t(Dat[ ,1 ]), type = "F") #Длина вектора Tr1 
+norm(t(Dat[ , 2]), type = "F") #Длина вектора Tr2
+
+```
+
+## Угол между веторами
+$$
+\cos(\alpha) = \frac{\textbf{a} \cdot \textbf{b}} {||\textbf{a}|| \times ||\textbf{b}||}
+$$
+
+```{r, purl=TRUE}
+
+cos_a <- (Dat[, 1] %*% Dat[, 2])/(norm(t(Dat[, 1]), type = "F") * 
+                                    norm(t(Dat[, 2]), type = "F"))
+
+cos_a
+
+```
+
+Угол между векторами - мера сонаправленности векторов, то есть их взаимосвязи (корреляции).
+
+
+
+## Нормализованные векторы
+
+$$
+\textbf{c} = \frac{\textbf{b}} {||\textbf{b}||}
+$$
+
+
+## Задание 
+
+Найдите нормализованный вектор для следующего вектора и определите его длину
+
+```{r, purl=TRUE}
+Vec <- 1:5
+Vec
+```
+
+## Решение
+```{r, purl=FALSE}
+normalized_Vec <- Vec/norm(t(Vec), type = "F")
+normalized_Vec
+```
+
+Длина нормализованного вектора 
+
+```{r, purl=FALSE}
+norm(t(normalized_Vec), type = "F")
+
+```
+
+
+>- Длина нормализованных векторов равна 1. Это важное свойство для многомерных методов. 
+
+
+
+
+
+## Нормализованные векторы {.smaller .columns-2}
+
+Исходные данные
+
+```{r, echo=FALSE, purl=TRUE}
+Dat <- matrix(c(c(0.5, 0.5), c(0, 3)), nrow = 2)
+
+row.names(Dat) <- c("Object1", "Object2")
+colnames(Dat) <- c("Tr1", "Tr2") 
+
+Dat_df <- as.data.frame(t(Dat))
+
+Dat_df_norm <- Dat_df
+
+Dat_df
+```
+
+Нормализованные данные
+
+```{r,echo=FALSE, purl=TRUE}
+
+Dat_df_norm[1, ] <- Dat_df[1,]/norm(t(Dat_df[1,]), type = "F")
+
+Dat_df_norm[2, ] <- Dat_df[2,]/norm(t(Dat_df[2,]), type = "F")
+
+Dat_df_norm
+
+ggplot() + geom_vline(xintercept = 0) + geom_hline(yintercept = 0) + geom_segment(dat = Dat_df, aes(x = 0, xend = Object1, y = 0, yend = Object2), arrow = arrow(), size = 2, color = "red") +  geom_segment(dat = Dat_df_norm, aes(x = 0, xend = Object1, y = 0, yend = Object2), arrow = arrow(), size = 2, color = "blue") + labs(x = "Объект 1", y = "Объект 2") + xlim (0, 3) + coord_fixed()
+
+```
+Характер взаимосвязи между нормализованными векторами такой же, как и у исходных векторов.
+
+
+
+# Level 4: Операции с матрицами 
+
+
+
+## Матричное умножение матрицы на вектор {.smaller .columns-2}
+
+$$
+\mathbf{A} \times \mathbf{a}
+$$
+
+Умножать можно только в том случае, если число столбцов в матрице равно количеству чисел в векторе.  
+
+Пусть, есть матрица  $\mathbf{A}$
+
+```{r, echo=FALSE, purl=TRUE}
+A
+```
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+```{r, purl=TRUE}
+A %*% c(10, 10, 10)
+```
+
+- Первое число итогового вектора - скалярное произведение первой строки $\mathbf{A}$ на вектор $\mathbf{a}$    
+- Второе число - скалярное произведение второй строки $\mathbf{A}$ на вектор $\mathbf{a}$   
+и т.д.
+
+
+Но! если поменять местами множители, то будет ошибка
+```{r, error=TRUE, purl=TRUE}
+c(10, 10, 10) %*% A
+```
+
+## Матричное умножение вектора на матрицу
+
+$$
+\mathbf{a} \times  \mathbf{A}
+$$
+
+Умножать можно только в том случае, если количество чисел в векторе равно количеству строк в матрице.
+
+```{r, echo=TRUE, purl=TRUE}
+c(10, 10, 10, 10) %*% A
+```
+
+Но! если поменять местами множители, то будет ошибка
+```{r, error=TRUE, purl=TRUE}
+A %*% c(10, 10, 10, 10)
+```
+
+
+
+
+
+
+
+
+## Умножение матриц {.smaller .columns-2}
+
+
+Умножать можно только в том случае, если число колонок в первой матрице равно числу строк второй матрицы: $\mathbf{A} \times \mathbf{B}$ 
+
+Пусть, есть матрица $\mathbf{A}$
+
+```{r, echo=FALSE, purl=TRUE}
+A
+```
+
+и матрица $\mathbf{B}$
+
+
+```{r, echo=FALSE, purl=TRUE}
+B
+```
+
+<br>
+
+```{r, purl=TRUE}
 A %*% B
 ```
 
 
-
-```{r}
-A %*% t(A)
-```
-
-
 НО! Нельзя произвести такое умножение
-```{r, eval=FALSE}
+```{r, error=TRUE, purl=TRUE}
 A %*% A
+
 ```
 
-
-##Биологическое применение
-Простейший пример использования умножения матрц - построение модели динамики демографической структуры популяции
-Для вычислений необходим начальный *демографический вектор* и *матрица Лесли*
+## Схема умножения матриц
 
 $$
 \begin{pmatrix}
-F_1 & F_2 & F_3 & F_4 & F_5 & F_6 & F_7 \\
-P_{1-2}& 0 & 0 & 0 & 0 & 0 & 0 \\    
-0 & P_{2-3} & 0 & 0 & 0 & 0 & 0 \\    
-0 & 0 & P_{3-4} & 0 & 0 & 0 & 0 \\    
-0 & 0 & 0 & P_{4-5} & 0 & 0 & 0 \\    
-0 & 0 & 0 & 0 & P_{5-6} & 0 & 0 \\    
-0 & 0 & 0 & 0 & 0 & P_{6-7} & 0     
+A & B  \\
+C & D \\
 \end{pmatrix}
 \times
 \begin{pmatrix}
-N1_t \\
-N3_t \\    
-N4_t \\
-N5_t \\
-N6_t \\
-N7_t
+E & F \\ G & H\\ 
 \end{pmatrix}
 =
 \begin{pmatrix}
-N1_{t+1} \\
-N3_{t+1} \\    
-N4_{t+1} \\
-N5_{t+1} \\
-N6_{t+1} \\
-N7_{t+1}
+(A \cdot E + B \cdot G)  & (A \cdot F + B \cdot H ) \\ (C \cdot E + D \cdot G)  & (C \cdot F + D \cdot H)  \\
 \end{pmatrix}
 $$
 
-##Простейшая демографическая модель
+## Некоторые свойства произведения матриц {.smaller .columns-2}
 
+Если существует произведение матриц $\textbf{BC}$, то не обязательно существует $\textbf{CB}$
 
-```{r, echo=FALSE}
-T1 <- c(20, 40, 32, 45, 80, 50, 10)
-Age <- c("0", "1-10", "11-20", "21-35", "36-45", "46-55", "56-65")
-Pop <- data.frame(Age, T1)
-```
-
-Демографический вектор в момент времени $t$ 
-```{r, echo=FALSE}
-Pop
-```
-
-Матрица Лесли
-```{r, echo=FALSE}
-Lesl <- matrix(
-c( 0,  0,   1,   2,   2,   0,   0,
-  0.6, 0,   0,   0,   0,   0,   0,
-   0,  0.7, 0,   0,   0,   0,   0, 
-   0,  0,   0.8, 0,   0,   0,   0,
-   0,  0,   0,   0.7, 0,   0,   0,
-   0,  0,   0,   0,   0.6, 0,   0,
-   0, 0,    0,   0,   0,  0.2, 0  ),
-byrow = T, 
-ncol = 7)
-Lesl
-```
-
-## Демографическая струкутра в момент времени $t+1$ {.smaller .columns-2}
-
-
-```{r}
-Pop$T2 <- as.vector( Lesl %*% (Pop$T1 ))
-Pop$T3 <- as.vector( Lesl %*% (Pop$T2 ))
-Pop$T4 <- as.vector( Lesl %*% (Pop$T3 ))
-Pop$T5 <- as.vector( Lesl %*% (Pop$T4 ))
-Pop$T6 <- as.vector( Lesl %*% (Pop$T5 ))
-Pop$T7 <- as.vector( Lesl %*% (Pop$T6 ))
-Pop$T8 <- as.vector( Lesl %*% (Pop$T7 ))
-Pop$T9 <- as.vector( Lesl %*% (Pop$T8 ))
-Pop$T10 <- as.vector( Lesl %*% (Pop$T9 ))
-
-```
-
-```{r, echo=FALSE, message=FALSE, fig.width=4}
-library(ggplot2)
-library(reshape)
-Pop2 <- melt(Pop)
-ggplot(Pop2, aes(x=Age, y = value)) + geom_bar(stat = "identity") + facet_wrap(~variable, ncol = 2) + labs(x = "Возраст", y = "Число особей")
-```
-
-
-##Некоторые свойства произведения матриц
-1) Если существует произведение матриц $\textbf{BC}$, то не обязательно существует $\textbf{CB}$
-
-```{r}
+```{r, purl=TRUE}
 B <- matrix(1:24, ncol = 4)
+B
 C <- matrix(1:12, ncol = 3)
+C
 
 B %*% C
 ```
 
 HO! 
 
-```{r, eval=FALSE}
+```{r, error=TRUE, purl=TRUE}
 
 C %*% B
 ```
 
-Такое произведение невозможно
 
-##Некоторые свойства произведения матриц
 
-2) Всегда существует такое произведение матриц $\textbf{CС'}$ и $\textbf{C'С}$
 
-```{r}
+
+## Некоторые свойства произведения матриц
+
+Всегда существует такое произведение матриц $\textbf{C}\textbf{C}'$ и $\textbf{C}'\textbf{C}$
+
+```{r, purl=TRUE}
 C %*% t(C)
 ```
 
-```{r}
+```{r, purl=TRUE}
 t(C) %*% C
 ```
 
 
-##Некоторые свойства произведения матриц
+## Некоторые свойства произведения матриц
 
-3) Произведение матриц $\textbf{BC}$ как правило не равно $\textbf{CB}$
-```{r}
+Произведение матриц $\textbf{BC}$ как правило не равно $\textbf{CB}$
+```{r, purl=TRUE}
 B <- matrix(1:9, ncol = 3)
 C <- matrix(11:19, ncol = 3)
 
@@ -592,42 +707,237 @@ B %*%  C
 C %*% B
 ```
 
-##Некоторые свойства произведения матриц
 
-4)  $[\textbf{BC}]' = \textbf{C}'\textbf{B}'$
-```{r}
+## Некоторые свойства произведения матриц
+
+$[\textbf{BC}]' = \textbf{C}'\textbf{B}'$
+```{r, purl=TRUE}
 t(B %*% C)
 ```
 
-```{r}
+```{r, purl=TRUE}
 t(C) %*% t(B)
 ```
 
-##Некоторые свойства произведения матриц
+## Некоторые свойства произведения матриц
 
-5)  Произведение $\textbf{BB'}$ и $\textbf{B'B}$ всегда дает симметричную матрицу 
+Произведение $\textbf{B}\textbf{B}'$ и $\textbf{B}'\textbf{B}$ всегда дает симметричную матрицу 
 
-```{r}
+```{r, purl=TRUE}
 B %*% t(B)
 ```
 
-```{r}
+```{r, purl=TRUE}
 t(B) %*% B
 
 ```
 
-#Корреляционные и ковариационные матрицы
+## Зачем это нужно?  {.smaller .columns-2}
+### Бытовой пример
+Представим себе, что вы решили купить четыре товара, по следующим ценам 
+
+Товар | Цена    
+------|-----    
+Товар 1 | 10    
+Товар 2 | 20    
+Товар 3 | 30   
+Товар 4 | 40    
+
+
+
+Прямых выходов на продавца у вас нет, но есть три посредника, которые выставляют следующие "накрутки" цен. 
+
+Посредники  | Товар 1 | Товар 2 | Товар 3 | Товар 4 
+------------|---------|---------|---------|--------
+Посредник 1 | 0.1 | 0.15 | 0.05 | 0.05 
+Посредник 2 | 0.15 | 0.15 | 0.09 | 0.01 
+Посредник 3 | 0.2 | 0.05 | 0.1 | 0.1  
+
+<br>
+
+Какой из посредников выгоднее?
+
+
+## Решение
+
+```{r, purl=TRUE}
+cost <- c(10, 20, 30, 40)
+
+retailer <- matrix(c(0.1, 0.15, 0.05, 0.05,  
+                     0.15, 0.15, 0.09, 0.01, 
+                     0.2, 0.05, 0.1, 0.1 ), byrow = TRUE, ncol = 4)
+
+
+retailer %*% cost  
+
+```
+
+
+# Level 5.Матрицы, как инструмент преобразования 
+
+## Матрицы позволяют преобразовывать системы векторов
+
+Начальная система расположения точек
+
+```{r, purl=TRUE}
+y = c(2,2,3,3,2,2,3,4,5,6,6,5,4,3,2)
+x = c(2,3,4,5,6,7,7,7,6,5,4,3,2,2,2)
+
+Image <- cbind((x), (y))
+
+qplot(Image[,1], Image[,2] ) + geom_polygon(fill = "red") + coord_fixed()
+
+
+```
+
+
+
+## Матрицы позволяют преобразовывать системы векторов {.smaller .columns-2}
+
+Вращающая матрица
+$$
+\textbf{Rot} = 
+\begin{pmatrix}
+\cos\phi & -\sin \phi \\
+\sin\phi & \cos\phi
+\end{pmatrix}
+$$
+Поворот изображения на заданный угол
+
+```{r, purl=TRUE}
+
+angle <- 30*pi/180
+
+Rot <- matrix(c(cos(angle), sin(angle), 
+                -sin(angle), cos(angle)), nrow = 2)
+
+Image_trans <-   t((Rot) %*% t(Image))     
+
+
+qplot(Image_trans[,1], Image_trans[,2] ) + 
+  geom_polygon(fill = "red") + coord_fixed()
+
+
+```
+
+## Матрицы позволяют преобразовывать системы векторов {.smaller .columns-2}
+
+Масштабирующая матрица
+$$
+\textbf{Scale} = 
+\begin{pmatrix}
+a & 0 \\
+0 & b
+\end{pmatrix}
+$$
+
+<br>
+
+<br>
+
+```{r, purl=TRUE}
+Scale <- matrix(c(1, 0, 0, 2), nrow = 2)
+
+Image_trans2 <-   t((Scale) %*% t(Image_trans))     
+
+qplot(Image_trans2[,1], Image_trans2[,2] ) + 
+  geom_polygon(fill = "red") + coord_fixed()
+
+```
+
+  
+
+# Level 6: Корреляционные и ковариационные матрицы
 
 ## Ковариационная матрица
-Во многих методах многомерной статистики применяется матрица ковариацй.
+Во многих методах многомерной статистики применяется матрица ковариации.
 
-Ковариация (согласованное отклонение):
+Ковариация (согласованное отклонение от среднего):
 
 $$
 cov(X, Y) = \frac{1}{n - 1}\sum{(x_i - \bar{x})(y_i - \bar{y})}
 $$
 
-Ковариационная матрица
+```{r, echo=FALSE, purl=FALSE}
+
+library(gridExtra)
+
+X_back <- rnorm(20, 0, 4)
+Y_back <- rnorm(20, 1, 4)
+
+XY <- data.frame(x = X_back, y = Y_back)
+
+meanX <- 0
+meanY <- 1
+Xmin <- -5
+Xmax <- 5
+Ymin <- -5
+Ymax <- 5
+
+X <- 2
+Y <- 4
+X1 <- -2
+Y1 <- -4
+X2 <- 2
+Y2 <- -4
+
+ar <- arrow(type = "closed", length = unit(0.15,"cm"))
+
+Pl_positiv1 <- 
+  ggplot() + 
+  geom_point(data = XY, aes(x = X, y = Y), color = "lightgrey") + 
+  geom_point(aes(x = c(meanX, X), y = c(meanY, Y))) +
+  xlim(Xmin, Xmax) + ylim(Ymin, Ymax) + guides(size = "none") + 
+  geom_segment(aes(x = meanX, y = meanY, xend = X - 0.2, yend = Y - 0.2), arrow = ar) +
+  geom_segment(aes(x = meanX, y = meanY, xend = meanX, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = meanY, xend = Xmin, yend = meanY), linetype = 2) +
+  geom_segment(aes(x = X, y = Y, xend = Xmin, yend = Y), linetype = 2) +
+  geom_segment(aes(x = X, y = Y, xend = X, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = Ymin, xend = X, yend = Ymin), arrow = ar, color = ("red"), size = 1) + 
+  labs(x = "x", y = "y") +
+  geom_segment(aes(x = Xmin, y = meanY, xend = Xmin, yend = Y), arrow = ar, color = ("red"), size = 1) + 
+  ggtitle("Положительные\nотклонения") 
+
+
+Pl_positiv2 <- 
+  ggplot() + 
+  geom_point(data = XY, aes(x = X, y = Y), color = ("lightgrey")) + 
+  geom_point(aes(x = c(meanX, X1), y = c(meanY, Y1))) +
+  xlim(Xmin, Xmax) + ylim(Ymin, Ymax) + guides(size = "none") + 
+  geom_segment(aes(x = meanX, y = meanY, xend = X1 + 0.2, yend = Y1 + 0.2), arrow = ar) +
+  geom_segment(aes(x = meanX, y = meanY, xend = meanX, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = meanY, xend = Xmin, yend = meanY), linetype = 2) +
+  geom_segment(aes(x = X1, y = Y1, xend = Xmin, yend = Y1), linetype = 2) +
+  geom_segment(aes(x = X1, y = Y1, xend = X1, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = Ymin, xend = X1, yend = Ymin), arrow = ar, color = ("blue"), size = 1) + 
+  geom_segment(aes(x = Xmin, y = meanY, xend = Xmin, yend = Y1), arrow = ar, color = ("blue"), size = 1) + 
+  labs(x = "x", y = "y") +
+  ggtitle("Отрицательные\nотклонения")
+
+Pl_negative <- 
+  ggplot() + 
+  geom_point(data = XY, aes(x = X, y = Y), color = ("lightgrey")) + 
+  geom_point(aes(x = c(meanX, X2), y = c(meanY, Y2))) +
+  xlim(Xmin, Xmax) + ylim(Ymin, Ymax) + guides(size = "none") + 
+  geom_segment(aes(x = meanX, y = meanY, xend = X2 - 0.2, yend = Y2 + 0.2), arrow = ar) +
+  geom_segment(aes(x = meanX, y = meanY, xend = meanX, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = meanY, xend = Xmin, yend = meanY), linetype = 2) +
+  geom_segment(aes(x = X2, y = Y2, xend =Xmin, yend = Y2), linetype = 2) +
+  geom_segment(aes(x = X2, y = Y2, xend = X, yend = Ymin), linetype = 2) +
+  geom_segment(aes(x = meanX, y = Ymin, xend = X2, yend = Ymin), arrow = ar, color = ("red"), size = 1)+ 
+  geom_segment(aes(x = Xmin, y = meanY, xend = Xmin, yend = Y2), arrow = ar, color = ("blue"), size = 1) + 
+  labs(x = "x", y = "y") +
+  ggtitle("Отклонения\nв разных направлениях")
+
+grid.arrange(Pl_positiv1, Pl_positiv2, Pl_negative, nrow = 1)
+
+```
+
+
+
+
+
+## Ковариационная матрица
 
 $$
 \textbf{S} = \frac{1}{n - 1} \textbf{Y}_{centered}'\textbf{Y}_{centered}
@@ -636,82 +946,108 @@ $$
 
 где $\textbf{Y}_{centered}$ - центрированная матрица исходных значений
 
+
+
 ## Корреляционая матрица
 
-То же самое, что ковариаионная матрица, но только на основе стандартизованных исходных значений
+То же самое, что ковариационная матрица, но только на основе стандартизованных исходных значений
 
 $$
 \textbf{R} = \frac{1}{n - 1} \textbf{Y}_{stand}'\textbf{Y}_{stand}
 $$
 
 
-## Вычисление матрицы ковариации и корреляций с помощью матричной алгебры {.smaller .columns-2}
+## Вычисление матрицы ковариации с помощью матричной алгебры {.smaller .columns-2}
 
 Исходная матрица
-```{r}
+```{r, purl=TRUE}
 M <- matrix(c(1,2,3,4,5,5,2,1,2,5,2,1,3,5,4,6,8,4,0,2), ncol = 4)
 M
 ```
 
+
+<br>
+
+
+<br>
+
+
 Матрица центрированных значений
-```{r}
+```{r, purl=TRUE}
 Cent_M <- scale(M, center = TRUE, scale = FALSE) 
 Cent_M
 ```
 
 
-## Вычисление матрицы ковариации и корреляций с помощью матричной алгебры
-###Задание:  
+## Вычисление матрицы ковариации с помощью матричной алгебры
+### Задание:  
 Вычислите ковариационную матрицу с помощью методов матричной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`  
 
-## Вычисление матрицы ковариации и корреляций с помощью матричной алгебры
-###Решение: 
+## Вычисление матрицы ковариации  с помощью матричной алгебры
+### Решение: 
 
-```{r}
+```{r, purl=FALSE}
+# Вычисление вручную
 Cov_M <- (t(Cent_M) %*% Cent_M)/(nrow(M) - 1)
 Cov_M
 ```
 
 
-```{r}
-cov(M)
+```{r, purl=FALSE}
+cov(M) # Стандартная функция R
 ```
 
-## Вычисление матрицы ковариации и корреляций с помощью матричной алгебры
+## Вычисление матрицы ковариации  с помощью матричной алгебры
 
-По главной диагонали ковариационой матрицы лежат квадраты стандартных отклонений
-```{r}
+По главной диагонали ковариационной матрицы лежат квадраты стандартных отклонений Каждого из векторов (колонок, признаков) исходной матрицы
+
+```{r, purl=TRUE}
 diag(Cov_M)
 ```
 Сравним
-```{r}
+```{r, purl=TRUE}
 apply(M, 2, FUN = function(x)sd(x)^2)
 ```
 
 
-## Вычисление матрицы ковариации и корреляций с помощью матричной алгебры {.smaller .columns-2}
+## Вычисление матрицы  корреляций с помощью матричной алгебры {.smaller .columns-2}
 
 Для вычисления матрицы корреляций необходимо стандартизировать значения в исходной матрице
 
-```{r}
+```{r, purl=TRUE}
 Stand_M <- scale(M, center = TRUE, scale = TRUE)
 Stand_M
 ```
 
+<br>
 
-```{r}
+<br>
+<br>
+<br>
+<br>
+
+```{r, purl=TRUE}
+# Вычисление вручную
 Cor_M <- (t(Stand_M) %*% Stand_M)/(nrow(M) - 1)
 Cor_M
 ```
 
 ```{r}
-cor(M)
+cor(M) # Стандартная функция R
 ```
 
 
-#Обращение (инверсия) матриц
+## Зачем нужна ковариационная матрица?
 
-##Обращение (инверсия) матриц {.smaller .columns-2}
+В ковариационной матрице содержится вся информация о варьировании признаков и о их взаимосвязи   
+ 
+Свойства этой матрицы  позволяют раскладывать изменчивость на отдельные составляющие.  
+
+
+
+# Level 7: Обращение (инверсия) матриц
+
+## Обращение (инверсия) матриц {.smaller .columns-2}
 
 В матричной алгебре нет процедуры деления. Вместо нее используют обращение матриц.
 
@@ -724,178 +1060,64 @@ $$
 
 Матрицы, у которых определитель $|\textbf{X}| = 0$ называются *сингулярными* матрицами они не могут быть инвертированы.
 
-**Важное свойство**: Только квадратные матрицы имеют одну единственную обратную матрицу. 
+**Важное свойство**: Только квадратные матрицы имеют  обратную матрицу.
 
 Поэтому для квадратных матриц справедливо $\textbf{X} \textbf{X}^{-1} = \textbf{X}^{-1} \textbf{X}$
 
-##Решение в среде R
+
+**Важное свойство**: Если квадратная матрица состоит из ортогональных векторов (ортогональная матрица), то $\textbf{X}'  = \textbf{X}^{-1}$
+
+
+## Решение в среде R
 Создадим матрицу
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 X <- matrix(c(seq(1, 8),10), nrow = 3, byrow = T)
 X
 ```
 
 Ее определитель
-```{r}
+```{r, purl=FALSE}
 det(X)
 ```
 
-##Решение в среде R
-Обратная матрица 
-```{r}
+## Решение в среде R
+Обратная матрица
+```{r, , purl=FALSE}
 solve(X)
 
 ```
 
 По определению $\textbf{X}^{-1}\textbf{X} = \textbf{I}$
-```{r}
+```{r, , purl=FALSE}
 round(solve(X) %*% X )
 ```
 
 
-##Примнение обратных матриц {.smaller}
-
-Простейший случай использования обратных матриц - решение систем линейных уравнений
-$$
-\begin{cases}
-1x + 2y + 3z = 2\\  
-4x + 5y + 6z = 4 \\  
-7x + 8y + 10z = 10   
-\end{cases}
-$$
-
-Эту стстему можно представить в матричном виде
-
-$$
-\begin{pmatrix}
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-7 & 8 & 10
-\end{pmatrix}
-\begin{pmatrix}
-x \\ y \\ z
-\end{pmatrix}
-=
-\begin{pmatrix}
-2 \\ 4 \\ 10
-\end{pmatrix}
-$$
-
-Тогда 
-
-$$
-\begin{pmatrix}
-x \\ y \\ z
-\end{pmatrix}
-=
-\begin{pmatrix}
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-7 & 8 & 10
-\end{pmatrix}
-^{-1}
-\begin{pmatrix}
-2 \\ 4 \\ 10
-\end{pmatrix}
-$$
-
-##Задание 
-Решите приведенную систему уравнений с использованием матричной алгебры 
 
 
 
-##Решение
 
-```{r}
-Coef <- matrix(c(1 , 2 , 3 ,
-         4 , 5 , 6 ,
-         7 , 8 , 10), byrow = T, ncol = 3)
-Val <- c(2,4,10)
-
-solve(Coef) %*% Val
-
-```
-
-
-##Подбор параметров линейной регрессии
-
-
-При подборе коэффициентов методом нименьших квадратов нам надо решить следующее матричное уравнение:
-$$
-\textbf{y} =  \textbf{X} \pmb{\beta}
-$$
-
-
-Здесь  
-
-$\textbf{y}$ - вектор предсказанных значений      
-
-$\textbf{X}$ - модельная матрица  $\begin{pmatrix} 1 & x_1  \\ 1 & x_2 \\ \vdots & \vdots \\ 1 & x_n \end{pmatrix}$   
-
-$\pmb{\beta}$  - вектор коэффициентов модели
-
-##Решение этого уравнения   
-
-Умножим обе части уравнения на транспонированную матрицу $\textbf{X}'$  
-
-$$ \textbf{X}'  \textbf{y} = \textbf{X}'\textbf{X} \pmb{\beta}$$
-
-Матрица $\textbf{X}'\textbf{X}$ - это всегда квадратная матрица. Ее можно обратить.
-
-Тогда
-$$
-\pmb{\beta} = [\textbf{X}'\textbf{X}]^{-1}[\textbf{X}'\textbf{y}]
-$$
-
-##Подбор коэффициентов линейной регрессии вручную
-Подбираем коэффициенты с помощью фунции `lm()`
-```{r}
-data(cars)
-Mod <- lm(dist ~ speed, data = cars)
-coefficients(Mod)
-```
-
-Подбираем коэффициенты вручную
-
-```{r}
-X <- data.frame(Int = 1, x = cars$speed)
-X <- as.matrix(X)
-
-y <- cars$dist
-solve(t(X) %*% X) %*% (t(X) %*%y)
-
-d <- solve(t(X) %*% X)
-```
-
-#Собственные значения и собственные векторы
+# Level 8:  Собственные значения, собственные векторы и главные оси 
 
 ## Постановка проблемы
 
 Одним из подходов к снижению размерности многомерного пространства признаков является представление исходной матрицы ($\textbf{Y}$) в **ортогональной форме**. 
 
-В исходной матрице большинство векторов неортогональны, то есть взаимозависимы.  
-Задача сводится к тому, чтобы заменить исходные векторы (признаки) новыми комплексными признаками, которые были бы взамно независимыми, то есть ортогональными. 
+В исходной матрице большинство векторов неортогональны, то есть взаимозависимые.  
+Задача сводится к тому, чтобы заменить исходные векторы (признаки) новыми комплексными признаками, которые были бы взаимно независимыми, то есть ортогональными. 
 
 Каждый из этих векторов берет на себя некоторую долю общей изменчивости. 
 
 
-## Постановка проблемы {.columns-2}
 
-Связь между векторами в исходной матрице $\textbf{Y}$ выражается через матрицу  ассоциации $\textbf{A}$.   
 
-$\textbf{A}$ - это квадратная симметричная матрица.
+## Собственные числа и собственные векторы  {.smaller .columns-2}
 
-Задача сводится к тому, чтобы из матрицы
+Связь между векторами в исходной матрице $\textbf{Y}$ выражается через ковариационную  матрицу  $\textbf{S}$ или корреляционную матрицу ($\textbf {R}$).   
 
-$$ 
-\textbf{A}_{pp} =  
-\begin{pmatrix}
-a_{11} & a_{12} & \cdots & a_{1p} \\
-a_{21} & a_{22} & \cdots & a_{2p} \\    
-\vdots & \vdots & \ddots & \vdots \\
-a_{p1} & a_{p2} & \cdots & a_{pp}
-\end{pmatrix}
-$$
+$\textbf{S}$ - это квадратная симметричная матрица.
+
+Задача сводится к тому, чтобы из матрицы $\textbf{S}$
 
 
 получить матрицу
@@ -912,55 +1134,240 @@ $$
 
 По главной диагонали лежат так называемые **собственные значения**, все остальные значения равны нулю  
 
-Каждому собственному значению $\lambda_i$ставится в соответствие так назваемый **собственный вектор**  $\textbf{u}_i$ 
+Каждому собственному значению $\lambda_i$ставится в соответствие так называемый **собственный вектор**  $\textbf{u}_i$
 
-Собственные векторы перпендикулярны друг другу
+Собственные векторы перпендикулярны друг другу (ортогональны)
 
-##Связь между матрицами
+Собственные векторы формируют матрицу собственных векторов $\textbf{U}$
 
-Связь между матрицей $\bf{\Lambda}$ и $\textbf{A}$ выражается следующим уравнением
+## Связь между матрицами
+
+Связь между матрицей $\bf{\Lambda}$ и $\textbf{S}$ выражается следующим уравнением
 
 $$
-\textbf{A}\textbf{U} = \textbf{U}\bf{\Lambda} 
+\textbf{S}\textbf{U} = \textbf{U}\bf{\Lambda} 
 $$
 
 
 где   
-$\textbf{A}$ - матрица ковариации    
+$\textbf{S}$ - матрица ковариации    
 $\textbf{U}$ - матрица собственных векторов     
-$\bf{\Lambda}$ - Дагональная матрица собственных значений     
+$\bf{\Lambda}$ - Диагональная матрица собственных значений     
 
----
+Тогда 
 
-```{r}
-A <- matrix(c(2,2,2,5), byrow = T, ncol = 2)
-eig_val <- eigen(A)$values
-eig_vec <- eigen(A)$vectors
+$$
+\textbf{S} = \textbf{U}\bf{\Lambda}\textbf{U}^{-1} 
+$$
+Это позволяет раскладывать матрицу $\textbf{S}$  на составляющие 
 
-t(eig_vec[,1]) %*% eig_vec[,2] #Векторы ортогональны
 
-eig_vec %*% diag(eig_val)
+## Главные оси {.smaller}
 
-A %*% eig_vec
+Во многих многомерных методах требуется найти оси максимального варьирования 
+
+```{r, purl=TRUE}
+set.seed(123456789)
+
+x <- rnorm(1000, 50, 10)
+y <- 10 * x + rnorm(1000, 0, 100)
+XY <-data.frame(x = x, y = y)
+qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") + 
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
 
 ```
 
 
 
 
+## Главные оси {.smaller}
+
+```{r, purl=TRUE}
+qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") + 
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") + 
+  stat_ellipse(type = "norm", level = 0.999) + 
+  geom_segment(aes(x = mean(x), y = mean(y), xend = (mean(x) + 3.5*sd(x)), yend = (mean(y) + 3.5*sd(y))),  arrow = ar, color = "blue", size = 2)
+
+```
+
+
+Главные оси проходят через центроид ($\mathbf{\mu} = [\mu_1, \mu_2 \dots \mu_n]$) и некоторую точку на поверхности эллипса ($\mathbf{y} = [y_1, y_2 \dots y_n]$).
+
+Задача: найти такую точку.
+
+Эта точка соответствует максимальной длине вектора, соединяющего центроид и данную точку.
+
+
+## Нормализуем векторы {.smaller}
+
+```{r, purl=TRUE}
+x_norm <- XY$x/sqrt(sum(XY$x)^2)
+y_norm <- XY$y/sqrt(sum(XY$y)^2)
+
+
+XY_norm <- data.frame(x = x_norm, y = y_norm)
+
+
+ggplot(XY_norm , aes(x = x, y = y)) + geom_point() +  
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
+
+```
 
 
 
-#Сингулярное разложение матриц (Singular value decomposition)
+## Центрируем нормализованные векторы {.smaller}
 
-##Теорема Экарта-Янга {.smaller}
+
+```{r, purl=TRUE}
+XY_norm_cent <- as.data.frame(scale(XY_norm, center = TRUE, scale = FALSE))
+
+ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() +  
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
+
+```
+
+
+
+
+## Находим ковариационную матрицу {.smaller}
+
+```{r, purl=TRUE}
+mXY_norm_cent <- as.matrix(XY_norm_cent)
+
+Sxy_norm_cent <- t(mXY_norm_cent) %*% mXY_norm_cent /(nrow(mXY_norm_cent) - 1)
+
+Sxy_norm_cent
+```
+
+
+## Находим собственные числа и собственные векторы {.smaller} 
+
+```{r, purl=TRUE}
+eig <- eigen(Sxy_norm_cent) # Стандартная функция R для извлечения собственных чисел и собственных векторов
+
+Lambda <- eig$values # Собственные числа
+
+Lambda
+
+U <- eig$vectors # Собственные векторы
+
+U
+```
+
+## Стандартизованные собственные векторы {.smaller}
+Собственные векторы безразмерны.
+
+Но их можно масштабировать, выразив в величинах стандартных отклонений $\textbf{U}_{scaled} = \textbf{U}\bf{\Lambda}^{1/2}$  
+
+Почему так?
+
+$\textbf{U}_{scaled} \textbf{U}'_{scaled} = [\textbf{U}\bf{\Lambda}^{1/2}][\textbf{U}\bf{\Lambda}^{1/2}]' = \textbf{U}\bf{\Lambda}\textbf{U}' = \textbf{U}\bf{\Lambda}\textbf{U}^{-1} = \textbf{S}$
+
+Ковариационная матрица для стандартизованной матрицы собственных векторов совпадает с ковариационной матрицей исходной матрицы
+
+
+
+```{r, purl=TRUE}
+U_scaled <- U %*% sqrt(diag(Lambda)) #
+
+(U %*% sqrt(diag(Lambda))) %*% t(U %*% sqrt(diag(Lambda)))
+
+```
+
+
+## Рисуем собственные векторы {.smaller}
+
+```{r, purl=TRUE}
+
+PC1 <- data.frame(x = c(mean(XY_norm_cent$x), U_scaled[1, 1]), 
+                  y = c(mean(XY_norm_cent$y),  U_scaled[2,1]))
+
+PC2 <- data.frame(x = c(mean(XY_norm_cent$x),  U_scaled[1, 2]), 
+                  y = c(mean(XY_norm_cent$y),  U_scaled[2,2]))
+
+ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +  
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") + 
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1) +
+  coord_equal()
+
+
+```
+
+## Рисуем главные оси {.smaller .columns-2}
+
+<img src="images/Principal_axes_Legendre_and_Legendre.png" style="height:350px;">
+
+<small>Из  Legendre & Legendre, 2012</small>
+
+<!-- ![](images/Principal_axes_Legendre_and_Legendre.png) -->
+
+$$
+\cos(\alpha_{11}) = u_{11}\\
+\cos(\alpha_{21}) = u_{21}\\
+\cos(\alpha_{12}) = u_{12}\\
+\cos(\alpha_{22}) = u_{22}
+$$
+
+
+```{r}
+U
+```
+
+
+
+```{r,  fig.height=3, purl=TRUE}
+ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +  
+  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") + 
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5) +
+  coord_equal() + geom_abline(slope = tan(acos(U[1,1])), color = "blue") +
+  geom_abline(slope = tan(acos(U[1,1]) + acos(U[2,1]) + acos(U[2,2])), color = "blue") 
+
+```
+
+## Вращение осей {.smaller .columns-2}
+
+<img src="images/Principal_axes_Legendre_and_Legendre.png" style="height:350px;">
+
+<small>Из  Legendre & Legendre, 2012</small>
+
+Вращающая матрица
+```{r, purl=TRUE}
+angle <- - acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
+
+Rot <- matrix(c(cos(angle), sin(angle), 
+                -sin(angle), cos(angle)), nrow = 2)
+Rot
+```
+
+## Вращение осей {.smaller}
+
+
+```{r, purl=TRUE}
+XY_norm_cent_rot <- as.data.frame(t(Rot %*% t(mXY_norm_cent)))
+
+ggplot(XY_norm_cent, aes(x = x, y = y)) + 
+  geom_point(color = "gray") + 
+  geom_point(data = XY_norm_cent_rot, aes(x = V1, y = V2)) + 
+  labs(x = "Первая главная ось", y = "Вторая главная ось")
+
+
+```
+
+
+
+
+# Level 9: Сингулярное разложение матриц (Singular value decomposition)
+
+## Теорема Экарта-Янга {.smaller}
 Любую прямоугольную матрицу $\textbf{Y}$ можно представить в виде произведения трех матриц: 
 
 $$
 \textbf{Y}_{n \times p} = \textbf{U}_{n \times p} \textbf{D}_{p \times p} \textbf{V}'_{p \times p} 
 $$
 
-То есть можно найти три "вспомогательных" матрицы, через котрые можно выразить любую другую матрицу. 
+То есть можно найти три "вспомогательных" матрицы, через которые можно выразить любую другую матрицу. 
 
 ---
 
@@ -978,9 +1385,9 @@ $\textbf{D}_{p \times p}$ - диагональная матрица $\begin{pmat
 
 $\textbf{U}_{n \times p}$ и $\textbf{V}_{p \times p}$ - левая и правая матрицы сингулярных векторов.
 
-## Сингулярное разложение матрицы средствами R
-```{r}
-set.seed(12345)
+## Сингулярное разложение матрицы средствами R {.smaller}
+```{r, purl=TRUE}
+set.seed(123456789)
 B <- matrix(round(runif(50, 1, 5))  , byrow = T, ncol=5) #Некоторая матрица
 SVD <- svd(B) #Сингулярное Разложение матрицы B с помощью функции svd()
 V <- SVD$v #"Вспомогательная" матрица - левые сингулярные векторы
@@ -992,7 +1399,7 @@ U <- SVD$u #"Вспомогательная" матрица - правые си�
 
 Вычислим $\textbf{V} \textbf{D} \textbf{U}'$
 
-```{r}
+```{r, purl=TRUE}
 U %*% diag(D) %*% t(V) 
 ```
 
@@ -1001,19 +1408,19 @@ U %*% diag(D) %*% t(V)
 Вычислите матрицу, которая получится при использовании только 1 и 2 сингулярного числа для матрицы $\textbf{B}$, использованной на предыдущем слайде.
 
 
-##Решение
-```{r}
+## Решение
+```{r, purl=TRUE}
 U[,1:2] %*% diag(D[1:2]) %*% t(V[,1:2]) 
 
 ```
 
 
-##Важное свойство сингулярных чисел
+## Важное свойство сингулярных чисел
 
 Если вычислить матрицу на основе не всех, а части сингулярных чисел, то новая матрица будет подобна исходной матрице.
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 library(ggplot2)
 Dat <- data.frame(Init = rep(as.vector(B), 4), SingValue = rep(2:5, each = length(as.vector(B))), Calc = c(as.vector((U[,1:2] %*% diag(D[1:2]) %*% t(V[,1:2]))), as.vector((U[,1:3] %*% diag(D[1:3]) %*% t(V[,1:3]))), as.vector((U[,1:4] %*% diag(D[1:4]) %*% t(V[,1:4]))), as.vector((U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5]))))) 
 
@@ -1023,9 +1430,8 @@ ggplot(Dat, aes(x = Init, y = Calc)) + geom_point(size = 2) + labs(x = "знач
 
 
 ## Применение свойства сингулярных чисел в сжатии изображений
-Пример взят из курса лекций "Data Analysis" by Jeffrey Leek (https://github.com/jtleek/dataanalysis/tree/master/week3)
 
-```{r,echo=FALSE}
+```{r,echo=FALSE, purl=TRUE}
 load("data/face.rda")
 gg_face <- function(x) {
   library(reshape)
@@ -1039,9 +1445,16 @@ gg_face(faceData)
 
 ```
 
+<small> Пример взят из курса лекций "Data Analysis" by Jeffrey Leek  
+
+(https://github.com/jtleek/dataanalysis/tree/master/week3)</small>
+
+
+
+
 ## Произведем сингулярное разложение матрицы `faceData` {.smaller}
 
-```{r}
+```{r, purl=TRUE}
 SVD_face <- svd(faceData)
 
 U <- SVD_face$u
@@ -1050,27 +1463,27 @@ V <- SVD_face$v
 
 ```
 
-##Рекоструируем изображение, используя только часть информации
+## Рекоструируем изображение, используя только часть информации
 
-```{r}
+```{r, purl=TRUE}
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 gg_face(reduction(4))
 ```
 
 
 
-##Применение SVD в биологических исследованиях
+## Применение SVD в биологических исследованиях
 
-SVD - это метод, на котором основаны разные типы анализа, связанные со снижением размерности: PCA, CCA.
+SVD - это метод, на котором основаны разные типы анализа, связанные со снижением размерности: PCA, CA, CCA, RDA.
 
-О них в следующей лекции
+О них в следующех лекциях
 
-##Summary
+## Summary
 - Матричная алгебра позволяет решать самые разные типы задач.
 - Матричные методы лежат в основе очень многих типов анализа.
 - В основе многих методов снижения размерности лежит SVD.
 
-##Что почитать
+## Что почитать
 * Legendre P., Legendre L. (2012) Numerical ecology. Second english edition. Elsevier, Amsterdam. Глава 2. Matrix algebra: a summary.
 
 # Not The End

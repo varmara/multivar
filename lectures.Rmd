@@ -148,17 +148,17 @@ install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
 
 ## 7. Основы матричной алгебры. SVD. (28 марта, ВХ)
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages("jpeg") -->
-<!-- ``` -->
+```{r eval=FALSE}
+install.packages("jpeg")
+```
 
 
 <!-- - Презентация [html](07_introduction_to_matrix_algebra_new.html) -->
-<!-- - [код R](07_introduction_to_matrix_algebra.R) -->
-<!-- - Данные [Матрица](data/face.rda)  -->
+- [код R](07_introduction_to_matrix_algebra.R)
+- Данные [Матрица](data/face.rda)
 
 
-<!-- [**Данные для самостоятельной работы**](07_matrix_algebra_task.html) -->
+[**Данные для самостоятельной работы**](07_matrix_algebra_task.html)
 
 
 ## 8. Анализ главных компонент (Principal Component Analysis, PCA) (4 апреля, МВ)
