@@ -186,33 +186,6 @@ qplot(Image_trans[,1], Image_trans[,2] ) +
 
 
 
-# Поворот изображения ##########################3
-
-load("data/face.rda")
-
-faceData
-
-library(reshape2)
-
-faceData_XY <- melt(faceData) ## Переводим матрицу в два вектора координат и вектор значений интенсивности заливки
-
-ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
-
-
-# Задание Поверните изображение на угол 30 градусов
-
-
-angle <-  30*pi/180 #Задаем угол поворота в радианах
-
-# Вращающая матрица
-  Rot <- matrix(c(cos(angle), sin(angle),
-                  -sin(angle), cos(angle)), nrow = 2)
-
-Image_rot <-   data.frame(t((Rot)  t(  )), faceData_XY[3]) #Надо заполнить пропуски
-
-ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
-
-
 
 
 
@@ -410,8 +383,52 @@ U %*% diag(D) %*% t(V)
 #' ##Решение
 
 
-#' ## Применение свойства сингулярных чисел в сжатии изображений
 
+
+
+
+
+
+
+#####################################################
+# Работа с изобажениями, как с матричными объектами #
+#####################################################
+
+################## Поворот изображения ##########################3
+
+
+load("data/face.rda")
+
+faceData
+
+library(reshape2)
+
+faceData_XY <- melt(faceData) ## Переводим матрицу в два вектора координат и вектор значений интенсивности заливки
+
+ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+
+
+# Задание: Поверните изображение на угол 30 и 90 градусов
+
+
+angle <-  30*pi/180 #Задаем угол поворота в радианах
+
+# Вращающая матрица
+Rot <- matrix(c(cos(angle), sin(angle),
+                -sin(angle), cos(angle)), nrow = 2)
+
+Image_rot <-   data.frame(t((Rot)  t(  )), faceData_XY[3]) #Надо заполнить пропуски
+
+ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
+
+
+# Задание: Проведите масштабирование полученного изображения
+
+
+
+
+
+################ Применение сингулярного разложения матриц  в сжатии изображений #########333
 
 load("data/face.rda")
 
