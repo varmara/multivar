@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -77,8 +77,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -94,7 +100,6 @@ body {
   padding-top: 65px;
   margin-top: -65px;
 }
-
 .section h2 {
   padding-top: 65px;
   margin-top: -65px;
@@ -114,6 +119,43 @@ body {
 .section h6 {
   padding-top: 65px;
   margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -135,18 +177,77 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -267,15 +368,17 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li><a href="index.html">О курсе</a></li>
         <li><a href="lectures.html">Презентации и данные</a></li>
-        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li>
+<!--/        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li> -->
+       <li><a href="resources.html">Ссылки и ресурсы</a></li>
+       <li><a href="coding_practices.html">Правила хорошего кода</a></li>
+<!--/
         <li class="dropdown">
           <a href="appendix" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Полезности<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
              <li><a href="supplement.html">Дополнительные темы</a></li>
-             <li><a href="resources.html">Ссылки и ресурсы</a></li>
-             <li><a href="coding_practices.html">Правила хорошего кода</a></li>
           </ul>
         </li>
+-->
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -303,11 +406,8 @@ x7 interorbital width<br />
 x8 braincase width<br />
 x9 crown length</p>
 <p>Вам необходимо восстановить эту матрицу, используя <a href="data/Eigen_wolv.csv">ее собственные значения</a> и соответствующие им <a href="data/U_wolv.csv">собственные векторы</a>. После того, как матрица корреляций будет восстановлена, вам необходимо выделить группы наиболее скоррелированных признаков.</p>
-</div>
-<div id="svd----" class="section level1">
-<h1>SVD, как средство редукции информации</h1>
-<div id="-1.--" class="section level2 columns-2">
-<h2>Часть 1. Реконструкция изображения</h2>
+<p>#SVD, как средство редукции информации</p>
+<p>##Часть 1. Реконструкция изображения {.columns-2}</p>
 <p>Скачайте один из наборов матриц</p>
 <ul>
 <li>Первый набор из трех матриц</li>
@@ -327,19 +427,13 @@ x9 crown length</p>
 - с 1-го по 100-й<br />
 - с 1 го по 200-й<br />
 - Полный набор триплетов.</p>
-</div>
-<div id="-2.--" class="section level2 columns-2">
-<h2>Часть 2. Сжатие изображения</h2>
+<p>##Часть 2. Сжатие изображения {.columns-2}</p>
 <p>Сохраните изображение в виде файла .jpg.</p>
-<div class="figure">
-<img src="images/VM.jpg" />
-
-</div>
-<p>Импортируйте эту фотографию в среду R с помощью функции `readJPEG’ из пакета “jpg”. Из полученной трехмерной матрицы возьмите только данные по 1-му каналу.<br />
+<p><img src="images/VM.jpg" /></p>
+<p>Импортируйте эту фотографию в среду R с помощью функции `readJPEG’ из пакета “jpeg”. Из полученной трехмерной матрицы возьмите только данные по 1-му каналу.<br />
 Полученную двумерную матрицу подвергните сингулярному разложению.<br />
 Сожмите изображение, используя только часть сингулярных триплетов.<br />
 Оцените во сколько раз происходит сжатие исходного изображения.</p>
-</div>
 </div>
 
 <p><small>
@@ -370,7 +464,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
