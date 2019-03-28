@@ -14,7 +14,7 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 
 На основе данных датасета "Wolves" из пакета "candisc" была получена матрица корреляций между следующими параметрами черепа волков   
 
-x1 palatal length     
+x1 palatal_ _length     
 x2 postpalatal length     
 x3 zygomatic width      
 x4 palatal width outside first upper molars     
