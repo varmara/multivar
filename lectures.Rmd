@@ -153,7 +153,7 @@ install.packages("jpeg")
 ```
 
 
-- Презентация [html](07_introduction_to_matrix_algebra_new.html)
+- Презентация [html](07_introduction_to_matrix_algebra.html)
 - [код R](07_introduction_to_matrix_algebra.R)
 - Данные [Матрица](data/face.rda)
 

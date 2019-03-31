@@ -51,8 +51,11 @@ norm(t(Vec), type = "F") #Аналогчное решение
 #'
 #' ## Решение
 
+n <- c(2, 3, 1, 1, 2)
+power <- c(1200, 1300, 1100, 1500, 800)
 
 
+n %*% power
 
 
 
@@ -69,13 +72,15 @@ d <- c(1, -1)
 
 #' Аналитическое решение
 
+a %*% b
 
+a %*% c
 
+c %*% d
 
+dat <- matrix(c(0.5, 0, 0.5, 3), ncol = 2)
 
-
-
-
+norm(t(dat[ ,1 ]), type = "F")
 
 
 #' ## Нормализованные векторы
@@ -87,6 +92,11 @@ Vec
 
 #' ##Решение
 
+sqrt(sum(Vec^2))
+
+norm(t(Vec/norm(t(Vec), type = "F")), type = "F")
+
+
 
 
 
@@ -95,6 +105,8 @@ Vec
 #' Пусть, есть матрица
 A
 A %*% c(10, 10, 10)
+
+
 
 #' Но! если поменять местами множители, то будет ошибка
 c(10, 10, 10) %*% A
@@ -147,12 +159,15 @@ A %*% A
 # Какой из посредников выгоднее?
 #' ## Решение
 
-cost <- c()
+cost <- c(10, 20, 30, 40)
 
 retailer <- matrix(c(0.1, 0.15, 0.05, 0.05,
                      0.15, 0.15, 0.09, 0.01,
-                     0.2, 0.05, 0.1, 0.1 ),  = TRUE, ncol = )
+                     0.2, 0.05, 0.1, 0.1 ), byrow = TRUE, ncol = 4)
 
+cost %*% t(retailer)
+
+retailer %*% cost
 
 
 #' ## Матрицы позволяют преобразовывать системы векторов
@@ -166,12 +181,13 @@ x = c(2,3,4,5,6,7,7,7,6,5,4,3,2,2,2)
 
 Image <- cbind((x), (y))
 
+library(ggplot2)
 qplot(Image[,1], Image[,2] ) + geom_polygon(fill = "red") + coord_fixed()
 
 
 #' Поворот изображения на заданный угол
 
-angle <- 30*pi/180
+angle <- 180*pi/180
 
 Rot <- matrix(c(cos(angle), sin(angle),
                 -sin(angle), cos(angle)), nrow = 2)
@@ -225,8 +241,10 @@ Cent_M
 
 #' Вычислите ковариационную матрицу с помощью методов матричной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`
 
-Cov_M <-
+Cov_M <- t(Cent_M) %*% Cent_M/(nrow(M)-1)
 
+
+cov(M)
 
 diag(Cov_M)
 
@@ -256,6 +274,7 @@ set.seed(123456789)
 
 x <- rnorm(1000, 50, 10)
 y <- 10 * x + rnorm(1000, 0, 100)
+
 XY <-data.frame(x = x, y = y)
 qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
@@ -286,7 +305,7 @@ ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() +
 
 mXY_norm_cent <- as.matrix(XY_norm_cent)
 
-Sxy_norm_cent <-
+Sxy_norm_cent <- t(mXY_norm_cent) %*% mXY_norm_cent/(nrow(mXY_norm_cent) - 1)
 
 Sxy_norm_cent
 
@@ -319,8 +338,8 @@ PC2 <- data.frame(x = c(mean(XY_norm_cent$x),  U_scaled[1, 2]),
 
 ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") +
-  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar)  +
-  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar) +
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5) +
   coord_equal()
 
 
@@ -329,8 +348,8 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
 
 ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") +
-  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar)  +
-  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5,  arrow = ar) +
+  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5)  +
+  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5) +
   coord_equal() + geom_abline(slope = tan(acos(U[1,1])), color = "blue") +
   geom_abline(slope = tan(acos(U[1,1]) + acos(U[2,1]) + acos(U[2,2])), color = "blue")
 
@@ -383,7 +402,10 @@ U %*% diag(D) %*% t(V)
 #' ##Решение
 
 
+B_reconstructed <- U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5])
 
+
+qplot(as.vector(B), as.vector(B_reconstructed)) + geom_abline()
 
 
 
@@ -400,10 +422,13 @@ U %*% diag(D) %*% t(V)
 load("data/face.rda")
 
 faceData
+dim(faceData)
 
 library(reshape2)
 
 faceData_XY <- melt(faceData) ## Переводим матрицу в два вектора координат и вектор значений интенсивности заливки
+names(faceData_XY) <- c("X1", "X2", "value")
+
 
 ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 
@@ -411,13 +436,13 @@ ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gra
 # Задание: Поверните изображение на угол 30 и 90 градусов
 
 
-angle <-  30*pi/180 #Задаем угол поворота в радианах
+angle <-  -90*pi/180 #Задаем угол поворота в радианах
 
 # Вращающая матрица
 Rot <- matrix(c(cos(angle), sin(angle),
                 -sin(angle), cos(angle)), nrow = 2)
 
-Image_rot <-   data.frame(t((Rot)  t(  )), faceData_XY[3]) #Надо заполнить пропуски
+Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), faceData_XY[3]) #Надо заполнить пропуски
 
 ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
 
@@ -454,7 +479,8 @@ V <- SVD_face$v
 #' ##Рекоструируем изображение, используя только часть информации
 
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
-gg_face(reduction(23))
+
+gg_face(reduction(20))
 
 
 
