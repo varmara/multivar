@@ -163,22 +163,22 @@ install.packages("jpeg")
 
 ## 8. Анализ главных компонент (Principal Component Analysis, PCA) (4 апреля, МВ)
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages(c("cowplot", "geomorph")) -->
-<!-- ``` -->
+```{r eval=FALSE}
+install.packages(c("cowplot", "geomorph"))
+```
 
-<!-- - Презентация [html](08_PCA_new.html) -->
-<!-- - [код R](08_PCA_code.R) -->
-<!-- - Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv) -->
+<!-- - Презентация [html](08_PCA.html) -->
+- [код R](08_PCA.R)
+- Данные [jellyfish.csv](data/jellyfish.csv) | [protein.csv](data/protein.csv)
 
-<!-- **Данные для самостоятельной работы** -->
-<!-- - Ирисы --- iris{datasets} -->
+**Данные для самостоятельной работы**
+- Ирисы --- iris{datasets}
 
 <!-- (Геометрическаая) морфометрия -->
 
 <!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
-<!-- - [код R](08_PCA_geometric_morphometrics_code.R) -->
-<!-- - Данные [turtles.txt](data/turtles.txt) -->
+- [код R](08_PCA_geometric_morphometrics.R)
+- Данные [turtles.txt](data/turtles.txt)
 
 ## 9. Анализ избыточности (Redundancy analysis, RDA) (11 апреля, МВ)
 
