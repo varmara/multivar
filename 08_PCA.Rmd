@@ -551,10 +551,11 @@ scores(prot_pca, display = "species",
 
 ```{r, message=FALSE, fig.width = 7, fig.height=4, purl = FALSE}
 library(vegan)
-ord_nmds <- metaMDS(protein[, 3:ncol(protein)],
+sprotein <- scale(protein[, 3:ncol(protein)])
+ord_nmds <- metaMDS(sprotein,
                     distance = "euclidean",
-                    trace = 0)
-ef <- envfit(ord_nmds, protein[, 3:ncol(protein)])
+                    trace = 0, autotransform = F)
+ef <- envfit(ord_nmds, sprotein)
 plot(ord_nmds, display = "site", type = "t", cex = 0.8)
 plot(ef)
 ```
@@ -562,7 +563,7 @@ plot(ef)
 ## В данном случае, результаты PCA похожи на nMDS
 
 ```{r, compare-nmds, echo=FALSE, fig.height=6, fig.width=8, purl = FALSE}
-nMDS <- ggplot(as.data.frame(metaMDS(protein[, -c(1:2)], trace = 0)$points), aes(x=MDS1, y=MDS2)) + geom_text(aes(color = protein$region, label = protein$country)) + coord_equal()
+nMDS <- ggplot(as.data.frame(ord_nmds$points), aes(x=MDS1, y=MDS2)) + geom_text(aes(color = protein$region, label = protein$country)) + coord_equal()
 
 plot_grid(p_scores + guides(color=FALSE) + ggtitle("PCA"),
   nMDS + guides(color=FALSE) + ggtitle("nMDS"),
