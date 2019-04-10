@@ -76,7 +76,7 @@ anova(bf_rda, by = "axis")
 
 # # Выбор оптимальной модели ####################
 
-m1 <-rda(gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
+m1 <- rda(gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 m0 <- rda(gen ~ 1, data = env_geo)
 
 m <- ordistep(m0, scope = formula(m1), permutations = 99999)
@@ -108,7 +108,11 @@ bf_rda_full <- rda(gen ~ x + y + Altitude, data = env_geo)
 # - географией, но не со средой
 
 
-# # Задание для самостоятельной работы
+# # Задание для самостоятельной работы:
+# Проанализируйте один из датасетов:
+# - Зообентос рек Тасмании --- Grazing_Magierowski_et_al_2015.xls
+# - Морфометрия поссумов --- possum{DAAG}, possumsites{DAAG}
+
 # 1) полный RDA, значимость модели, предикторов, осей
 # 2) оптимальная модель RDA
 # 3) частный RDA среда + география
