@@ -3530,7 +3530,7 @@ vif(lm(gen$`0.4` ~ ., data = env_geo))</pre>
 <pre >##      Altitude Precipitation      Temp_Max      Temp_Min             x 
 ##         23.89          4.46          4.77         22.49          7.54 
 ##             y 
-##         11.25</pre>
+##         11.24</pre>
 
 <pre class = 'prettyprint lang-r'>vif(lm(gen$`0.4` ~ . -Temp_Min, data = env_geo))</pre>
 
@@ -3892,7 +3892,7 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##          Df Variance    F Pr(&gt;F)   
-## Model     3      372 4.15  0.007 **
+## Model     3      372 4.15 0.0071 **
 ## Residual 12      358               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -3914,9 +3914,9 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##               Df Variance    F Pr(&gt;F)   
-## Altitude       1      279 9.37 0.0019 **
-## Precipitation  1       72 2.43 0.0981 . 
-## Temp_Max       1       20 0.67 0.5170   
+## Altitude       1      279 9.37 0.0016 **
+## Precipitation  1       72 2.43 0.1029   
+## Temp_Max       1       20 0.67 0.5185   
 ## Residual      12      358               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -3937,8 +3937,8 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##               Df Variance    F Pr(&gt;F)
-## Altitude       1       12 0.41   0.68
-## Precipitation  1       71 2.39   0.10
+## Altitude       1       12 0.41   0.67
+## Precipitation  1       71 2.39   0.11
 ## Temp_Max       1       20 0.67   0.52
 ## Residual      12      358</pre>
 
@@ -3962,9 +3962,9 @@ summary(bf_rda) </pre>
 ## 
 ## Model: rda(formula = gen ~ Altitude + Precipitation + Temp_Max, data = env_geo)
 ##          Df Variance     F Pr(&gt;F)   
-## RDA1      1      352 11.82 0.0057 **
-## RDA2      1       18  0.62 0.8511   
-## RDA3      1        1  0.03 0.9980   
+## RDA1      1      352 11.82 0.0041 **
+## RDA2      1       18  0.62 0.8504   
+## RDA3      1        1  0.03 0.9971   
 ## Residual 12      358                
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
@@ -4012,22 +4012,22 @@ m0 &lt;- rda(gen ~ 1, data = env_geo)</pre>
 ## Start: gen ~ 1 
 ## 
 ##                 Df AIC    F Pr(&gt;F)   
-## + Altitude       1 101 8.69 0.0023 **
-## + Precipitation  1 102 7.30 0.0040 **
-## + Temp_Max       1 101 8.12 0.0042 **
+## + Altitude       1 101 8.69 0.0017 **
+## + Temp_Max       1 101 8.12 0.0033 **
+## + Precipitation  1 102 7.30 0.0036 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Step: gen ~ Altitude 
 ## 
 ##            Df AIC    F Pr(&gt;F)   
-## - Altitude  1 106 8.69 0.0022 **
+## - Altitude  1 106 8.69 0.0021 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ##                 Df   AIC    F Pr(&gt;F)  
-## + Precipitation  1  99.9 2.49  0.094 .
-## + Temp_Max       1 102.0 0.64  0.555  
+## + Precipitation  1  99.9 2.49   0.09 .
+## + Temp_Max       1 102.0 0.64   0.55  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
@@ -4036,7 +4036,7 @@ m0 &lt;- rda(gen ~ 1, data = env_geo)</pre>
 <pre class = 'prettyprint lang-r'>m$anova</pre>
 
 <pre >##            Df AIC    F Pr(&gt;F)   
-## + Altitude  1 101 8.69 0.0023 **
+## + Altitude  1 101 8.69 0.0017 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
@@ -4077,7 +4077,7 @@ m0 &lt;- rda(gen ~ 1, data = env_geo)</pre>
 
 <ol>
 <li><p>Множественная регрессия зависимости предикторов от ковариат.</p></li>
-<li><p>Остатки от этой регрессии — это то, что от ковариат не зависит — можно использовать в PCA в качестве предикторов (вместо исходных переменных среды).</p></li>
+<li><p>Остатки от этой регрессии — это то, что от ковариат не зависит — можно использовать в PCA в качестве предикторов (вместо исходных переменных).</p></li>
 </ol>
 
 <div class="footnote">
@@ -4093,9 +4093,9 @@ anova(bf_prda_1, permutations = 9999) ## Пермутационный тест</
 ## Number of permutations: 9999
 ## 
 ## Model: rda(formula = gen ~ Altitude + Condition(x + y), data = env_geo)
-##          Df Variance    F Pr(&gt;F)   
-## Model     1      213 9.94 0.0011 **
-## Residual 12      257               
+##          Df Variance    F Pr(&gt;F)    
+## Model     1      213 9.94 0.0009 ***
+## Residual 12      257                
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
 
@@ -4273,7 +4273,7 @@ comp</pre>
 ## Среда и география вместе    66.5  14.1
 ## Общая объяснимая инерция   472.6 100.0</pre>
 
-<p>Среда объясняет 50% общей изменчивости генетической структуры — очень много, но и география объясняет 30%. И только 21% объясняется совместным влиянием среды и географии</p>
+<p>Среда объясняет 45% общей изменчивости генетической структуры — очень много, но и география объясняет 41%. И только 14% объясняется совместным влиянием среды и географии</p>
 
 </article></slide><slide class=""><hgroup><h2>Take home messages</h2></hgroup><article  id="take-home-messages">
 
