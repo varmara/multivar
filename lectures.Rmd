@@ -199,19 +199,21 @@ install.packages("DAAG")
 
 ## 10. Корреспондентный анализ (Corespondence Analysis, CA) (18 апреля, ВХ)
 
-<!-- - Презентация [html](09_CA_and_CA_calculation.html) -->
-<!-- - [код R](09_CA_vs_PCA_CA_calculation.R) -->
-<!-- - Данные [macnally.xlsx](data/macnally.xlsx)  -->
+<!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
+- [код R](10_CA_calculation.R)
+- Данные [macnally.xlsx](data/macnally.xlsx)
 
-<!-- **Данные для самостоятельной работы** -->
 
-<!-- ```{r eval=FALSE} -->
-<!-- install.packages("ade4") -->
-<!-- ``` -->
 
-<!-- - растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv) -->
-<!-- - Крысы [bolger1.csv](data/bolger1.csv)  -->
-<!-- - Бабочки --- butterfly{ade4} -->
+**Данные для самостоятельной работы**
+
+```{r eval=FALSE}
+install.packages("ade4")
+```
+
+- растительные сообщества во франции La Mafragh (Annaba, Algérie)  [mafragh_species.csv](data/mafragh_species.csv)
+- Крысы [bolger1.csv](data/bolger1.csv)
+- Бабочки --- butterfly{ade4}
 
 ## 11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (25 апреля, ВХ)
 
