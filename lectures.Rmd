@@ -199,7 +199,7 @@ install.packages("DAAG")
 
 ## 10. Корреспондентный анализ (Corespondence Analysis, CA) (18 апреля, ВХ)
 
-<!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
+- Презентация [html](10_CA_and_CA_calculation.html)
 - [код R](10_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx)
 
