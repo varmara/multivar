@@ -35,8 +35,63 @@ data(mite)
 data(mite.env)
 data(mite.xy)
 head(mite[ , 1:6], 2)
+str(mite)
+
+
 str(mite.xy)
 str(mite.env)
+
+
+mite_pca <- rda(mite, scaling = TRUE)
+
+plot(mite_pca, scaling = "sites", display = "sites")
+
+screeplot(mite_pca, bstick = T)
+
+
+mite_mds <- metaMDS(log(mite + 1))
+
+plot(mite_mds)
+
+
+
+
+mite_ca <- cca(mite)
+
+plot(mite_ca)
+
+screeplot(mite_ca, bstick = T)
+
+
+peas <- matrix(c(99, 42, 29, 13), byrow = T, ncol = 2)
+
+Ft <- sum(peas)
+
+f_i <- apply(peas, 1, FUN = sum)
+
+f_j <- apply(peas, 2, FUN = sum)
+
+p_i <- f_i / Ft #Вектор вероятностей для формы
+p_j <- f_j / Ft #Вектор вероятностей для цвета
+
+q <- p_i %*% t(p_j)
+
+
+
+E <- q * Ft
+
+O <- peas
+
+
+sum((O-E)^2/E)
+
+chisq.test(x = O, p = q, correct = F)
+
+
+
+
+
+
 
 
 mite_cca <- cca(mite)
