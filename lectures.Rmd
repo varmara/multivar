@@ -226,7 +226,11 @@ install.packages("reshape2")
 
 
 <!-- - Презентация [html](11_1_CCA.html) -->
+<<<<<<< HEAD
 - [код R](11_CCA.R)
+=======
+- [код R](11_1_CCA.R)
+>>>>>>> 6533ff2dd0c4e61fbb2bbccac59ff757bd5e393a
 
 
 - Влияние выпаса скота на зообентос рек о.Тасмания [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)
