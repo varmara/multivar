@@ -96,14 +96,14 @@ grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights 
 
 # Что нужно проверить до начала анализа?
 
-mite_cca <- cca( )
+# SubsDens, WatrCont, Substrate, Topo
 
-str(mite.env)
+mite_cca <- cca()
 
 
 vif.cca()
 
-=======
+
 mite_cca <- cca( )
 
 mite_cca
@@ -167,6 +167,8 @@ nlevels(mite.env$Topo)
 
 betas <- solve(t(X) %*% diag(p_i) %*% X) %*% (t(X) %*% diag(p_i)^(1/2) %*% Q)
 
+
+
 #Матрица предсказанных значенй
 Q_pred <- diag(p_i)^(1/2) %*% X %*% betas
 
@@ -203,6 +205,9 @@ sum(D_res^2) + sum(D_pred^2)
 
 constr_CA_samples <- diag(p_i^(-1/2))%*% U_pred
 
+
+
+
 ggplot(as.data.frame(constr_CA_samples), aes(x=V1, y=V2)) +   geom_text(label = rownames(mite)) + labs(x = "CCA1", y = "CCA2") + theme_bw() + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2) + ggtitle("Результаты, полученные вручную")
 
 
@@ -218,12 +223,20 @@ constr_CA_species <- diag(p_j^(-1/2))%*% V_pred
 ggplot(as.data.frame(constr_CA_species), aes(x=V1, y=V2)) + geom_text(label = colnames(mite)) + labs(x = "CCA1", y = "CCA2") + theme_bw() + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2) + ggtitle("Результаты, полученные вручную")
 
 
+plot(mite_cca, display = "sp", tpe = "t", scaling = 2)
+
 
 summary(mite_cca)
 
 scores(mite_cca, display = "species", choices = 1:5)
 
 spenvcor(mite_cca)
+
+
+inert_comp <- inertcomp(mite_cca, display = c("species"), proportional = FALSE )
+
+inert_comp[order(inert_comp[,1]), ]
+
 
 
 #Триплоты
@@ -243,7 +256,7 @@ plot(mite_cca, scaling = 2,  display = c("sp", "cn"),  main = "biplot cca, scali
 plot(mite_cca, scaling = 1,  display = c("lc", "cn"),  main = "biplot cca, scaling 1")
 
 # Проверка значимости ординации
-anova(mite_cca)
+anova(mite_cca, permutations = 9999)
 
 anova(mite_cca, by="term")
 
