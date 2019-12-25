@@ -225,7 +225,7 @@ install.packages("reshape2")
 ```
 
 
-- Презентация [html](11_1_CCA.html)
+- Презентация [html](11_CCA.html)
 - [код R](11_CCA.R)
 
 
