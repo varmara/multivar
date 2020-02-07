@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -56,9 +56,7 @@ h6 {
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -72,7 +70,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -177,8 +174,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
 
 <style type="text/css">
@@ -223,6 +218,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -235,48 +231,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -290,6 +247,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -325,8 +288,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -341,6 +302,16 @@ div.tocify {
 }
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -393,22 +364,22 @@ div.tocify {
 </div>
 
 
-<div id="-" class="section level2">
+<div id="о-курсе" class="section level2">
 <h2>О курсе</h2>
-<div id="---" class="section level3">
+<div id="цель-и-задачи-курса" class="section level3">
 <h3>Цель и задачи курса</h3>
 <p>Цель курса — научить решать с точки зрения статистики различные типы исследовательских задач в биологии (сравнение и группировка объектов; различение и разделение групп; определение места объекта/группы в ранее описанной системе). После освоения материалов курса вы сможете критически оценивать корректность применения методов статистики в научных статьях, самостоятельно анализировать данные с использованием скриптов на языке статистического программирования R, представлять в наглядном виде результаты анализов, интерпретировать их и представлять в виде научного отчета.</p>
 </div>
-<div id="--" class="section level3">
+<div id="расписание-и-контакты" class="section level3">
 <h3>Расписание и контакты</h3>
-<p>1й и 2й парой в четверг, начиная с 14 февраля.</p>
+<p>С 11 февраля, 1–2й парой в понедельник (а в феврале еще и в четверг)</p>
 <p>Инструкторы:</p>
 <ul>
 <li>Варфоломеева Марина Александровна - marina.varfolomeeva[]gmail.com</li>
 <li>Хайтов Вадим Михайлович - polydora[]rambler.ru</li>
 </ul>
 </div>
-<div id="---" class="section level3">
+<div id="задания-дедлайны-и-оценки" class="section level3">
 <h3>Задания, дедлайны и оценки</h3>
 <ol style="list-style-type: decimal">
 <li><p>Тесты по каждой теме будут размещены на платформе Stepik. После мягкого дедлайна (1 неделя) за задания начисляется только половина баллов</p></li>
@@ -423,15 +394,15 @@ div.tocify {
 <li>60-69% =&gt; «удовлетворительно»; 70-79% =&gt; «хорошо»; 80% и больше =&gt; «отлично»</li>
 </ul>
 </div>
-<div id="-" class="section level3">
+<div id="пересдачи-заданий" class="section level3">
 <h3>Пересдачи заданий</h3>
 <p>По пропущенным темам будут дополнительные вопросы в тесте в конце курса.</p>
 </div>
 </div>
-<div id="--" class="section level2">
+<div id="ссылки-и-ресурсы" class="section level2">
 <h2>Ссылки и ресурсы</h2>
+<!-- - [Исходный код в RMarkdown](http://github.com/varmara/multivar) -->
 <ul>
-<li><a href="http://github.com/varmara/multivar">Исходный код в RMarkdown</a></li>
 <li><a href="resources.html">Другие ресурсы и книги для изучения R и статистики</a></li>
 </ul>
 <!--
@@ -462,6 +433,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
