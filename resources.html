@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -56,9 +56,7 @@ h6 {
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -72,7 +70,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -177,8 +174,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
 
 <style type="text/css">
@@ -223,6 +218,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -235,48 +231,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -290,6 +247,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -325,8 +288,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -341,6 +302,16 @@ div.tocify {
 }
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -393,7 +364,7 @@ div.tocify {
 </div>
 
 
-<div id="r--" class="section level2">
+<div id="r-базовые-знания" class="section level2">
 <h2>R — базовые знания</h2>
 <ul>
 <li><a href="https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf">Cheat-sheet по RStudio</a> от <a href="https://www.rstudio.com">RStudio</a></li>
@@ -402,7 +373,7 @@ div.tocify {
 <li><a href="https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-import-cheatsheet.pdf">Data import cheat-sheet</a></li>
 </ul>
 </div>
-<div id="r-" class="section level2">
+<div id="r-графика" class="section level2">
 <h2>R-графика</h2>
 <ul>
 <li><a href="http://www.cookbook-r.com/">Cookbook for R</a> — сайт <a href="http://www.amazon.com/gp/product/0596809158/ref=as_li_tf_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0596809158&amp;linkCode=as2&amp;tag=cooforr09-20">книги Winston Chang</a></li>
@@ -412,11 +383,16 @@ div.tocify {
 <li><a href="http://sape.inf.usi.ch/quick-reference/ggplot2/shape">ggplot2 Quick reference: shape</a></li>
 </ul>
 </div>
-<div id="---r" class="section level2">
-<h2>Многомерная статистика на R</h2>
-<p>Раздел в разработке</p>
+<div id="многомерная-статистика-в-т.ч.-на-r" class="section level2">
+<h2>Многомерная статистика (в т.ч. на R)</h2>
+<ul>
+<li>Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth.</li>
+<li><strong>Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.</strong></li>
+<li><strong>Legendre P., Legendre L. (2012) Numerical ecology.</strong></li>
+<li><strong>Zuur, A. F., Ieno, E. N., Smith, G. M. (2007) Analysing Ecological Data. Springer</strong></li>
+</ul>
 </div>
-<div id="--r" class="section level2">
+<div id="статистика-на-r" class="section level2">
 <h2>Статистика на R</h2>
 <ul>
 <li>Кабаков Р.И. R в действии. Анализ и визуализация данных на языке R. М.: ДМК Пресс, 2014</li>
@@ -427,7 +403,7 @@ div.tocify {
 <li><strong>Zuur, A., Ieno, E.N. and Smith, G.M., 2007. Analyzing ecological data.</strong> Springer Science &amp; Business Media.</li>
 </ul>
 </div>
-<div class="section level2">
+<div id="статистика" class="section level2">
 <h2>Статистика</h2>
 <ul>
 <li>Гланц, С., 1998. Медико-биологическая статистика. М., Практика.</li>
@@ -459,6 +435,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

@@ -20,9 +20,12 @@ title: Ресурсы по R и статистике
 - [ggplot2 Quick reference: shape](http://sape.inf.usi.ch/quick-reference/ggplot2/shape)
 
 
-## Многомерная статистика на R
+## Многомерная статистика (в т.ч. на R)
 
-Раздел в разработке
+- Clarke, K. R., Gorley R. N. (2006) PRIMER v6: User Manual/Tutorial. PRIMER-E, Plymouth.
+- __Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.__
+- __Legendre P., Legendre L. (2012) Numerical ecology.__
+- __Zuur, A. F., Ieno, E. N., Smith, G. M. (2007) Analysing Ecological Data. Springer__
 
 ## Статистика на R
 
