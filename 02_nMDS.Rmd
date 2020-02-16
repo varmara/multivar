@@ -368,9 +368,12 @@ $$ Stress(1) = \sqrt{\frac{\sum_{h < i}{(d_{h,i} - \hat d_{h,i})^2}}{\sum_{h < i
 
 ## Симбионты мидий
 
-Данные можно скачать [с сайта Pangaea](https://doi.pangaea.de/10.1594/PANGAEA.870537?format=textfile)
+[Krapivin et al. 2018](https://doi.org/10.3354/dao03259)
 
-[Krapivin 2017](https://doi.org/10.1594/PANGAEA.870537), [Krapivin et al. 2018](https://doi.org/10.3354/dao03259)
+<img src="images/Krapivin et al.2018.png" width="900">
+
+Данные можно скачать [с сайта Pangaea](https://doi.pangaea.de/10.1594/PANGAEA.870537?format=textfile) ([Krapivin 2017](https://doi.org/10.1594/PANGAEA.870537))
+
 
 ## Открываем данные
 
@@ -540,7 +543,7 @@ gg_ord_mus_sp
 
 Модель вот такого вида:
 
-$y_i = \beta_1 \text{NMDS1}_i + \beta_2 \text{NMDS2}_i + \varepsilon_i`$
+$y_i = \beta_1 \text{NMDS1}_i + \beta_2 \text{NMDS2}_i + \varepsilon_i$
 
 Значимость зависимости оценивается при помощи пермутационного теста (это позволяет работать в ситуации, когда неполностью выполнены условия применимости).
 
@@ -568,6 +571,8 @@ ef$vectors
 ```{r}
 ef$factors
 ```
+
+<br/><br/><br/>
 
 - Колонки `MDS1` и `MDS2` содержат координаты центроидов для дискретных факторов  (т.е. положение центра облака точек, относящихся к категории фактора).
 - `r2` -- $R^2$ из регресcионного анализа.    
@@ -651,7 +656,7 @@ summary(os_Age)
 ## Для ggplot-графика понадобится добыть данные о контурах
 
 ```{r}
-fortify.ordisurf <- function(model) {
+fortify_ordisurf <- function(model) {
   # Fortifies an object of class ordisurf to produce 
   # a dataframe of contour coordinates 
   # for subsequent plotting in ggplot.
@@ -661,7 +666,7 @@ fortify.ordisurf <- function(model) {
   return(na.omit(xyz))
 }
 
-ord_mus_os <- fortify.ordisurf(os_Age)
+ord_mus_os <- fortify_ordisurf(os_Age)
 head(ord_mus_os, 4)
 ```
 
@@ -701,8 +706,9 @@ ggplot(data = ord_mus_pt, aes(x = NMDS1, y = NMDS2)) +
   geom_text(data = ord_mus_ef[f_vect, ], 
             colour = "blue", size = 6,
             aes(label = Label, hjust = 1.1, vjust = 0.7)) +
-  guides(fill = guide_legend(override.aes = list(shape = 22))) +
-  labs(colour = "Age")
+  guides(fill = guide_legend(override.aes = list(shape = 22, alpha = 1))) +
+  labs(colour = "Age") +
+  coord_fixed() 
 ```
 
 

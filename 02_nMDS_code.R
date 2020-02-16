@@ -63,8 +63,9 @@ ordiplot(wcmdscale(d = D, k = 2), type = "t")
 op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
 spb_ord <- metaMDS(D)
 ordiplot(spb_ord, type = "t")
+par(op)
 
-# >- Что странного в этой карте?
+# >- Что странного в этих картах?
 
 
 
@@ -73,16 +74,24 @@ ordiplot(spb_ord, type = "t")
 
 
 # Реальные расстояния
-obs_dist <- D %>% tidy() %>% rename("observed" = "distance")
+obs_dist <- D %>%
+  tidy() %>%
+  rename("observed" = "distance")
 # Расстояния на ординации
-ord_dist <- vegdist(spb_ord$points, method = "euclidean") %>% tidy() %>% rename("nmds" = "distance")
+ord_dist <- spb_ord$points %>%
+  vegdist(method = "euclidean") %>%
+  tidy() %>%
+  rename("nmds" = "distance")
 # Все вместе (отсортированное)
-distances <- merge(obs_dist, ord_dist) %>% arrange(observed)
+distances <- merge(obs_dist, ord_dist) %>%
+  arrange(observed)
 
 distances
 
-# график зависимости расстояний между точками на ординации и соответствующих им значений коэффициентов различия в исходном пространстве
-ggplot(distances, aes(x = observed, y = nmds)) + geom_point() + xlab("Observed dissimialrity") + ylab("Ordination distance")
+# график зависимости расстояний между точками на ординации и соответствующих им
+# значений коэффициентов различия в исходном пространстве
+ggplot(distances, aes(x = observed, y = nmds)) + geom_point() +
+  xlab("Observed dissimialrity") + ylab("Ordination distance")
 
 
 # ## Диаграмма Шепарда
@@ -110,10 +119,12 @@ str(dat)
 # ## Приводим в порядок названия переменных
 
 colnames(dat) # Было
-
+# удаляем мешающие точки в названиях столбцов
 colnames(dat) <- gsub("[.]", replacement = "", colnames(dat))
-dat <- rename(dat, L = "MedulisLshellmm", Age = "Medulisagea")
-
+# переименовываем нужные переменные
+dat <- dat %>%
+  rename(L = "MedulisLshellmm",
+         Age = "Medulisagea")
 colnames(dat) # Стало
 
 # ## Приводим в порядок данные
@@ -121,7 +132,8 @@ colnames(dat) # Стало
 # Делаем сайт фактором
 dat$Site <- factor(dat$Site, levels = c(2, 3, 1), labels = c("G","L","S"))
 
-# Сливаем редкие виды в одну категорию
+# Сливаем редкие виды в одну категорию (кроме трематод)
+colSums(dat[, 10:23])
 f_remove <- c("Nematoda", "Microsetella", "Copepoda",
               "Chironomidae", "Halacaridae", "Jaeraspp",
               "Ostrac")
@@ -155,7 +167,7 @@ env <- dat[, c("Zone", "Site", "L", "Age")] # свойства мидий-хоз
 #
 # Вычислите стресс для получившейся ординации.
 #
-# Нарисуйте простейший график.
+# Нарисуйте простейший график при помощи функции ordiplot().
 
 # ord_mus <-
 
@@ -276,7 +288,7 @@ summary(os_Age)
 
 # ## Для ggplot-графика понадобится добыть данные о контурах
 
-fortify.ordisurf <- function(model) {
+fortify_ordisurf <- function(model) {
   # Fortifies an object of class ordisurf to produce
   # a dataframe of contour coordinates
   # for subsequent plotting in ggplot.
@@ -286,7 +298,7 @@ fortify.ordisurf <- function(model) {
   return(na.omit(xyz))
 }
 
-ord_mus_os <- fortify.ordisurf(os_Age)
+ord_mus_os <- fortify_ordisurf(os_Age)
 head(ord_mus_os, 4)
 
 # ## ggplot2 версия графика с поверхностью, найденной `ordisurf()`
@@ -317,7 +329,8 @@ ggplot(data = ord_mus_pt, aes(x = NMDS1, y = NMDS2)) +
   geom_text(data = ord_mus_ef[f_vect, ],
             colour = "blue", size = 6,
             aes(label = Label, hjust = 1.1, vjust = 0.7)) +
-  guides(fill = guide_legend(override.aes = list(shape = 22))) +
+  guides(fill = guide_legend(override.aes = list(shape = 22, alpha = 1))) +
+  coord_fixed() +
   labs(colour = "Age")
 
 
