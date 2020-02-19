@@ -65,9 +65,10 @@ data(varechem)
 
 
 ## Задание
-1. Постройте ординацию описаний растительности в осях MDS.
-2. Вычислите величину стресса
-3. Раскрасьте точки в соответствии с концентрацией Al
+
+1. Испрользуя средства пакета "ggplot2", постройте ординацию описаний растительности в осях MDS.
+2. Раскрасьте точки в соответствии с концентрацией Al.
+3. На диаграмме приведите  величину стресса для данной ординации    
 
 Hint. В качестве меры различия используйте коэффициент Брея-Куртиса
 
@@ -102,17 +103,24 @@ library(ggplot2)
 ggplot(veg_MDS, aes(x = MDS1, y = MDS2, 
                     fill = varechem$Al))  +
   geom_point(shape=21, size =4)+
+  ggtitle(paste("Stress = ", round(veg_ord$stress, 2))) + 
   theme_bw() +
   theme(legend.position = "bottom") +
   labs(fill = "Aluminium concentration") +
-  scale_fill_gradient(high = "red", low = "yellow")
+  scale_fill_gradient(high = "red", low = "yellow") 
 
 ```
 :::
 
 <!-- :::::::::::::: -->
 
-## Анализ связи с переменными c помощью функции envfit() {.columns-2 .smaller}
+## Анализ связи с переменными c помощью функции envfit() 
+
+**Задание**: Постройте рисунок, который будет отражать связь полученной ординации с изученными переменными среды (датасет `varechem`)
+
+
+## Решение {.columns-2 .smaller}
+
 
 
 ::: {.column}
@@ -132,10 +140,21 @@ plot(env_fit)
 :::
 
 
-## Анализ связи с переменными c помощью функции ordisurf() {.columns-2 .smaller}
+
+## Анализ связи с переменными c помощью функции ordisurf() 
+
+**Задание**: Постройте рисунок, который будет отражать связь полученной ординации с концентрацией Mn и Al 
+
+
+
+## Решение {.columns-2 .smaller}
+
+
+
 
 ::: {.column}
-```{r, echo=FALSE, results='hide', fig.height=5 , fig.width=5, fig.align='center'}
+
+```{r, echo=TRUE, results='hide', fig.height=5 , fig.width=5, fig.align='center', eval=FALSE}
 env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
 plot(veg_ord, display = "site")
 plot(env_fit2, col = "red")
@@ -145,7 +164,18 @@ ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
 :::
 
 
+
 ::: {.column}
+
+```{r, echo=FALSE, results='hide', fig.height=5 , fig.width=5, fig.align='center'}
+env_fit2 <- envfit(veg_ord ~ Al + Mn, data = varechem)
+plot(veg_ord, display = "site")
+plot(env_fit2, col = "red")
+ordisurf(veg_ord, varechem$Al, add = TRUE, col="blue")
+ordisurf(veg_ord, varechem$Mn, add = TRUE, col="green")
+```
+
+
 **Вопрос:**   
 Сможем ли мы на основе данных, полученных с помощью функций `envfit()` или `ordisurf()`, построить оптимальную модель, описывающую связь структуры сообществ и параметров среды?
 :::
@@ -388,7 +418,7 @@ p_perm <- length(tperm[tperm >= t_initial] | tperm[tperm <= -t_initial] ) / Nper
 
 Сравним его с уровнем значимости, вычисленным с помощью параметрического t-критерия p=`r t$p.value`
 
-Они оба близки и оба выявляют достоверные различия!
+Они оба близки и оба выявляют значимые различия!
 
 
 
