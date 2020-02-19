@@ -20,54 +20,47 @@ sum(is.na(varespec))
 
 
 # Код для построения ординаци в осях nMDS
-log_varespec <- decostand(varespec, method = "log")
+log_varespec <- decostand( = "log")
 
-veg_ord <- metaMDS(log_varespec, autotransform = FALSE)
+veg_ord <- metaMDS(, autotransform = )
 
-plot(veg_ord)
+plot()
 
-stressplot(veg_ord)
+stressplot()
 
-veg_ord$stress
 
-scores(veg_ord, display = "sites")
-scores(veg_ord, display = "species")
+scores(, display = "sites")
 
-mds_points <- as.data.frame(scores(veg_ord, display = "sites"))
+mds_points <- as.data.frame(scores(, display = ))
 
-ggplot(mds_points, aes(x = NMDS1, y = NMDS2)) + geom_point(aes(color = varechem$Al), size = 4) + scale_color_gradient(low = "yellow", high = "red")
+ggplot(mds_points, aes(x = , y = )) + geom_point(, size = 4) + scale_color_gradient(low = "yellow", high = "red")
 
 
 
 
 
 # Применяем функцию envfit()
-env_fit <- envfit(veg_ord ~ ., data = varechem)
+env_fit <- envfit( ~ ., data = )
 
 env_fit
 
 
 # Визуализация результатов
-ordiplot(veg_ord, display = "site")
-plot(env_fit)
+ordiplot(, display = )
+plot()
 
 
 # Анализ связи с переменными c помощью функции `ordisurf()`
 
-<<<<<<< HEAD
-env_fit2 <- envfit()
-=======
-env_fit2 <- envfit(veg_ord ~ N, data = varechem)
->>>>>>> a918506dd7dd35f63c5419f434544ceccbbbf314
-plot(veg_ord, display = "site")
-plot(env_fit2, col = "red")
 
-ordisurf(veg_ord, varechem$N,
+plot(, display = "")
+
+ordisurf( , ,
          add = TRUE, col="blue")
-ordisurf(veg_ord, varechem$Mn,
+ordisurf(, ,
          add = TRUE, col="green")
-env_fit3 <- envfit(veg_ord ~ Mn, data = varechem)
-plot(env_fit3, col = "yellow")
+
+
 
 # Задание: Отразите связь ординации растительности со значениями концентрации гумуса.
 
@@ -86,16 +79,6 @@ qplot(x, y) + geom_smooth(se = F, method = "lm")
 
 
 
-R <- round(cor(x, y, method = "pearson"), 3)
-
-
-cor.test(x, y, method = "pearson")
-
-
-
-
-
-
 
 
 xy <- data.frame (x, y)
@@ -104,6 +87,19 @@ mant + geom_point(size=3) + xlab ("Biological dissimilarity") + ylab ("Chemical 
 
 
 
+R <- round(cor(x, y, method = "pearson"), 3)
+
+
+cor.test(x, y, method = "pearson") # Это неправильное действие! Так елать нельзя!
+
+
+
+
+
+
+
+
+## Пермутационный метод
 
 set.seed(12345)
 
@@ -169,7 +165,7 @@ p_value <- mean(tperm <= -t_initial |tperm >= t_initial )
 
 
 
-
+# Пермутационная оценка значимсоти корреляции
 library(coin)
 
 library(MASS)
@@ -194,6 +190,8 @@ spearman_test( V1 ~ V2, data = dat, distribution = approximate(B=99999))
 
 
 
+# Пермутационная оыенка значимости мантеловской корреляции
+
 mant <- mantel(dist_com, dist_chem, method="pearson", permutations = 9999)
 mant
 
@@ -210,13 +208,9 @@ dist_geo <- vegdist(geo[, -1], method = "euclidean")
 mantel_partial <- mantel.partial(dist_com, dist_chem, dist_geo, method = "pearson", permutations = 9999)
 mantel_partial
 
-ncol(varechem)
 
 
-
-2^ncol(varechem) - 1
-
-
+# Модельные матрицы
 
 com <- read.csv("data/mussel_beds.csv",
                 sep=';', header = T)
@@ -225,15 +219,19 @@ ascam <- read.csv("data/ASCAM.csv",
                   sep=';', header = T)
 
 
-dist_com <- vegdist(log(com[com$Bank == "Vor2",-c(1:3)]+1))
+dist_com <- vegdist()
 
-dist_ascam <- vegdist(logascam[ascam$Bank == "Vor2",-c(1:2)], method = "euclidean")
+dist_ascam <- vegdist(, method = "euclidean")
 
 
 mantel(dist_com, dist_ascam)
 
 
 
+
+## Задание
+# 1. Выясните есть ли многолетний градиент в динамике размерной струтуры и структуры сообщества на банке Vor4.
+# 2. Оцените связь между размерной структурой мидий и структурой сообщества.
 
 
 
@@ -242,14 +240,14 @@ gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
 gradient_model
 
 ## Тестируем гипотезу о наличии градиента с помощью теста Мантела
-dist_vor2_com <- vegdist(vor2_log_com, method = "bray")
-dist_vor2_ascam <- vegdist(vor2_log_ascam, method = "euclidean")
+dist_vor2_com <- vegdist(, method = "bray")
+dist_vor2_ascam <- vegdist(, method = "euclidean")
 
 ### 1) Наличие градиента в структуре сообщества
-mantel(dist_com, gradient_model)
+mantel( , )
 
 ### 2) Наличие градиента в размерной структуре мидий
-mantel(dist_ascam, gradient_model)
+mantel( , )
 
 ## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
 
@@ -257,13 +255,9 @@ mantel(dist_ascam, gradient_model)
 mantel(dist_vor2_com, dist_vor2_ascam)
 
 ### Более корректное решение
-mantel.partial(dist_vor2_com, dist_vor2_ascam, gradient_model)
+mantel.partial( ,  ,  )
 
 
-
-## Задание
-# 1. Выясните есть ли многолетний градиент в динамике размерной струтуры и структуры сообщества на банке Vor4.
-# 2. Оцените связь между размерной структурой мидий и структурой сообщества.
 
 
 
@@ -295,6 +289,8 @@ mantel.partial(dist_ascam, cycl_model, gradient_model)
 
 # Функция `bioenv()`из пакета `vegan`
 
+
+# Количество комбинаций
 2^ncol(varechem)-1
 
 
@@ -348,6 +344,12 @@ hist + geom_histogram (bin=0.1, fill="blue", colour="black")+geom_vline(xinterce
 
 # dev.off()
 #------------------------------------
+
+
+
+
+# Самостоятельная работа
+
 
 
 read.table(data/mafragh_species.csv, header = TRUE)
