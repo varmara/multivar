@@ -12,52 +12,56 @@ data(varespec)
 data(varechem)
 
 head(varespec)
+str(varespec)
+
 
 head(varechem)
+str(varechem)
+
 
 sum(is.na(varechem))
 sum(is.na(varespec))
 
 
 # Код для построения ординаци в осях nMDS
-log_varespec <- decostand( = "log")
+log_varespec <- decostand(varespec, method = "log")
 
-veg_ord <- metaMDS(, autotransform = )
+veg_ord <- metaMDS(log_varespec, autotransform = FALSE)
 
-plot()
+plot(veg_ord)
 
-stressplot()
-
-
-scores(, display = "sites")
-
-mds_points <- as.data.frame(scores(, display = ))
-
-ggplot(mds_points, aes(x = , y = )) + geom_point(, size = 4) + scale_color_gradient(low = "yellow", high = "red")
+stressplot(veg_ord)
 
 
+scores(veg_ord, display = "sites")
+
+mds_points <- as.data.frame(scores(veg_ord, display = "sites"))
+
+ggplot(mds_points, aes(x = NMDS1, y = NMDS2)) + geom_point(aes(color = varechem$Al), size = 4) + scale_color_gradient(low = "yellow", high = "red") + theme_bw() + theme(legend.position = "bottom") + labs(color = "Концентрация алюминия") + ggtitle(paste("Stress = ", round(veg_ord$stress, 2) ))
 
 
+
+ordiplot(veg_ord, display = "sites")
 
 # Применяем функцию envfit()
-env_fit <- envfit( ~ ., data = )
+env_fit <- envfit(veg_ord ~ ., data = varechem)
 
 env_fit
 
 
 # Визуализация результатов
-ordiplot(, display = )
-plot()
+ordiplot(veg_ord, display = "sites")
+plot(env_fit)
 
 
 # Анализ связи с переменными c помощью функции `ordisurf()`
 
 
-plot(, display = "")
+ordiplot(veg_ord, display = "sites")
 
-ordisurf( , ,
-         add = TRUE, col="blue")
-ordisurf(, ,
+ordisurf( veg_ord, varechem$Al,
+         add = TRUE, col="blue", method = "REML")
+ordisurf(veg_ord,varechem$Mn,
          add = TRUE, col="green")
 
 
@@ -69,7 +73,7 @@ ordisurf(, ,
 
 
 # Вычисление мантеловской корреляции
-dist_com <- vegdist(varespec)
+dist_com <- vegdist(varespec, method = "bray")
 dist_chem <- vegdist(varechem, method = "euclidean")
 
 x <- as.vector(dist_com)
@@ -90,7 +94,7 @@ mant + geom_point(size=3) + xlab ("Biological dissimilarity") + ylab ("Chemical 
 R <- round(cor(x, y, method = "pearson"), 3)
 
 
-cor.test(x, y, method = "pearson") # Это неправильное действие! Так елать нельзя!
+cor.test(x, y, method = "pearson") # Это неправильное действие! Так делать нельзя!
 
 
 
@@ -218,13 +222,36 @@ com <- read.csv("data/mussel_beds.csv",
 ascam <- read.csv("data/ASCAM.csv",
                   sep=';', header = T)
 
+library(dplyr)
 
-dist_com <- vegdist()
+log_com <- com %>% filter(Bank == "Vor2") %>% select(-c(1:3)) %>% decostand(,method = "log")
 
-dist_ascam <- vegdist(, method = "euclidean")
+
+log_ascam <- ascam %>% filter(Bank == "Vor2") %>% select(-c(1:2)) %>% decostand(,method = "log")
+
+ord_log_com <- metaMDS(log_com, autotransform = F)
+
+mds_com <- as.data.frame(scores(ord_log_com, display = "sites"))
+
+mds_com$Year <- com %>% filter(Bank == "Vor2") %>% select(Year)
+
+str(mds_com)
+
+ggplot(mds_com, aes(x = NMDS1, y = NMDS2)) + geom_path() + geom_text(label = as.character(mds_com$Year) )
+
+
+
+dist_com <- vegdist(log_com, method = "bray")
+
+dist_ascam <- vegdist(log_ascam, method = "euclidean")
 
 
 mantel(dist_com, dist_ascam)
+
+
+
+
+
 
 
 
@@ -244,10 +271,12 @@ dist_vor2_com <- vegdist(, method = "bray")
 dist_vor2_ascam <- vegdist(, method = "euclidean")
 
 ### 1) Наличие градиента в структуре сообщества
-mantel( , )
+mantel(dist_com, gradient_model)
+
+
 
 ### 2) Наличие градиента в размерной структуре мидий
-mantel( , )
+mantel( dist_ascam, gradient_model)
 
 ## Прослеживается ли связь между размерной структурой мидий и структурой сообщества?
 
@@ -255,7 +284,7 @@ mantel( , )
 mantel(dist_vor2_com, dist_vor2_ascam)
 
 ### Более корректное решение
-mantel.partial( ,  ,  )
+mantel.partial(dist_ascam , dist_com , gradient_model )
 
 
 
@@ -284,7 +313,7 @@ mantel.partial(dist_ascam, cycl_model, gradient_model)
 
 
 
-
+str(varechem)
 
 
 # Функция `bioenv()`из пакета `vegan`
