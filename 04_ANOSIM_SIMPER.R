@@ -20,18 +20,18 @@ str(com)
 library(vegan)
 library(ggplot2)
 
-log_com <- decostand(com[,-c(1:3)],  method = "log")
+log_com <- decostand()
 
-ord_log_com <- metaMDS(log_com, distance = "bray", k=2,  autotransform = F)
+ord_log_com <- metaMDS(, distance = "bray", k=2)
 
-MDS <- data.frame(ord_log_com$points)
+MDS <- data.frame()
 
-ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Mussel_size)) +
+ggplot(MDS, aes(x = MDS1, y = MDS2, fill = )) +
   geom_point(shape = 21, size = 4) +
-  scale_fill_manual(values = c("red", "blue")) + ggtitle(paste("Stress = ", round(ord_log_com$stress, 2))) + theme_bw()
+  scale_fill_manual() + ggtitle(paste("Stress = ", round(, 2))) + theme_bw()
 
 
-ord_log_com$stress
+
 
 
 
@@ -45,13 +45,14 @@ ord_log_com$stress
 # 2. Разверните полученную матрицу в вектор.
 # 3. На основе полученного вектора создайте вектор, содержащий ранги расстояний.
 
-dist_com <- vegdist(log_com, method = "bray")
+dist_com <- vegdist( , method = "bray")
 #
 # write.table(as.data.frame(dist_com), "clipboard", sep = "\t", row.names = F)
 
-unfold_dist_com <- as.vector(dist_com)
+unfold_dist_com <-
 
-rank_dist_com <- rank(unfold_dist_com)
+
+rank_dist_com <-
 
 
 
@@ -60,7 +61,7 @@ rank_dist_com <- rank(unfold_dist_com)
 #
 #   4. Создайте треугольную матрицу `dummy_dist`, той же размерности, что и матрица `dist_com`, в которой `0` будет с стоять в тех ячейках, которые соответствуют межгрупповым расстояниями, а   `1` -- внутригрупповым.
 
-dummy_dist <- dist(as.numeric(com$Mussel_size))
+dummy_dist <- dist()
 
 dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
 
@@ -75,15 +76,14 @@ dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
 dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
 
 library(dplyr)
-library(doBy)
 
-summaryBy(rank ~ dummy, FUN = mean, data = dists)
 
-mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
+mean_dists <- dists %>% group_by() %>% summarize(rank_mean = )
 
 n <- nrow(log_com)
 
-R_glob <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n*(n-1)/4)
+R_glob <-
+
 
 ###
 
@@ -99,26 +99,27 @@ R_glob <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n*(n-1)/4)
 
 R_perm <- function(comm = log_com, group = com$Mussel_size){
   require(vegan)
-  dist_com <- vegdist(comm)
-  rank_dist_com <- rank(dist_com)
+
+  ##
+  ##
+
   dummy_dist <- dist(sample(as.numeric(group))) #Перемешиваем группы
-  dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
-  dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
-  require(dplyr)
-  mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
-  n <- nrow(log_com)
-  R_perm <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4)
-  R_perm
+  ##
+  ##
+  ##
+  ##
+  ##
+  R_p
 }
 
 
 R_perm()
 
-R_perms <- rep(NA, 10000)
 
-for(i in 1:10000) R_perms[i] <- R_perm()
 
-R_perms[10000] <- R_glob
+for(i in 1:10000) R_perms[i] <- R_perm(comm = log_com, group = com$Mussel_size)
+
+R_perms[10000] <-
 
 
 
@@ -128,11 +129,12 @@ R_perms[10000] <- R_glob
 # 10. Нанесите на нее полученное значение $R_{global}$.
 # 11. Вычислите уровень значимости.
 
-R_perms <- data.frame(R_perms)
+R_perms <- data.frame()
 
-Pl_our <- ggplot(R_perms, aes(x = R_perms)) + geom_histogram() + geom_vline(xintercept = R_glob) + xlim(-0.2, 0.2)
+Pl_our <- ggplot(R_perms, aes(x = R_perms)) + geom_histogram() + geom_vline(xintercept = ) + xlim(-0.2, 0.2)
 
-mean(R_perms >= R_glob)
+
+#P-value
 
 
 
@@ -146,7 +148,7 @@ com_anosim <- anosim(log_com,
 ## Задание
 # Изучите структуру объекта `com_anosim` и постройте частотное распределение значений $R_{global}$, полученных при каждом акте пермутации
 
-R_perms_vegan <- data.frame(vegan_R = com_anosim$perm)
+R_perms_vegan <- data.frame(vegan_R = )
 
 Pl_vegan<- ggplot(R_perms_vegan, aes(x = vegan_R)) + geom_histogram()+ geom_vline(xintercept = R_glob) + xlim(-0.2, 0.2)
 
@@ -156,9 +158,6 @@ library(gridExtra)
 grid.arrange(Pl_our, Pl_vegan)
 
 
-com_anosim
-
-plot(com_anosim)
 
 ## Ограничения (Assumptions) для применения ANOSIM
 
@@ -176,13 +175,13 @@ plot(com_anosim, main = "Dissimilarity ranks \n between and within classes")
 # + Проверьте условия применимости ANOSIM
 # + Проведите попарное сравнение всех банок
 
-ggplot(MDS, aes(x = MDS1, y = MDS2, fill = com$Bank)) +
+ggplot( , aes(x = MDS1, y = MDS2, fill = )) +
   geom_point(shape = 21, size = 4) +
   scale_fill_manual(values = c("red", "blue", "green")) +
   labs(fill = "Mussel beds") + ggtitle(paste("Stress = ", round(ord_log_com$stress, 3), sep = " "))
 
 
-bank_anosim <- anosim(log_com, grouping = com$Bank)
+bank_anosim <- anosim(log_com, grouping = )
 
 plot(bank_anosim)
 
@@ -220,25 +219,6 @@ summary (log_com_simper2)
 
 
 
+### Самостоятельная работа
 
 
-
-
-
-library(ade4)
-data(package = "ade4")
-
-data(chickenk)
-
-chickenk$Mortality
-
-
-chickenk$FarmStructure
-
-
-
-
-
-patch <- read.table("data/mussel_patches.csv", sep = ";", header = TRUE)
-
-str(patch)

@@ -54,17 +54,22 @@ theme_set(theme_bw())
 
 # ANOSIM: Analysis Of Similarity
 
-## Пример: Динамика сообществ мидиевых банок {.columns-2 . smaller}
+## Пример: Динамика сообществ мидиевых банок {.columns-2 .smaller}
 
 Существуют ли различия в сообществах мидиевых банок, сформированных старыми и молодыми мидиями (Khaitov, 2013)?
 
 <img src="images/musselbed.png" width="450" height="350" alt="Мидиевая банка">
 
-
+<br>
+<br>
+<br>
 ```{r, echo=TRUE}
 com <- read.csv("data/mussel_beds.csv", sep=';', header = T)
 ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
 ```
+
+<br>
+<br>
 
 `com` --- усредненные данные по обилию `r ncol(com[,-c(1:3)])` видов для 3 мидиевых банок (Vor2, Vor4, Vor5).         
 `ascam` --- (averaged size class abundance matrix) средние плотности поселения мидий разных размеров (`r ncol(ascam[, -c(1:2)])`] размерных классов) 
@@ -86,7 +91,7 @@ library(ggplot2)
 
 log_com <- log(com[,-c(1:3)] + 1)
 
-ord_log_com <- metaMDS(log_com, distance = "bray", k=2, trace = 0)
+ord_log_com <- metaMDS(log_com, distance = "bray", k=2, autotransform = F, trace = 0)
 MDS <- data.frame(ord_log_com$points)
 
 ```
@@ -196,19 +201,19 @@ dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
 
 
 ```{r}
-dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
+dists <- data.frame(rank_dist = rank_dist_com, dummy = as.vector(dummy_dist))
 
 library(dplyr)
 
-mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
+mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_mean = mean(rank_dist))
 
 n <- nrow(log_com)
 
-R_glob <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4) 
+R_glob <- (mean_dists$rank_mean[2] - mean_dists$rank_mean[1])/(n * (n - 1)/4) 
 ```
 
 
-Вопрос: Каков дальнейший ход процедуры `ANOSIM`?
+> Вопрос: Каков дальнейший ход процедуры `ANOSIM`?
 
 
 ## Пермутации
@@ -218,6 +223,9 @@ R_glob <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4)
 
 7. Напишите пользовательскую функцию (пусть она будет называться `R_perm`), которая пермутировала бы принадлежность каждого объекта к той или иной группе и вычисляла бы значение R-статистики для новой комбинации.
 8. Используя функцию `for()` вычислите 10000 значений  R-статистики и запишите их в вектор.
+
+
+Hint. Весь код для пользовательской функции почти такой же, как написали ранее.
 
 
 ## Решение
@@ -235,8 +243,8 @@ R_perm <- function(comm, group){
   require(dplyr)
   mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
   n <- nrow(log_com)
-  R_perm <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4) 
-  R_perm
+  R_p <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4) 
+  R_p
 } 
 
 
@@ -267,6 +275,7 @@ R_perms[10000] <- R_glob
 Pl_manual <- ggplot(data.frame(R_perms), aes(x = R_perms)) + 
   geom_histogram(binwidth = 0.01) + 
   geom_vline(xintercept = R_glob, linetype = 2) + xlim(-0.4, 0.4) 
+
 Pl_manual
 ```
 
@@ -480,11 +489,14 @@ summary (log_com_simper)
 
 $$Contr_i = \frac{|{y_{i,j}-y_{i,k}}|}{\sum{(y_{i,j}-y_{i,k})}}$$
 
-Величины $Contr_i$ далее усредняются для всех межгрупповых пар 
+
+$y_{i,j}-y_{i,k}$ - разность значений $i$-той переменной (вида) в объектах (пробах) $j$ и $k$
+
+Величины $Contr_i$ далее усредняются для всех межгрупповых пар $average$
 
 $sd$ - среднеквадратичное отклонение
 
-Отношение $Contr_i / sd$ характеризует дискриминирующую силу переменной
+Отношение $average/sd$ характеризует дискриминирующую силу переменной
 
 ## Задание
 
