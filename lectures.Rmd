@@ -120,7 +120,7 @@ install.packages("coin")
 install.packages("readxl")
 ```
 
-<!-- - Презентация [html](05_perMANOVA.html) -->
+- Презентация [html](05_perMANOVA.html)
 - [код R](05_perMANOVA.R)
 - Данные
     + [pesch.csv](data/pesch.csv)
