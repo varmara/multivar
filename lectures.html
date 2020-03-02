@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -98,7 +98,7 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -142,9 +142,7 @@ h6 {
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -158,7 +156,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -263,8 +260,6 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
 
 <style type="text/css">
@@ -309,6 +304,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -321,48 +317,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -376,6 +333,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -411,8 +374,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -427,6 +388,16 @@ div.tocify {
 }
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -479,7 +450,7 @@ div.tocify {
 </div>
 
 
-<div id="---.--13--" class="section level2">
+<div id="знакомство-с-многомерными-данными.-чт-13-февраля-вх" class="section level2">
 <h2>1. Знакомство с многомерными данными. (чт 13 февраля, ВХ)</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</a></code></pre></div>
 <ul>
@@ -500,7 +471,7 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="nmds-envfit-ordisurf--17--" class="section level2">
+<div id="nmds-envfit-ordisurf-пн-17-февраля-мв" class="section level2">
 <h2>2. nMDS, envfit, ordisurf (пн 17 февраля, МВ)</h2>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Чтение файлов</span></a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a>
@@ -521,7 +492,7 @@ div.tocify {
 <li><p><a href="02_nMDS_code.R">код R</a></p></li>
 <li><strong>Данные для карты</strong>
 <ul>
-<li><a href="data/dist_spb.xlsx" class="uri">data/dist_spb.xlsx</a></li>
+<li><a href="data/dist_spb.xlsx">data/dist_spb.xlsx</a></li>
 <li><a href="data/dist_spb_dat.RData">dist_spb_dat.RData</a></li>
 </ul></li>
 <li><strong>Данные о симбионтах мидий</strong> из работы <em>Krapivin, V. A., Bagrov, S. V., &amp; Varfolomeeva, M. A. (2018). Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of aquatic organisms, 130(2), 131-144.</em>
@@ -548,7 +519,7 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="---.----20--" class="section level2">
+<div id="связь-между-наборами-данных.-тест-мантела-чт-20-февраля-вх" class="section level2">
 <h2>3. Связь между наборами данных. Тест Мантела (чт 20 февраля, ВХ)</h2>
 <ul>
 <li>Презентация <a href="03_Mantel_correlation-based_methods.html">html</a></li>
@@ -576,7 +547,7 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="anosim-simper--27--" class="section level2">
+<div id="anosim-simper-чт-27-февраля-вх" class="section level2">
 <h2>4. ANOSIM, SIMPER (чт 27 февраля, ВХ)</h2>
 <ul>
 <li>Презентация <a href="04_ANOSIM_SIMPER.html">html</a></li>
@@ -599,22 +570,32 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="permanova--2--" class="section level2">
+<div id="permanova-пн-2-марта-мв" class="section level2">
 <h2>5. PERMANOVA (пн 2 марта, МВ)</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a></code></pre></div>
 <!-- - Презентация [html](05_perMANOVA.html) -->
-<!-- - [код R](05_perMANOVA.R) -->
-<!-- - Данные  -->
-<!--     + [pesch.csv](data/pesch.csv) -->
-<!--     + [simulated_data.csv](data/simulated_data.csv) -->
-<!-- **Данные для самостоятельной работы** -->
-<!-- - [Пояснения к датасетам и задание](05_perMANOVA_task.html) -->
-<!-- - __Влияние выпаса скота на зообентос рек о.Тасмания.__ Данные из работы *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
-<!--     + [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls) -->
-<!-- - __Гематология сонных ящериц _Tiliqua rugosa_.__ Данные из работы *Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.* -->
-<!--     + [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx) -->
+<ul>
+<li><a href="05_perMANOVA.R">код R</a></li>
+<li>Данные
+<ul>
+<li><a href="data/pesch.csv">pesch.csv</a></li>
+<li><a href="data/simulated_data.csv">simulated_data.csv</a></li>
+</ul></li>
+</ul>
+<p><strong>Данные для самостоятельной работы</strong></p>
+<ul>
+<li><p><a href="05_perMANOVA_task.html">Пояснения к датасетам и задание</a></p></li>
+<li><strong>Влияние выпаса скота на зообентос рек о.Тасмания.</strong> Данные из работы <em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em>
+<ul>
+<li><a href="data/Grazing_Magierowski_et_al_2015.xls">Grazing_Magierowski_et_al_2015.xls</a></li>
+</ul></li>
+<li><strong>Гематология сонных ящериц <em>Tiliqua rugosa</em>.</strong> Данные из работы <em>Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia’s cereal croplands, 2010, Version 1.0. <a href="http://doi.org/10.4227/05/537C5C5553F9E" class="uri">http://doi.org/10.4227/05/537C5C5553F9E</a>. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.</em>
+<ul>
+<li><a href="data/Sleepy%20lizard.xlsx">Sleepy lizard.xlsx</a></li>
+</ul></li>
+</ul>
 </div>
-<div id="---16--" class="section level2">
+<div id="кластерный-анализ-пн-16-марта-мв" class="section level2">
 <h2>6. Кластерный анализ (пн 16 марта, МВ)</h2>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</a></code></pre></div>
 <!-- - Презентация [html](06_cluster_analysis.html) -->
@@ -622,7 +603,7 @@ div.tocify {
 <!-- **Данные для самостоятельной работы** -->
 <!-- С прошлого занятия. -->
 </div>
-<div id="--.-svd.--23--" class="section level2">
+<div id="основы-линейной-алгебры.-svd.-пн-23-марта-вх" class="section level2">
 <h2>7. Основы линейной алгебры. SVD. (пн 23 марта, ВХ)</h2>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</a></code></pre></div>
 <!-- - Презентация [html](07_introduction_to_linear_algebra.html) -->
@@ -631,7 +612,7 @@ div.tocify {
 <!--     + [Матрица](data/face.rda) -->
 <!-- [**Данные для самостоятельной работы**](07_linear_algebra_task.html) -->
 </div>
-<div id="---principal-component-analysis-pca--30--" class="section level2">
+<div id="анализ-главных-компонент-principal-component-analysis-pca-пн-30-марта-мв" class="section level2">
 <h2>8. Анализ главных компонент (Principal Component Analysis, PCA) (пн 30 марта, МВ)</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</a></code></pre></div>
 <!-- - Презентация [html](08_PCA.html) -->
@@ -647,7 +628,7 @@ div.tocify {
 <!-- - Данные  -->
 <!--     + [turtles.txt](data/turtles.txt) -->
 </div>
-<div id="--redundancy-analysis-rda--6--" class="section level2">
+<div id="анализ-избыточности-redundancy-analysis-rda-пн-6-апреля-мв" class="section level2">
 <h2>9. Анализ избыточности (Redundancy analysis, RDA) (пн 6 апреля, МВ)</h2>
 <!-- - Презентация [html](09_RDA.html) -->
 <!-- - [код R](09_RDA.R) -->
@@ -660,7 +641,7 @@ div.tocify {
 <!--     + possum{DAAG} -->
 <!--     + possumsites{DAAG} -->
 </div>
-<div id="--corespondence-analysis-ca--13--" class="section level2">
+<div id="корреспондентный-анализ-corespondence-analysis-ca-пн-13-апреля-вх" class="section level2">
 <h2>10. Корреспондентный анализ (Corespondence Analysis, CA) (пн 13 апреля, ВХ)</h2>
 <!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
 <!-- - [код R](10_CA_calculation.R) -->
@@ -674,7 +655,7 @@ div.tocify {
 <!-- - __Бабочки.__ -->
 <!--     + butterfly{ade4} -->
 </div>
-<div id="---canonical-correspondence-analysis-cca--20--" class="section level2">
+<div id="канонический-корреспондентный-анализ-canonical-correspondence-analysis-cca-пн-20-апреля-вх" class="section level2">
 <h2>11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (пн 20 апреля, ВХ)</h2>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">install.packages</span>(<span class="st">&quot;akima&quot;</span>)</a>
@@ -718,6 +699,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
