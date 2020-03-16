@@ -114,7 +114,7 @@ Species <- substr(iris$Species, 0, 2)
 rownames(iris) <- make.unique(Species)
 # Делаем случайную выборку для этой демонстрации
 set.seed(191231)
-ids <- sample(nrow(iris), 50)
+ids <- sample(nrow(iris), 30)
 siris <- iris[ids, ]
 ```
 
