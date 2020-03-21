@@ -1139,7 +1139,7 @@ X
 det(X)
 ```
 
-## Решение в среде R
+## Вычисление обратной матрицы в среде R
 Обратная матрица
 ```{r, , purl=FALSE}
 solve(X)
@@ -1162,10 +1162,11 @@ round(solve(X) %*% X )
 
 Одним из подходов к снижению размерности многомерного пространства признаков является представление исходной матрицы ($\textbf{Y}$) в **ортогональной форме**. 
 
-В исходной матрице большинство векторов неортогональны, то есть взаимозависимые.  
+В исходной матрице большинство векторов неортогональны, то есть взаимозависимые (между ними существует корреляция).  
+
 Задача сводится к тому, чтобы заменить исходные векторы (признаки) новыми комплексными признаками, которые были бы взаимно независимыми, то есть ортогональными. 
 
-Каждый из этих векторов берет на себя некоторую долю общей изменчивости. 
+Каждый из этих векторов несет определнную часть  информации об исходной системе векторов (берет на себя некоторую долю общей дисперсии). 
 
 
 
@@ -1218,10 +1219,16 @@ $\bf{\Lambda}$ - Диагональная матрица собственных 
 $$
 \textbf{S} = \textbf{U}\bf{\Lambda}\textbf{U}^{-1} 
 $$
-Это позволяет раскладывать матрицу $\textbf{S}$  на составляющие 
+Это позволяет раскладывать матрицу $\textbf{S}$  на составляющие (eigenvalues decomposition). 
+
+Каждое собственное число в матрице $\bf{\Lambda}$ (и соответствующий ему ветор из матрицы $\textbf{U}$) несет часть информации об исходной матрице $\textbf{S}$.  
+
+Разложение матрицы позволяет использовать не всю информацию, а только ее наиболее важную часть. 
+ 
+
+## Геомтерическая интерпретация: Главные оси {.smaller}
 
 
-## Главные оси {.smaller}
 
 Во многих многомерных методах требуется найти оси максимального варьирования 
 
@@ -1239,7 +1246,7 @@ qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная
 
 
 
-## Главные оси {.smaller}
+## Геомтерическая интерпретация: Главные оси {.smaller}
 
 ```{r, purl=TRUE}
 qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") + 
@@ -1355,11 +1362,62 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
 
 ## Рисуем главные оси {.smaller .columns-2}
 
+<!-- <img src="images/Principal_axes_Legendre_and_Legendre.png" style="height:350px;"> -->
+
+<!-- <small>Из  Legendre & Legendre, 2012</small> -->
+
+<!-- ![](images/Principal_axes_Legendre_and_Legendre.png) -->
+
+<!-- $$ -->
+<!-- \cos(\alpha_{11}) = u_{11}\\ -->
+<!-- \cos(\alpha_{21}) = u_{21}\\ -->
+<!-- \cos(\alpha_{12}) = u_{12}\\ -->
+<!-- \cos(\alpha_{22}) = u_{22} -->
+<!-- $$ -->
+
+Матрица собственных векторов
+
+```{r}
+U
+```
+
+
+
+```{r,  fig.height=3, purl=TRUE}
+Pl_main_axis <- ggplot(XY_norm_cent, aes(x = x, y = y)) + 
+  geom_point() +  
+  geom_point(aes(x = mean(x), y = mean(y)), 
+             size = 4, color = "yellow") + 
+  geom_line(data = PC1, aes(x = x, y = y), 
+            color = "yellow", size = 1.5)  +
+  geom_line(data = PC2, aes(x = x, y = y), 
+            color = "yellow", size = 1.5) +
+  coord_equal() + 
+  geom_abline(slope = tan(acos(U[1,1])), 
+              color = "blue") +
+  geom_abline(slope = tan(acos(U[1,1]) + 
+                            acos(U[2,1]) + acos(U[2,2])), 
+              color = "blue") 
+
+```
+
+
+
+
+
+```{r}
+Pl_main_axis
+```
+
+
+Для добства восприятия лучше повернуть систему координат так, чтобы ось максимального варьирования была расположена горизонтально.
+
+
+## Вращение осей {.smaller .columns-2}
+
 <img src="images/Principal_axes_Legendre_and_Legendre.png" style="height:350px;">
 
 <small>Из  Legendre & Legendre, 2012</small>
-
-<!-- ![](images/Principal_axes_Legendre_and_Legendre.png) -->
 
 $$
 \cos(\alpha_{11}) = u_{11}\\
@@ -1369,31 +1427,12 @@ $$
 $$
 
 
-```{r}
-U
-```
-
-
-
-```{r,  fig.height=3, purl=TRUE}
-ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +  
-  geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow") + 
-  geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5)  +
-  geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5) +
-  coord_equal() + geom_abline(slope = tan(acos(U[1,1])), color = "blue") +
-  geom_abline(slope = tan(acos(U[1,1]) + acos(U[2,1]) + acos(U[2,2])), color = "blue") 
-
-```
-
-## Вращение осей {.smaller .columns-2}
-
-<img src="images/Principal_axes_Legendre_and_Legendre.png" style="height:350px;">
-
-<small>Из  Legendre & Legendre, 2012</small>
 
 Вращающая матрица
+
 ```{r, purl=TRUE}
-angle <- - acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
+angle <- -1 * acos(U[1,1]) #Отрицательный угол, так как 
+# поворачиваем оси по часовой стрелке
 
 Rot <- matrix(c(cos(angle), sin(angle), 
                 -sin(angle), cos(angle)), nrow = 2)
@@ -1402,17 +1441,66 @@ Rot
 
 ## Вращение осей {.smaller}
 
+Новые оси
 
 ```{r, purl=TRUE}
 XY_norm_cent_rot <- as.data.frame(t(Rot %*% t(mXY_norm_cent)))
 
-ggplot(XY_norm_cent, aes(x = x, y = y)) + 
+Pl_main_axis_rotated <- ggplot(XY_norm_cent, aes(x = x, y = y)) + 
   geom_point(color = "gray") + 
   geom_point(data = XY_norm_cent_rot, aes(x = V1, y = V2)) + 
-  labs(x = "Первая главная ось", y = "Вторая главная ось")
+  labs(x = "Первая главная ось", y = "Вторая главная ось") +
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0)
+
+Pl_main_axis_rotated
+
+```
+
+## Вращение осей {.smaller}
+
+Новые и старые оси
+
+```{r}
+Pl_main_axis_rotated +
+  geom_point(aes(x = mean(x), y = mean(y)), 
+             size = 4, color = "yellow") +
+  geom_line(data = PC1, aes(x = x, y = y), 
+            color = "yellow", size = 1.5)  +
+  geom_line(data = PC2, aes(x = x, y = y), 
+            color = "yellow", size = 1.5) +
+  coord_equal() + 
+  geom_abline(slope = tan(acos(U[1,1])), 
+              color = "green") +
+  geom_abline(slope = tan(acos(U[1,1]) + 
+                            acos(U[2,1]) + acos(U[2,2])), 
+              color = "green") 
 
 
 ```
+
+
+## Главное о снижении размерности {.smaller}
+
+1. Информацию об исходной матрице $\textbf{Y}$ можно сконцентрировать в ковариационной матрице
+
+$$
+\textbf{S} = \frac{1}{n - 1} \textbf{Y}_{centered}'\textbf{Y}_{centered}
+$$
+
+2. Матрицу ковариации можно разложить на собственные числа и собственные векторы 
+
+
+
+$$
+\textbf{S} = \textbf{U}\bf{\Lambda}\textbf{U}^{-1} 
+$$
+
+3. Собственные векторы ортогональны и позволяют созадать новую систему координат, в новые оси (главные оси) "опираются" на собственные векторы. 
+
+4. Каждая ось в новой системе координат несет некоторую часть информации об исходной системе координат. Информативность осей определяется величиной собственных чисел.
+
+5. Вместо многомерной системы координат (n-осей) мы можем использовать всего несколько (например, две) ниаболее информативные главные оси.
 
 
 
