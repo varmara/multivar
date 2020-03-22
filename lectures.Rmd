@@ -157,12 +157,12 @@ install.packages("jpeg")
 
 
 <!-- - Презентация [html](07_introduction_to_linear_algebra.html) -->
-<!-- - [код R](07_introduction_to_linear_algebra.R) -->
-<!-- - Данные  -->
-<!--     + [Матрица](data/face.rda) -->
+- [код R](07_introduction_to_linear_algebra.R)
+- Данные
+    + [Матрица](data/face.rda)
 
 
-<!-- [**Данные для самостоятельной работы**](07_linear_algebra_task.html) -->
+[**Данные для самостоятельной работы**](07_linear_algebra_task.html)
 
 
 ## 8. Анализ главных компонент (Principal Component Analysis, PCA) (пн 30 марта, МВ)
