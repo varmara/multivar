@@ -359,7 +359,7 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
 
 #' Вращающая матрица
 
-angle <- - acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
+angle <- -1 * acos(U[1,1]) #Отрицательный угол, так как поворачиваем оси по часовой стрелке
 
 Rot <- matrix(c(cos(angle), sin(angle),
                 -sin(angle), cos(angle)), nrow = 2)
