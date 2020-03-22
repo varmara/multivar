@@ -72,15 +72,13 @@ d <- c(1, -1)
 
 #' Аналитическое решение
 
-a %*% b
+# a vs b
 
-a %*% c
+# a vs c
 
-c %*% d
+# c vs d
 
-dat <- matrix(c(0.5, 0, 0.5, 3), ncol = 2)
 
-norm(t(dat[ ,1 ]), type = "F")
 
 
 #' ## Нормализованные векторы
@@ -92,9 +90,6 @@ Vec
 
 #' ##Решение
 
-sqrt(sum(Vec^2))
-
-norm(t(Vec/norm(t(Vec), type = "F")), type = "F")
 
 
 
@@ -126,7 +121,7 @@ A
 
 B
 
-A %*% B
+B %*% A
 
 A %*% A
 
@@ -215,19 +210,6 @@ qplot(Image_trans2[,1], Image_trans2[,2] ) +
   geom_polygon(fill = "red") + coord_fixed()
 
 
-########################
-
-# Еще преобразованя за счет матричных опреаций
-
-Scale <- matrix(c(1, 0, 0.8, 1), nrow = 2)
-
-Image_trans <- data.frame(t((Scale) %*% t(faceData_XY[ ,1:2])), faceData_XY[3])
-
-ggplot(Image_trans, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
-
-
-
-
 
 
 #' ## Ковариационная матрица
@@ -241,14 +223,13 @@ Cent_M
 
 #' Вычислите ковариационную матрицу с помощью методов линейной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`
 
-Cov_M <- t(Cent_M) %*% Cent_M/(nrow(M)-1)
-
+Cov_M       #код для вычислению ковариационной матрицы с помощью матричной алгебры
 
 cov(M)
 
 diag(Cov_M)
 
-#' Сравним
+#' Сравним с результатами пименения функции sd()
 
 apply(M, 2, FUN = function(x)sd(x)^2)
 
@@ -259,8 +240,8 @@ Stand_M
 
 
 # Вычисление вручную
-Cor_M <-
 Cor_M
+
 
 
 
@@ -280,7 +261,7 @@ qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
 
 
-#' ## Нормализуем векторы {.smaller}
+#' ## Нормализуем векторы
 
 x_norm <- XY$x/sqrt(sum(XY$x)^2)
 y_norm <- XY$y/sqrt(sum(XY$y)^2)
@@ -293,7 +274,7 @@ ggplot(XY_norm , aes(x = x, y = y)) + geom_point() +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
 
 
-#' ## Центрируем нормализованные векторы {.smaller}
+#' ## Центрируем нормализованные векторы
 
 XY_norm_cent <- as.data.frame(scale(XY_norm,          ))
 
@@ -393,7 +374,6 @@ D <- SVD$d #Вектор сингулярных чисел
 U <- SVD$u #"Вспомогательная" матрица - правые сингулярные векторы
 
 
-
 U %*% diag(D) %*% t(V)
 
 #' ## Задание
@@ -402,10 +382,10 @@ U %*% diag(D) %*% t(V)
 #' ##Решение
 
 
-B_reconstructed <- U[,1:5] %*% diag(D[1:5]) %*% t(V[,1:5])
+B_reconstructed <- U[ , ] %*% diag(D[ ]) %*% t(V[ , ])
 
 
-qplot(as.vector(B), as.vector(B_reconstructed)) + geom_abline()
+qplot(as.vector( ), as.vector()) + geom_abline()
 
 
 
@@ -440,10 +420,9 @@ ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gra
 angle <-  -30*pi/180 #Задаем угол поворота в радианах
 
 # Вращающая матрица
-Rot <- matrix(c(cos(angle), sin(angle),
-                -sin(angle), cos(angle)), nrow = 2)
+Rot <-
 
-Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), faceData_XY[3]) #Надо заполнить пропуски
+Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), value = faceData_XY[3]) #Надо заполнить пропуски
 
 ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
 
@@ -476,15 +455,15 @@ gg_face(faceData)
 
 SVD_face <- svd(faceData)
 
-U <- SVD_face$u
-D <- SVD_face$d
-V <- SVD_face$v
+U_face <- SVD_face$u
+D_face <- SVD_face$d
+V_face <- SVD_face$v
 
 #' ##Рекоструируем изображение, используя только часть информации
 
-reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
+reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
-gg_face(reduction(2))
+gg_face(reduction(2, U_face, D_face, V_face))
 
 
 

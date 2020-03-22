@@ -1297,7 +1297,7 @@ ggplot(XY_norm , aes(x = x, y = y)) + geom_point() +
 ## Центрируем нормализованные векторы {.smaller}
 
 
-```{r, purl=TRUE}
+```{r, purl=TRUE, fig.height=4}
 XY_norm_cent <- as.data.frame(scale(XY_norm, center = TRUE, scale = FALSE))
 
 ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() +  

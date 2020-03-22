@@ -1,0 +1,177 @@
+---
+title: "Изображения, как матричные объекты"
+runtime: shiny
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Современная фотография является хорошим примером матричного объекта. 
+У этого объекта есть строки и столбцы (координаты пикселей), а в ячейках расположены числа, характеризующие яркость пикселя.
+
+## Загрузка фотографии в среду R
+
+Для работы с фотографиями понадобится пакет `jpeg`
+
+```{r, eval=FALSE}
+install.packages("jpeg")
+```
+
+```{r}
+library(jpeg)
+fig <- readJPEG("images/matrix_3.jpg")
+str(fig)
+```
+
+Полученный объект - это трехмерная матрица: три слоя, каждый из которых - это один из RGB каналов. 
+
+Разложим каждый из каналов по отдельным матрицам.
+
+```{r}
+fig_1 <- fig [ , , 1]
+fig_2 <- fig [ , , 2]
+fig_3 <- fig [ , , 3]
+
+
+str(fig_1)
+```
+
+Для визуализации матрицы воспользуемся самодельной функцией
+
+```{r}
+gg_face <- function(x) {
+  library(reshape2)
+  library(ggplot2)
+  rotate <- function(x) t(apply(x, 2, rev))
+  dd <- rotate(x)
+  ddd <- melt(dd)
+  ggplot(ddd, aes(Var1, Var2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+}
+
+```
+
+
+### Первый канал
+
+```{r, eval=FALSE}
+gg_face(fig_1)
+```
+
+
+```{r, echo=FALSE}
+
+renderPlot({
+  gg_face(fig_1)
+})
+
+
+```
+
+
+### Второй канал
+
+```{r, eval=FALSE}
+gg_face(fig_2)
+```
+
+
+```{r, echo=FALSE}
+
+renderPlot({
+  gg_face(fig_2)
+})
+
+
+```
+
+
+### Третий канал
+
+```{r, eval=FALSE}
+gg_face(fig_3)
+```
+
+
+```{r, echo=FALSE}
+
+renderPlot({
+  gg_face(fig_3)
+})
+
+
+```
+
+
+
+## Сингулярное разложение матрицы изображения
+
+```{r}
+svd_fig <- svd(fig_2)
+
+u <- svd_fig$u
+d <- svd_fig$d
+v <- svd_fig$v
+
+```
+
+## Реконструкция изображения
+
+```{r, eval=FALSE}
+reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
+
+gg_face(reduction(5, u, d, v))
+
+```
+
+
+
+
+
+
+```{r eruptions, echo=FALSE}
+reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
+
+
+inputPanel(
+   sliderInput("n_svd", label = "Number of singular triplets:",
+              min = 2, max = 50, value = 2, step = 1)
+  )
+
+renderPlot({
+  gg_face(reduction(input$n_svd, u, d, v)) + ggtitle(paste("Доля использованной информации: ", round(sum(d[1:input$n_svd])/ sum(d) * 100, 1), "%"))   
+})
+```
+
+## Сколько процентов информации нужно для извлечения смысла?
+
+Это философский вопрос...
+
+Но часто 100% информации не нужно!
+
+
+
+
+```{r, echo=FALSE}
+u_hp <- as.matrix(read.csv("data/u_hp.csv"))
+d_hp <- as.matrix(read.csv("data/d_hp.csv"))
+v_hp <- as.matrix(read.csv("data/v_hp.csv"))
+
+```
+
+
+```{r, echo=FALSE}
+
+inputPanel(
+   selectInput("n_svd", label = "Number of singular triplets:",
+              choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30), selected = 2)
+  )
+
+renderPlot({
+gg_face(reduction(input$n_svd, u_hp, d_hp, v_hp)) + ggtitle(paste("Доля использованной информации: ", round(sum(d_hp[1:input$n_svd])/ sum(d_hp) * 100, 1), "%"))
+  })
+
+
+```
+
