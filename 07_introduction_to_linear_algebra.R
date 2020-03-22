@@ -427,6 +427,7 @@ dim(faceData)
 library(reshape2)
 
 faceData_XY <- melt(faceData) ## Переводим матрицу в два вектора координат и вектор значений интенсивности заливки
+
 names(faceData_XY) <- c("X1", "X2", "value")
 
 
@@ -436,7 +437,7 @@ ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gra
 # Задание: Поверните изображение на угол 30 и 90 градусов
 
 
-angle <-  -90*pi/180 #Задаем угол поворота в радианах
+angle <-  -30*pi/180 #Задаем угол поворота в радианах
 
 # Вращающая матрица
 Rot <- matrix(c(cos(angle), sin(angle),
@@ -449,7 +450,11 @@ ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scal
 
 # Задание: Проведите масштабирование полученного изображения
 
+Scale <- matrix(c(3, 0, 0, 1), nrow = 2)
 
+Image_trans <-   data.frame(t((Scale) %*% t(Image_rot[,1:2])), value = faceData_XY$value)
+
+ggplot(Image_trans, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 
 
 
@@ -458,16 +463,15 @@ ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scal
 load("data/face.rda")
 
 gg_face <- function(x) {
-  library(reshape)
+  library(reshape2)
   library(ggplot2)
   rotate <- function(x) t(apply(x, 2, rev))
   dd <- rotate(x)
   ddd <- melt(dd)
-  ggplot(ddd, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+  ggplot(ddd, aes(Var1, Var2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 }
 
 gg_face(faceData)
-
 
 
 SVD_face <- svd(faceData)
@@ -480,7 +484,7 @@ V <- SVD_face$v
 
 reduction <- function(x) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
-gg_face(reduction(20))
+gg_face(reduction(2))
 
 
 

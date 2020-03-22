@@ -1596,13 +1596,14 @@ ggplot(Dat, aes(x = Init, y = Calc)) + geom_point(size = 2) + labs(x = "знач
 
 ```{r,echo=FALSE, purl=TRUE}
 load("data/face.rda")
+
 gg_face <- function(x) {
-  library(reshape)
+  library(reshape2)
   library(ggplot2)
     rotate <- function(x) t(apply(x, 2, rev))
   dd <- rotate(x)
   ddd <- melt(dd)
-  ggplot(ddd, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+  ggplot(ddd, aes(Var1, Var2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 }
 gg_face(faceData)
 

@@ -28,9 +28,9 @@ x9 crown length
 
 Результат представьте в виде дендрограммы.
 
-#SVD, как средство редукции информации
+# SVD, как средство редукции информации
 
-##Часть 1. Реконструкция изображения {.columns-2}
+## Часть 1. Реконструкция изображения {.columns-2}
 
 Скачайте один из наборов матриц
 
@@ -52,6 +52,20 @@ x9 crown length
 - с 1-го по 100-й   
 - с 1 го по 200-й   
 - Полный набор триплетов.  
+
+Для изображения полученной картинки воспользуйтесь пользоватльской функцией
+
+```{r, eval=FALSE}
+gg_face <- function(x) {
+  library(reshape2)
+  library(ggplot2)
+  rotate <- function(x) t(apply(x, 2, rev))
+  dd <- rotate(x)
+  ddd <- melt(dd)
+  ggplot(ddd, aes(Var1, Var2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
+}
+```
+
 
 
 ##Часть 2. Сжатие изображения {.columns-2}
