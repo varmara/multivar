@@ -156,7 +156,7 @@ install.packages("jpeg")
 ```
 
 
-<!-- - Презентация [html](07_introduction_to_linear_algebra.html) -->
+- Презентация [html](07_introduction_to_linear_algebra.html)
 - [код R](07_introduction_to_linear_algebra.R)
 - Данные
     + [Матрица](data/face.rda)

@@ -2,6 +2,10 @@
 #' subtitle: "Анализ и визуализация многомерных данных с использованием R"
 #' author: Вадим Хайтов, Марина Варфоломеева
 
+matrix(1:12, ncol = 3)
+
+diag(rep(1, 5))
+
 
 #' ##Транспонирование матриц
 A <- matrix(1:12, ncol = 3)
@@ -15,6 +19,7 @@ B
 A + 4
 
 A + A
+
 #' Но! Нельзя складывать матрицы разных размеров
 A + B
 
@@ -31,6 +36,7 @@ A * c(10, 11, 12, 13)
 Vec <- 1:5
 
 sqrt(sum(Vec^2))
+
 
 norm(t(Vec), type = "F") #Аналогчное решение
 
@@ -73,11 +79,13 @@ d <- c(1, -1)
 #' Аналитическое решение
 
 # a vs b
+a %*% b
 
 # a vs c
 
+a %*% c
 # c vs d
-
+c %*% d
 
 
 
@@ -90,7 +98,7 @@ Vec
 
 #' ##Решение
 
-
+Vec/norm(t(Vec), type = "F")
 
 
 
@@ -124,6 +132,8 @@ B
 B %*% A
 
 A %*% A
+
+B %*% t(B)
 
 
 
@@ -182,7 +192,7 @@ qplot(Image[,1], Image[,2] ) + geom_polygon(fill = "red") + coord_fixed()
 
 #' Поворот изображения на заданный угол
 
-angle <- 180*pi/180
+angle <- 45*pi/180
 
 Rot <- matrix(c(cos(angle), sin(angle),
                 -sin(angle), cos(angle)), nrow = 2)
@@ -202,7 +212,7 @@ qplot(Image_trans[,1], Image_trans[,2] ) +
 
 
 #' Масштабирующая матрица
-Scale <- matrix(c(1, 0, 0, 2), nrow = 2)
+Scale <- matrix(c(1, 0, 0, 0.1), nrow = 2)
 
 Image_trans2 <-   t((Scale) %*% t(Image_trans))
 
@@ -223,7 +233,7 @@ Cent_M
 
 #' Вычислите ковариационную матрицу с помощью методов линейной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`
 
-Cov_M       #код для вычислению ковариационной матрицы с помощью матричной алгебры
+Cov_M <- t(Cent_M) %*% M * (1/(nrow(M)-1))    #код для вычислению ковариационной матрицы с помощью матричной алгебры
 
 cov(M)
 
@@ -235,12 +245,12 @@ apply(M, 2, FUN = function(x)sd(x)^2)
 
 #' ## Вычисление матрицы  корреляций с помощью линейной алгебры {.smaller .columns-2}
 
-Stand_M <- scale(M         )
+Stand_M <- scale(M, center = TRUE, scale = TRUE)
 Stand_M
 
 
 # Вычисление вручную
-Cor_M
+Cor_M <- t(Stand_M) %*% Stand_M*(1/(nrow(M)-1))
 
 
 
@@ -257,6 +267,7 @@ x <- rnorm(1000, 50, 10)
 y <- 10 * x + rnorm(1000, 0, 100)
 
 XY <-data.frame(x = x, y = y)
+
 qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
 
@@ -276,7 +287,7 @@ ggplot(XY_norm , aes(x = x, y = y)) + geom_point() +
 
 #' ## Центрируем нормализованные векторы
 
-XY_norm_cent <- as.data.frame(scale(XY_norm,          ))
+XY_norm_cent <- as.data.frame(scale(XY_norm,  center = TRUE, scale = FALSE))
 
 ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
@@ -296,11 +307,13 @@ eig <- eigen(Sxy_norm_cent) # Стандартная функция R для и�
 
 Lambda <- eig$values # Собственные числа
 
-Lambda
+diag(Lambda)
 
 U <- eig$vectors # Собственные векторы
 
-U
+U %*% diag(Lambda) %*% solve(U)
+
+
 
 #' ## Стандартизованные собственные векторы {.smaller}
 
@@ -382,10 +395,10 @@ U %*% diag(D) %*% t(V)
 #' ##Решение
 
 
-B_reconstructed <- U[ , ] %*% diag(D[ ]) %*% t(V[ , ])
+B_reconstructed <- U[ ,1:5] %*% diag(D[1:5]) %*% t(V[ ,1:5])
 
 
-qplot(as.vector( ), as.vector()) + geom_abline()
+qplot(as.vector(B), as.vector(B_reconstructed)) + geom_abline()
 
 
 
@@ -420,7 +433,8 @@ ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gra
 angle <-  -30*pi/180 #Задаем угол поворота в радианах
 
 # Вращающая матрица
-Rot <-
+Rot <- matrix(c(cos(angle), sin(angle),
+                -sin(angle), cos(angle)), nrow = 2)
 
 Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), value = faceData_XY[3]) #Надо заполнить пропуски
 
@@ -463,7 +477,7 @@ V_face <- SVD_face$v
 
 reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
-gg_face(reduction(2, U_face, D_face, V_face))
+gg_face(reduction(30, U_face, D_face, V_face))
 
 
 
