@@ -473,11 +473,44 @@ U_face <- SVD_face$u
 D_face <- SVD_face$d
 V_face <- SVD_face$v
 
+
+
+
+# Задание про волков
+
+# Здесь надо немного попреобразовывть объекты
+
+Lambda <- as.matrix(read.csv("data/Eigen_wolv.csv"))
+
+Lambda <- as.numeric(Lambda)
+
+U <- as.matrix(read.csv("data/U_wolv.csv"))
+
+cor_wol <- U %*% diag(Lambda) %*% solve(U) #Реконструируем матрицу корреляций
+
+cor_wol <- as.dist(cor_wol)
+
+plot(hclust(cor_wol))
+
+
+
+
 #' ##Рекоструируем изображение, используя только часть информации
 
 reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
 gg_face(reduction(30, U_face, D_face, V_face))
+
+
+# Помощь в самостоятельной работе
+
+
+u1 <- as.matrix(read.csv("data/u1.csv"))
+d1 <- as.matrix(read.csv("data/d1.csv"))
+v1 <- as.matrix(read.csv("data/v1.csv"))
+
+# Реконструкция изображения
+gg_face(reduction(2, u1, d1, v1))
 
 
 
