@@ -172,21 +172,23 @@ install.packages(c("cowplot", "geomorph"))
 ```
 
 <!-- - Презентация [html](08_PCA.html) -->
-<!-- - [код R](08_PCA.R) -->
-<!-- - Данные  -->
-<!--     + [jellyfish.csv](data/jellyfish.csv) -->
-<!--     + [protein.csv](data/protein.csv) -->
+
+- [код R](08_PCA.R)
+- Данные
+    + [jellyfish.csv](data/jellyfish.csv)
+    + [protein.csv](data/protein.csv)
 
 <!-- **Данные для самостоятельной работы** -->
 
 <!-- - Ирисы --- iris{datasets} -->
 
-<!-- (Геометрическаая) морфометрия -->
+(Геометрическаая) морфометрия
 
 <!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
-<!-- - [код R](08_PCA_geometric_morphometrics.R) -->
-<!-- - Данные  -->
-<!--     + [turtles.txt](data/turtles.txt) -->
+
+- [код R](08_PCA_geometric_morphometrics.R)
+- Данные
+    + [turtles.txt](data/turtles.txt)
 
 ## 9. Анализ избыточности (Redundancy analysis, RDA) (пн 6 апреля, МВ)
 
