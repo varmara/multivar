@@ -171,16 +171,11 @@ install.packages("jpeg")
 install.packages(c("cowplot", "geomorph"))
 ```
 
-<!-- - Презентация [html](08_PCA.html) -->
-
+- Презентация [html](08_PCA.html)
 - [код R](08_PCA.R)
 - Данные
     + [jellyfish.csv](data/jellyfish.csv)
     + [protein.csv](data/protein.csv)
-
-<!-- **Данные для самостоятельной работы** -->
-
-<!-- - Ирисы --- iris{datasets} -->
 
 (Геометрическаая) морфометрия
 
