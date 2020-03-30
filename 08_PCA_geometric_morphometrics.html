@@ -3351,8 +3351,15 @@ colnames(turt)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Решение: Делаем анализ главных компонент по стандартизованным данным</h2></hgroup><article  id="решение-делаем-анализ-главных-компонент-по-стандартизованным-данным">
 
-<pre class = 'prettyprint lang-r'>library(vegan)
-turt_pca &lt;- rda(turt[, 8:31], scale = TRUE)</pre>
+<pre class = 'prettyprint lang-r'>library(vegan)</pre>
+
+<pre >## Loading required package: permute</pre>
+
+<pre >## Loading required package: lattice</pre>
+
+<pre >## This is vegan 2.5-6</pre>
+
+<pre class = 'prettyprint lang-r'>turt_pca &lt;- rda(turt[, 8:31], scale = TRUE)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Решение: Сколько компонент достаточно для описания данных?</h2></hgroup><article  id="решение-сколько-компонент-достаточно-для-описания-данных">
 
@@ -3388,7 +3395,7 @@ eig*100/sum(eig) # доля объясненной изменчивости</pre
 
 </article></slide><slide class=""><hgroup><h2>Задание:</h2></hgroup><article  id="задание">
 
-<h3>Придумайте способ избавится от влияния размера</h3>
+<h3>Придумайте способ избавиться от влияния размера</h3>
 
 </article></slide><slide class=""><hgroup><h2>Классические способы избавится от влияния размера:</h2></hgroup><article  id="классические-способы-избавится-от-влияния-размера">
 

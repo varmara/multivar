@@ -179,7 +179,7 @@ install.packages(c("cowplot", "geomorph"))
 
 (Геометрическаая) морфометрия
 
-<!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
+- Презентация [html](08_PCA_geometric_morphometrics.html)
 
 - [код R](08_PCA_geometric_morphometrics.R)
 - Данные
