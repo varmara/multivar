@@ -188,17 +188,17 @@ install.packages(c("cowplot", "geomorph"))
 ## 9. Анализ избыточности (Redundancy analysis, RDA) (пн 6 апреля, МВ)
 
 <!-- - Презентация [html](09_RDA.html) -->
-<!-- - [код R](09_RDA.R) -->
-<!-- - Данные butterfly{ade4} -->
+- [код R](09_RDA.R)
+- Данные butterfly{ade4}
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-```{r eval=FALSE}
-install.packages("DAAG")
-```
+<!-- ```{r eval=FALSE} -->
+<!-- install.packages("DAAG") -->
+<!-- ``` -->
 
-<!-- - __Влияние выпаса скота на зообентос рек о.Тасмания.__ Данные из работы *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->
-<!--     + [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls) -->
+- __Влияние выпаса скота на зообентос рек о.Тасмания.__ Данные из работы *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.*
+    + [Grazing_Magierowski_et_al_2015.xls](data/Grazing_Magierowski_et_al_2015.xls)
 
 <!-- - __Морфометрия поссумов в Австралии.__ Данные из работы *Lindenmayer, D. B., Viggers, K. L., Cunningham, R. B., and Donnelly, C. F. 1995. Morphological variation among columns of the mountain brushtail possum, Trichosurus caninus Ogilby (Phalangeridae: Marsupiala). Australian Journal of Zoology 43: 449-458.* -->
 <!--     + possum{DAAG} -->
