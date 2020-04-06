@@ -187,7 +187,7 @@ install.packages(c("cowplot", "geomorph"))
 
 ## 9. Анализ избыточности (Redundancy analysis, RDA) (пн 6 апреля, МВ)
 
-<!-- - Презентация [html](09_RDA.html) -->
+- Презентация [html](09_RDA.html)
 - [код R](09_RDA.R)
 - Данные butterfly{ade4}
 - Данные [butterfly_envir.csv](data/butterfly_envir.csv)
