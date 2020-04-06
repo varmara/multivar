@@ -44,7 +44,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -452,11 +452,11 @@ div.tocify {
 
 <div id="знакомство-с-многомерными-данными.-чт-13-февраля-вх" class="section level2">
 <h2>1. Знакомство с многомерными данными. (чт 13 февраля, ВХ)</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</a></code></pre></div>
 <ul>
 <li><p>Презентация <a href="01_multivariate_data_and_dissimilarities.html">html</a></p></li>
 <li><p><a href="01_multivariate_data_and_dissimilarities_code.R">код R</a></p></li>
-<li><strong>Фауна Долгой губы</strong> (Данные В.М.Хайтова)
+<li><p><strong>Фауна Долгой губы</strong> (Данные В.М.Хайтова)</p>
 <ul>
 <li><a href="data/dolg_abundance.txt">dolg_abundance.txt</a></li>
 <li><a href="data/dolg_hydrology.txt">dolg_hydrology.txt</a></li>
@@ -473,29 +473,29 @@ div.tocify {
 </div>
 <div id="nmds-envfit-ordisurf-пн-17-февраля-мв" class="section level2">
 <h2>2. nMDS, envfit, ordisurf (пн 17 февраля, МВ)</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Чтение файлов</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># Обработка данных</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">install.packages</span>(<span class="st">&quot;tidyr&quot;</span>)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">install.packages</span>(<span class="st">&quot;broom&quot;</span>)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co"># Карты</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="kw">install.packages</span>(<span class="st">&quot;ggmap&quot;</span>)</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># # Графики из vegan при помощи ggplot2</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co"># devtools::install_github(&quot;gavinsimpson/ggvegan&quot;)</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Чтение файлов</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co"># Обработка данных</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">install.packages</span>(<span class="st">&quot;tidyr&quot;</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="kw">install.packages</span>(<span class="st">&quot;broom&quot;</span>)</a>
+<a class="sourceLine" id="cb2-8" title="8"></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="co"># Карты</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="kw">install.packages</span>(<span class="st">&quot;ggmap&quot;</span>)</a>
+<a class="sourceLine" id="cb2-11" title="11"></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="co"># # Графики из vegan при помощи ggplot2</span></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="co"># devtools::install_github(&quot;gavinsimpson/ggvegan&quot;)</span></a></code></pre></div>
 <ul>
 <li><p>Презентация <a href="02_nMDS.html">html</a></p></li>
 <li><p><a href="02_nMDS_code.R">код R</a></p></li>
-<li><strong>Данные для карты</strong>
+<li><p><strong>Данные для карты</strong></p>
 <ul>
 <li><a href="data/dist_spb.xlsx">data/dist_spb.xlsx</a></li>
 <li><a href="data/dist_spb_dat.RData">dist_spb_dat.RData</a></li>
 </ul></li>
-<li><strong>Данные о симбионтах мидий</strong> из работы <em>Krapivin, V. A., Bagrov, S. V., &amp; Varfolomeeva, M. A. (2018). Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of aquatic organisms, 130(2), 131-144.</em>
+<li><p><strong>Данные о симбионтах мидий</strong> из работы <em>Krapivin, V. A., Bagrov, S. V., &amp; Varfolomeeva, M. A. (2018). Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of aquatic organisms, 130(2), 131-144.</em></p>
 <ul>
 <li><a href="data/Krapivin_2017_Medulis-symb.tab">Krapivin_2017_Medulis-symb.tab</a></li>
 </ul></li>
@@ -532,8 +532,8 @@ div.tocify {
 </ul></li>
 </ul>
 <p><strong>Данные для самостоятельной работы</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Пермутационные тесты</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">install.packages</span>(<span class="st">&quot;coin&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># Пермутационные тесты</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">install.packages</span>(<span class="st">&quot;coin&quot;</span>)</a></code></pre></div>
 <ul>
 <li><strong>Растительные сообщества во франции La Mafragh (Annaba, Algérie).</strong> Данные из работы <em>de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d’une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d’Ecologie, 18, 393–407.</em>
 <ul>
@@ -572,7 +572,7 @@ div.tocify {
 </div>
 <div id="permanova-пн-2-марта-мв" class="section level2">
 <h2>5. PERMANOVA (пн 2 марта, МВ)</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a></code></pre></div>
 <ul>
 <li>Презентация <a href="05_perMANOVA.html">html</a></li>
 <li><a href="05_perMANOVA.R">код R</a></li>
@@ -585,11 +585,11 @@ div.tocify {
 <p><strong>Данные для самостоятельной работы</strong></p>
 <ul>
 <li><p><a href="05_perMANOVA_task.html">Пояснения к датасетам и задание</a></p></li>
-<li><strong>Влияние выпаса скота на зообентос рек о.Тасмания.</strong> Данные из работы <em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em>
+<li><p><strong>Влияние выпаса скота на зообентос рек о.Тасмания.</strong> Данные из работы <em>Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</em></p>
 <ul>
 <li><a href="data/Grazing_Magierowski_et_al_2015.xls">Grazing_Magierowski_et_al_2015.xls</a></li>
 </ul></li>
-<li><strong>Гематология сонных ящериц <em>Tiliqua rugosa</em>.</strong> Данные из работы <em>Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia’s cereal croplands, 2010, Version 1.0. <a href="http://doi.org/10.4227/05/537C5C5553F9E" class="uri">http://doi.org/10.4227/05/537C5C5553F9E</a>. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.</em>
+<li><p><strong>Гематология сонных ящериц <em>Tiliqua rugosa</em>.</strong> Данные из работы <em>Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia’s cereal croplands, 2010, Version 1.0. <a href="http://doi.org/10.4227/05/537C5C5553F9E" class="uri">http://doi.org/10.4227/05/537C5C5553F9E</a>. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.</em></p>
 <ul>
 <li><a href="data/Sleepy%20lizard.xlsx">Sleepy lizard.xlsx</a></li>
 </ul></li>
@@ -597,7 +597,7 @@ div.tocify {
 </div>
 <div id="кластерный-анализ-пн-16-марта-мв" class="section level2">
 <h2>6. Кластерный анализ (пн 16 марта, МВ)</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</a></code></pre></div>
 <ul>
 <li>Презентация <a href="06_cluster_analysis.html">html</a></li>
 <li><a href="06_cluster_analysis.R">код R</a></li>
@@ -607,7 +607,7 @@ div.tocify {
 </div>
 <div id="основы-линейной-алгебры.-svd.-пн-23-марта-вх" class="section level2">
 <h2>7. Основы линейной алгебры. SVD. (пн 23 марта, ВХ)</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</a></code></pre></div>
 <ul>
 <li>Презентация <a href="07_introduction_to_linear_algebra.html">html</a></li>
 <li><a href="07_introduction_to_linear_algebra.R">код R</a></li>
@@ -620,7 +620,7 @@ div.tocify {
 </div>
 <div id="анализ-главных-компонент-principal-component-analysis-pca-пн-30-марта-мв" class="section level2">
 <h2>8. Анализ главных компонент (Principal Component Analysis, PCA) (пн 30 марта, МВ)</h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</a></code></pre></div>
 <ul>
 <li>Презентация <a href="08_PCA.html">html</a></li>
 <li><a href="08_PCA.R">код R</a></li>
@@ -633,8 +633,8 @@ div.tocify {
 <p>(Геометрическаая) морфометрия</p>
 <ul>
 <li><p>Презентация <a href="08_PCA_geometric_morphometrics.html">html</a></p></li>
-<li><a href="08_PCA_geometric_morphometrics.R">код R</a></li>
-<li>Данные
+<li><p><a href="08_PCA_geometric_morphometrics.R">код R</a></p></li>
+<li><p>Данные</p>
 <ul>
 <li><a href="data/turtles.txt">turtles.txt</a></li>
 </ul></li>
@@ -646,6 +646,9 @@ div.tocify {
 <ul>
 <li><a href="09_RDA.R">код R</a></li>
 <li>Данные butterfly{ade4}</li>
+<li>Данные <a href="data/butterfly_envir.csv">butterfly_envir.csv</a></li>
+<li>Данные <a href="data/butterfly_genet.csv">butterfly_genet.csv</a></li>
+<li>Данные <a href="data/butterfly_xy.csv">butterfly_xy.csv</a></li>
 </ul>
 <p><strong>Данные для самостоятельной работы</strong></p>
 <!-- ```{r eval=FALSE} -->
@@ -667,7 +670,7 @@ div.tocify {
 <!-- - [код R](10_CA_calculation.R) -->
 <!-- - Данные [macnally.xlsx](data/macnally.xlsx) -->
 <!-- **Данные для самостоятельной работы** -->
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;ade4&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;ade4&quot;</span>)</a></code></pre></div>
 <!-- - Растительные сообщества во франции La Mafragh (Annaba, Algérie). Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
 <!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
 <!-- - __Крысы.__  -->
@@ -677,9 +680,9 @@ div.tocify {
 </div>
 <div id="канонический-корреспондентный-анализ-canonical-correspondence-analysis-cca-пн-20-апреля-вх" class="section level2">
 <h2>11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (пн 20 апреля, ВХ)</h2>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">install.packages</span>(<span class="st">&quot;akima&quot;</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="kw">install.packages</span>(<span class="st">&quot;akima&quot;</span>)</a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</a></code></pre></div>
 <!-- - Презентация [html](11_CCA.html) -->
 <!-- - [код R](11_CCA.R) -->
 <!-- - __Влияние выпаса скота на зообентос рек о.Тасмания.__ Данные из работы *Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. http://doi.org/10.4227/05/54BEEE248D22B. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.* -->

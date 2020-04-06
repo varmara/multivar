@@ -190,6 +190,10 @@ install.packages(c("cowplot", "geomorph"))
 <!-- - Презентация [html](09_RDA.html) -->
 - [код R](09_RDA.R)
 - Данные butterfly{ade4}
+- Данные [butterfly_envir.csv](data/butterfly_envir.csv)
+- Данные [butterfly_genet.csv](data/butterfly_genet.csv)
+- Данные [butterfly_xy.csv](data/butterfly_xy.csv)
+
 
 **Данные для самостоятельной работы**
 
