@@ -211,10 +211,10 @@ install.packages(c("cowplot", "geomorph"))
 ## 10. Корреспондентный анализ (Corespondence Analysis, CA) (пн 13 апреля, ВХ)
 
 <!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
-<!-- - [код R](10_CA_calculation.R) -->
-<!-- - Данные [macnally.xlsx](data/macnally.xlsx) -->
+- [код R](10_CA_calculation.R)
+- Данные [macnally.xlsx](data/macnally.xlsx)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
 ```{r eval=FALSE}
 install.packages("ade4")
@@ -223,11 +223,11 @@ install.packages("ade4")
 <!-- - Растительные сообщества во франции La Mafragh (Annaba, Algérie). Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
 <!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
 
-<!-- - __Крысы.__  -->
-<!--     + [bolger1.csv](data/bolger1.csv) -->
+- __Крысы.__
+    + [bolger1.csv](data/bolger1.csv)
 
-<!-- - __Бабочки.__ -->
-<!--     + butterfly{ade4} -->
+- __Бабочки.__
+    + butterfly{ade4}
 
 ## 11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (пн 20 апреля, ВХ)
 
