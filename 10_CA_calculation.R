@@ -48,8 +48,16 @@ str(mite.xy)
 str(mite.env)
 
 
-mite_pca <-
+mite_pca <- rda(mite, scaling = TRUE)
 
+screeplot(mite_pca, bstick = T)
+
+biplot(mite_pca,  scaling = "sites", type = "t")
+
+
+mite_mds <- metaMDS(mite)
+
+plot(mite_mds, display = "site")
 
 
 mite_ca <- cca(mite)
@@ -58,8 +66,15 @@ plot(mite_ca)
 
 screeplot(mite_ca, bstick = T)
 
+plot(mite_ca)
+
+biplot(mite_ca)
+
+
 
 peas <- matrix(c(99, 42, 29, 13), byrow = T, ncol = 2)
+
+
 
 Ft <- sum(peas)
 
@@ -125,6 +140,29 @@ p_j <- apply(mite, 2, FUN = sum)/sum(mite) #Маргинальная сумма 
 Q <- (p_ij - p_i %*% t(p_j))/sqrt(p_i %*% t(p_j))
 
 
+f_ij <- mite #Частота встречи данного вида в данной пробе, то есть это первичные даные!
+
+p_ij <- mite/Ft #вероятность встречи данного вида в данной пробе
+
+q <- p_i %*% t(p_j) #вероятность встретить особь в данной пробе.
+
+Ft <- sum(mite) #Общее количество найденных животных
+
+f_i <- apply(mite, MARGIN = 1, FUN = sum) #Общее количество особей в каждой пробе
+
+p_i <- f_i/Ft #Вектор вероятностей встретить какую-либо особь в данной пробе
+
+f_j <- apply(mite, MARGIN = 2, FUN = sum) #Общее количество особей в каждом виде
+
+p_j <- f_j/Ft #Вектор вероятностей встретить особь данного вида
+
+
+Q <- (p_ij - p_i %*% t(p_j))/sqrt(p_i %*% t(p_j))
+
+
+
+summary(mite_ca)
+
 sum(Q^2)
 
 
@@ -159,6 +197,9 @@ O <- mite
 
 sum(((O - E)/sqrt(E) / sum(O))^2 * f) #та же самая инерция
 
+
+
+
 U <- svd(Q)$u
 D <- svd(Q)$d
 V <- svd(Q)$v
@@ -167,13 +208,29 @@ dim(U)
 
 dim(V)
 
+Qsvd <- U %*% D %*% t(V) #матрица "восстановленная" из "вспомогательных" матриц
+
+round(sum(Q - Qsvd)) #разность между исходной и "восстановленной" матрицами
 
 
 # Связь SVD и собственных значений
 
 D <- diag(D)
 
+
+dim(D)
+
 round(t(Q) %*% Q -   V %*% t(D) %*% D %*% t(V))
+
+A <- t(Q) %*% Q
+
+
+eig_values <- eigen(A)$values #Собственные числа матрицы A
+eig_vectors <- eigen(A)$vectors #Матрица собственных векторов для матрицы A
+
+
+plot(eig_values, diag(D))
+
 
 
 eigen(t(Q) %*% Q)$values #Собственные значения для матрицы ковариации Q'Q
@@ -185,15 +242,156 @@ diag(D)^2 #Квадраты сингулярных чисел
 
 plot(eigen(t(Q) %*% Q)$values, diag(D))
 
+sum(eig_values)
+
+
+Information <- data.frame(
+  CA = 1:length(eig_values),
+  Eigenval =round(eig_values, 5),
+  Prop_Explained = round(eig_values/sum(eig_values), 5),
+  Cumul_Prop=round(cumsum(eig_values/sum(eig_values)),5)
+)
 
 
 
-det(t(Q) %*% Q) #Определитель равен нулю, так как одно из собственных значений равно нулю
 
-# Важно!!! При SVD матрицы Q'Q всегда одно из сингулярных чисел (это то же что корень из собственного числа) будет равно 0. Поэтому в анализе используется V (с х с-1)
+CA_samples <- diag(p_i^(-1/2))%*% U[,1:2]
 
-ncol(mite_cca$CA$v) #вместо 35!!!
+
+library(ggplot2)
+Pl_CA_st <-
+  ggplot(as.data.frame(CA_samples), aes(x=V1, y=V2) ) +
+  geom_text(label = rownames(mite)) +
+  geom_hline(yintercept=0, linetype = 2) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  theme_bw() +
+  labs(x= "CA1", y = "CA2")
+
+
+
+
+
+
+CA_species <- diag(p_j^(-1/2))%*% V[,1:2]
+
+
+Pl_CA_sp <-
+  ggplot(as.data.frame( CA_species), aes(x = V1, y = V2) )  +
+  geom_hline(yintercept=0, linetype = 2) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  theme_bw() +
+  labs(x= "CA1", y = "CA2") +
+  geom_text(label = names(mite))
+
+Pl_CA_sp
+
 
 
 ### CA  для данных про птиц в Австралии
+
+bird <- birds[,-c(1,2)]
+
+
+Ft <- sum(bird) #Общее количество найденных животных
+
+
+f_ij <- bird #Частота встречи данного вида в данной пробе, то есть это первичные даные!
+
+p_ij <- bird/Ft #вероятность встречи данного вида в данной пробе
+
+q <- p_i %*% t(p_j) #вероятность встретить особь в данной пробе.
+
+
+f_i <- apply(bird, MARGIN = 1, FUN = sum) #Общее количество особей в каждой пробе
+
+p_i <- f_i/Ft #Вектор вероятностей встретить какую-либо особь в данной пробе
+
+f_j <- apply(bird, MARGIN = 2, FUN = sum) #Общее количество особей в каждом виде
+
+p_j <- f_j/Ft #Вектор вероятностей встретить особь данного вида
+
+
+
+
+
+Q <- (f_ij*f - f_i %*% t(f_j))/(f*sqrt(f_i %*% t(f_j)))
+
+class(Q)
+
+Q <- as.matrix(Q)
+
+Inertia <- sum(Q^2)
+
+
+
+U <- svd(Q)$u
+D <- svd(Q)$d
+V <- svd(Q)$v
+
+
+A <- t(Q) %*% Q
+
+
+eig_values <- eigen(A)$values #Собственные числа матрицы A
+eig_vectors <- eigen(A)$vectors #Матрица собственных векторов для матрицы A
+
+
+
+
+
+eig_values
+
+
+Information <- data.frame(
+  CA = 1:length(eig_values),
+  Eigenval =round(eig_values, 5),
+  Prop_Explained = round(eig_values/sum(eig_values), 5),
+  Cumul_Prop=round(cumsum(eig_values/sum(eig_values)),5)
+)
+
+
+
+
+CA_samples <- diag(p_i^(-1/2))%*% U[,1:2]
+
+
+library(ggplot2)
+Pl_CA_st <-
+  ggplot(as.data.frame(CA_samples), aes(x=V1, y=V2) ) +
+  geom_text(label = rownames(bird)) +
+  geom_hline(yintercept=0, linetype = 2) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  theme_bw() +
+  labs(x= "CA1", y = "CA2")
+
+
+
+
+
+
+CA_species <- diag(p_j^(-1/2))%*% V[,1:2]
+
+
+Pl_CA_sp <-
+  ggplot(as.data.frame( CA_species), aes(x = V1, y = V2) )  +
+  geom_hline(yintercept=0, linetype = 2) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  theme_bw() +
+  labs(x= "CA1", y = "CA2") +
+  geom_text(label = names(bird))
+
+Pl_CA_sp
+
+
+
+bird_ca <- cca(bird)
+
+summary(bird_ca)
+
+plot(bird_ca, scaling = "site", display = "site")
+
+
+bird_mds <- metaMDS(bird)
+
+plot(bird_mds, display = "site")
 
