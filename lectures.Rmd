@@ -210,7 +210,7 @@ install.packages(c("cowplot", "geomorph"))
 
 ## 10. Корреспондентный анализ (Corespondence Analysis, CA) (пн 13 апреля, ВХ)
 
-<!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
+- Презентация [html](10_CA_and_CA_calculation.html)
 - [код R](10_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx)
 
