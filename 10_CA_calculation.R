@@ -395,3 +395,22 @@ bird_mds <- metaMDS(bird)
 
 plot(bird_mds, display = "site")
 
+
+
+rat <- read.csv("data/bolger1.csv")
+
+rat2 <- rat[, -c(1:2)]
+
+
+
+rat_ca <- cca(rat2)
+
+plot(rat_ca, scaling = "species", display = "species")
+
+plot(rat_ca, scaling = "site", display = "site")
+
+
+rat_mds <- metaMDS(rat2)
+
+plot(rat_mds, type = "t")
+
