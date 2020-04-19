@@ -88,6 +88,9 @@ mylegend<-g_legend(p0 + theme(legend.position = "bottom", legend.key = element_b
 library(gridExtra)
 grid.arrange(arrangeGrob(p1, p2, p3, p4, nrow = 1), mylegend, nrow = 2, heights = c(10, 1))
 
+# Здесь будет ваш код для RDA
+
+
 
 
 
