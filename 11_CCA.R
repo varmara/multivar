@@ -4,8 +4,6 @@
 #Вадим Хайтов, Марина Варфоломеева
 
 
-data(mite)
-
 library(vegan)
 data(mite)
 data(mite.env)
@@ -199,6 +197,10 @@ sum(round(diag(D_res), 5) != 0)
 
 sum(D_res^2)
 
+sum(D_res^2)  + sum(D_pred^2)
+
+
+
 mite_cca
 
 
@@ -216,7 +218,7 @@ ggplot(as.data.frame(constr_CA_samples), aes(x=V1, y=V2)) +   geom_text(label = 
 
 
 
-plot(mite_cca, display = "lc", tpe = "t", scaling = 1)
+plot(mite_cca, display = "site", type = "t", scaling = 1)
 
 
 
@@ -226,7 +228,7 @@ constr_CA_species <- diag(p_j^(-1/2))%*% V_pred
 ggplot(as.data.frame(constr_CA_species), aes(x=V1, y=V2)) + geom_text(label = colnames(mite)) + labs(x = "CCA1", y = "CCA2") + theme_bw() + geom_hline(yintercept = 0, linetype = 2) + geom_vline(xintercept = 0, linetype = 2) + ggtitle("Результаты, полученные вручную")
 
 
-plot(mite_cca, display = "sp", tpe = "t", scaling = 2)
+plot(mite_cca, display = "sp", type = "t", scaling = 2)
 
 
 summary(mite_cca)
@@ -244,12 +246,13 @@ inert_comp[order(inert_comp[,1]), ]
 
 #Триплоты
 
-plot(mite_cca, scaling = 1, main = "scaling 1")
+plot(mite_cca, scaling = "site", main = "scaling 1")
 
 
 
-plot(mite_cca, scaling = 2, main = "scaling 2")
+plot(mite_cca, scaling = "species", main = "scaling 2")
 
+plot(mite_cca, scaling = "symmetric", main = "scaling 2")
 
 
 
@@ -260,12 +263,11 @@ plot(mite_cca, scaling = 1,  display = c("lc", "cn"),  main = "biplot cca, scali
 
 # Проверка значимости ординации
 anova(mite_cca, permutations = 9999)
-
+anova(mite_cca, by="axis")
 anova(mite_cca, by="term")
 
 anova(mite_cca, by="mar")
 
-anova(mite_cca, by="axis")
 
 
 # Компоненты изменчивости при построении модели с двумя наборами предикторов (возможно только для RDA)
@@ -277,4 +279,7 @@ showvarparts(2)
 mod
 
 plot(mod)
+
+
+
 
