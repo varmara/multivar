@@ -13,6 +13,7 @@
 
 <title>Презентации и данные</title>
 
+<script src="site_libs/header-attrs-2.6.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -24,29 +25,46 @@
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -55,9 +73,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; } /* Alert */
 code span.an { color: #008000; } /* Annotation */
@@ -139,6 +157,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
@@ -441,6 +460,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
+
 <div class="fluid-row" id="header">
 
 
@@ -452,7 +472,7 @@ div.tocify {
 
 <div id="знакомство-с-многомерными-данными.-чт-13-февраля-вх" class="section level2">
 <h2>1. Знакомство с многомерными данными. (чт 13 февраля, ВХ)</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;vegan&quot;</span>)</span></code></pre></div>
 <ul>
 <li><p>Презентация <a href="01_multivariate_data_and_dissimilarities.html">html</a></p></li>
 <li><p><a href="01_multivariate_data_and_dissimilarities_code.R">код R</a></p></li>
@@ -473,37 +493,49 @@ div.tocify {
 </div>
 <div id="nmds-envfit-ordisurf-пн-17-февраля-мв" class="section level2">
 <h2>2. nMDS, envfit, ordisurf (пн 17 февраля, МВ)</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Чтение файлов</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a>
-<a class="sourceLine" id="cb2-3" title="3"></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="co"># Обработка данных</span></a>
-<a class="sourceLine" id="cb2-5" title="5"><span class="kw">install.packages</span>(<span class="st">&quot;tidyr&quot;</span>)</a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="kw">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="kw">install.packages</span>(<span class="st">&quot;broom&quot;</span>)</a>
-<a class="sourceLine" id="cb2-8" title="8"></a>
-<a class="sourceLine" id="cb2-9" title="9"><span class="co"># Карты</span></a>
-<a class="sourceLine" id="cb2-10" title="10"><span class="kw">install.packages</span>(<span class="st">&quot;ggmap&quot;</span>)</a>
-<a class="sourceLine" id="cb2-11" title="11"></a>
-<a class="sourceLine" id="cb2-12" title="12"><span class="co"># # Графики из vegan при помощи ggplot2</span></a>
-<a class="sourceLine" id="cb2-13" title="13"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
-<a class="sourceLine" id="cb2-14" title="14"><span class="co"># devtools::install_github(&quot;gavinsimpson/ggvegan&quot;)</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Чтение файлов</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Обработка данных</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tidyr&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;broom&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Карты</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ggmap&quot;</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># # Графики из vegan при помощи ggplot2</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github(&quot;gavinsimpson/ggvegan&quot;)</span></span></code></pre></div>
 <!-- - Презентация [html](02_nMDS.html) -->
-<!-- - [код R](02_nMDS_code.R) -->
-<!-- - __Данные для карты__ -->
-<!--     + [data/dist_spb.xlsx](data/dist_spb.xlsx) -->
-<!--     + [dist_spb_dat.RData](data/dist_spb_dat.RData) -->
-<!-- - __Данные о симбионтах мидий__ из работы *Krapivin, V. A., Bagrov, S. V., & Varfolomeeva, M. A. (2018). Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of aquatic organisms, 130(2), 131-144.* -->
-<!--     + [Krapivin_2017_Medulis-symb.tab](data/Krapivin_2017_Medulis-symb.tab) -->
-<!-- **Данные для самостоятельной работы** -->
+<ul>
+<li><p><a href="02_nMDS_code.R">код R</a></p></li>
+<li><p><strong>Данные для карты</strong></p>
+<ul>
+<li><a href="data/dist_spb.xlsx">data/dist_spb.xlsx</a></li>
+<li><a href="data/dist_spb_dat.RData">dist_spb_dat.RData</a></li>
+</ul></li>
+<li><p><strong>Данные о симбионтах мидий</strong> из работы <em>Krapivin, V. A., Bagrov, S. V., &amp; Varfolomeeva, M. A. (2018). Effect of tidal level on abundance of symbionts in the White Sea blue mussel. Diseases of aquatic organisms, 130(2), 131-144.</em></p>
+<ul>
+<li><a href="data/Krapivin_2017_Medulis-symb.tab">Krapivin_2017_Medulis-symb.tab</a></li>
+</ul></li>
+</ul>
+<p><strong>Данные для самостоятельной работы</strong></p>
 <!-- - __Фауна Долгой губы__ (Данные В.М.Хайтова) -->
 <!--     + [dolg_abundance.txt](data/dolg_abundance.txt) -->
 <!--     + [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
-<!-- - __Растительные сообщества во франции La Mafragh (Annaba, Algérie).__ Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
-<!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
-<!--     + параметры среды [mafragh_env.csv](data/mafragh_env.csv) -->
-<!-- - __Деревья на острове Barro Colorado.__ Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.* -->
-<!--     + [BCI_species.csv](data/BCI_species.csv) -->
-<!--     + параметры среды [BCI_env.csv](data/BCI_env.csv) -->
+<ul>
+<li><strong>Растительные сообщества во франции La Mafragh (Annaba, Algérie).</strong> Данные из работы <em>de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d’une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d’Ecologie, 18, 393–407.</em>
+<ul>
+<li><a href="data/mafragh_species.csv">mafragh_species.csv</a></li>
+<li>параметры среды <a href="data/mafragh_env.csv">mafragh_env.csv</a></li>
+</ul></li>
+<li><strong>Деревья на острове Barro Colorado.</strong> Данные из работы <em>Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. &amp; Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.</em>
+<ul>
+<li><a href="data/BCI_species.csv">BCI_species.csv</a></li>
+<li>параметры среды <a href="data/BCI_env.csv">BCI_env.csv</a></li>
+</ul></li>
+</ul>
 </div>
 <div id="связь-между-наборами-данных.-тест-мантела-чт-20-февраля-вх" class="section level2">
 <h2>3. Связь между наборами данных. Тест Мантела (чт 20 февраля, ВХ)</h2>
@@ -540,7 +572,7 @@ div.tocify {
 </div>
 <div id="permanova-пн-2-марта-мв" class="section level2">
 <h2>5. PERMANOVA (пн 2 марта, МВ)</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;readxl&quot;</span>)</span></code></pre></div>
 <!-- - Презентация [html](05_perMANOVA.html) -->
 <!-- - [код R](05_perMANOVA.R) -->
 <!-- - Данные -->
@@ -555,7 +587,7 @@ div.tocify {
 </div>
 <div id="кластерный-анализ-пн-16-марта-мв" class="section level2">
 <h2>6. Кластерный анализ (пн 16 марта, МВ)</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;candisc&quot;</span>, <span class="st">&quot;ape&quot;</span>, <span class="st">&quot;dendextend&quot;</span>, <span class="st">&quot;cluster&quot;</span>, <span class="st">&quot;pvclust&quot;</span>))</span></code></pre></div>
 <!-- - Презентация [html](06_cluster_analysis.html) -->
 <!-- - [код R](06_cluster_analysis.R) -->
 <!-- **Данные для самостоятельной работы** -->
@@ -563,7 +595,7 @@ div.tocify {
 </div>
 <div id="основы-линейной-алгебры.-svd.-пн-23-марта-вх" class="section level2">
 <h2>7. Основы линейной алгебры. SVD. (пн 23 марта, ВХ)</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;jpeg&quot;</span>)</span></code></pre></div>
 <!-- - Презентация [html](07_introduction_to_linear_algebra.html) -->
 <!-- - [код R](07_introduction_to_linear_algebra.R) -->
 <!-- - Данные -->
@@ -572,13 +604,13 @@ div.tocify {
 </div>
 <div id="анализ-главных-компонент-principal-component-analysis-pca-пн-30-марта-мв" class="section level2">
 <h2>8. Анализ главных компонент (Principal Component Analysis, PCA) (пн 30 марта, МВ)</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;cowplot&quot;</span>, <span class="st">&quot;geomorph&quot;</span>))</span></code></pre></div>
 <!-- - Презентация [html](08_PCA.html) -->
 <!-- - [код R](08_PCA.R) -->
 <!-- - Данные -->
 <!--     + [jellyfish.csv](data/jellyfish.csv) -->
 <!--     + [protein.csv](data/protein.csv) -->
-<!-- (Геометрическаая) морфометрия -->
+<!-- (Геометрическая) морфометрия -->
 <!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
 <!-- - [код R](08_PCA_geometric_morphometrics.R) -->
 <!-- - Данные -->
@@ -602,7 +634,7 @@ div.tocify {
 </div>
 <div id="корреспондентный-анализ-corespondence-analysis-ca-пн-13-апреля-вх" class="section level2">
 <h2>10. Корреспондентный анализ (Corespondence Analysis, CA) (пн 13 апреля, ВХ)</h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;ade4&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ade4&quot;</span>)</span></code></pre></div>
 <!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
 <!-- - [код R](10_CA_calculation.R) -->
 <!-- - Данные [macnally.xlsx](data/macnally.xlsx) -->
@@ -616,9 +648,9 @@ div.tocify {
 </div>
 <div id="канонический-корреспондентный-анализ-canonical-correspondence-analysis-cca-пн-20-апреля-вх" class="section level2">
 <h2>11. Канонический корреспондентный анализ (Canonical Correspondence Analysis, CCA) (пн 20 апреля, ВХ)</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="kw">install.packages</span>(<span class="st">&quot;akima&quot;</span>)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="kw">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;DAAG&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;akima&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</span></code></pre></div>
 <!-- - Презентация [html](11_CCA.html) -->
 <!-- - [код R](11_CCA.R) -->
 <!-- **Данные для самостоятельной работы** -->
@@ -652,7 +684,7 @@ div.tocify {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

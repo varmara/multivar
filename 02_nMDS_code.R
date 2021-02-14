@@ -113,7 +113,7 @@ spb_ord$stress
 
 # ## Открываем данные
 
-dat <- read.delim("data/Krapivin_2017_Medulis-symb.tab", skip = 36)
+dat <- read.delim("data/Krapivin_2017_Medulis-symb.tab", skip = 36, stringsAsFactors = TRUE)
 str(dat)
 
 # ## Приводим в порядок названия переменных
@@ -132,17 +132,14 @@ colnames(dat) # Стало
 # Делаем сайт фактором
 dat$Site <- factor(dat$Site, levels = c(2, 3, 1), labels = c("G","L","S"))
 
-# Сливаем редкие виды в одну категорию (кроме трематод)
-colSums(dat[, 10:23])
-f_remove <- c("Nematoda", "Microsetella", "Copepoda",
-              "Chironomidae", "Halacaridae", "Jaeraspp",
-              "Ostrac")
+# Сливаем редкие виды в одну категорию
+f_remove <- c("Nematoda", "Microsetella", "Copepoda", "Chironomidae",
+              "Halacaridae", "Jaeraspp", "Ostrac")
 dat$Other <- rowSums(dat[, f_remove])
 
 # Суммарная численность симбионтов
-f_sp <- c("Urastomaspp", "Renicolaspp", "Himasthlaspp",
-          "Metacercaria", "Gymnophallusspp", "Alg",
-          "Other")
+f_sp <- c("Urastomaspp", "Renicolaspp", "Himasthlaspp", "Metacercaria",
+          "Gymnophallusspp", "Alg", "Other")
 dat$Total  <- rowSums(dat[, f_sp])
 
 # Данные для анализа
@@ -348,7 +345,6 @@ ggplot(data = ord_mus_pt, aes(x = NMDS1, y = NMDS2)) +
 #
 # **Источники данных**
 #
-# 1. Фауна Долгой губы (данные В.М.Хайтова).
-# 2. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, данные `mafragh`, пакет `ade4`).
-# 3. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), данные `BCI`, пакет `vegan`).
+# 1. растительные сообщества во франции La Mafragh (данные из работы de Belair et al. 1987, данные `mafragh`, пакет `ade4`).
+# 2. Деревья на острове Barro Colorado (данные из работы Condit et al. (2002), данные `BCI`, пакет `vegan`).
 
