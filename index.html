@@ -13,6 +13,7 @@
 
 <title>Анализ и визуализация многомерных данных с использованием R</title>
 
+<script src="site_libs/header-attrs-2.6.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -23,6 +24,15 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 
@@ -53,6 +63,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
@@ -355,6 +366,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
+
 <div class="fluid-row" id="header">
 
 
@@ -382,21 +394,13 @@ div.tocify {
 <div id="задания-дедлайны-и-оценки" class="section level3">
 <h3>Задания, дедлайны и оценки</h3>
 <ol style="list-style-type: decimal">
-<li><p>Тесты по каждой теме будут размещены на платформе Stepik. После мягкого дедлайна (1 неделя) за задания начисляется только половина баллов</p></li>
+<li><p>Тесты по каждой теме будут размещены на платформе Stepik. После мягкого дедлайна (1 неделя) за задания начисляется только половина баллов.</p></li>
 <li><p>В конце курса будет финальный тест, тоже на Stepik.</p></li>
 </ol>
 <ul>
 <li><a href="coding_practices.html">Правила хорошего кода</a></li>
 </ul>
-<p>Итоговая оценка:</p>
-<ul>
-<li>Выше 60% баллов - зачет</li>
-<li>60-69% =&gt; «удовлетворительно»; 70-79% =&gt; «хорошо»; 80% и больше =&gt; «отлично»</li>
-</ul>
-</div>
-<div id="пересдачи-заданий" class="section level3">
-<h3>Пересдачи заданий</h3>
-<p>По пропущенным темам будут дополнительные вопросы в тесте в конце курса.</p>
+<p>Итоговая оценка выставляется по системе ECTS</p>
 </div>
 </div>
 <div id="ссылки-и-ресурсы" class="section level2">
@@ -426,7 +430,7 @@ div.tocify {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -465,7 +469,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
