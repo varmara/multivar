@@ -24,29 +24,20 @@ sum(is.na(varespec))
 
 
 # Код для построения ординаци в осях nMDS
-log_varespec <- decostand(varespec, method = "log")
 
-veg_ord <- metaMDS(log_varespec, autotransform = FALSE)
-
-plot(veg_ord)
-
-stressplot(veg_ord)
+stressplot()
 
 
-scores(veg_ord, display = "sites")
+scores()
 
-mds_points <- as.data.frame(scores(veg_ord, display = "sites"))
+mds_points <- as.data.frame(scores())
 
-ggplot(mds_points, aes(x = NMDS1, y = NMDS2)) + geom_point(aes(color = varechem$Al), size = 4) + scale_color_gradient(low = "yellow", high = "red") + theme_bw() + theme(legend.position = "bottom") + labs(color = "Концентрация алюминия") + ggtitle(paste("Stress = ", round(veg_ord$stress, 2) ))
+ggplot(mds_points, )) + geom_point(aes(), size = 4) + scale_color_gradient(low = "yellow", high = "red") + theme_bw() + theme(legend.position = "bottom") + labs(color = "Концентрация алюминия") + ggtitle(paste("Stress = ", ) ))
 
 
-
-ordiplot(veg_ord, display = "sites")
 
 # Применяем функцию envfit()
-env_fit <- envfit(veg_ord ~ ., data = varechem)
-
-env_fit
+env_fit <- envfit()
 
 
 # Визуализация результатов
@@ -224,10 +215,10 @@ ascam <- read.csv("data/ASCAM.csv",
 
 library(dplyr)
 
-log_com <- com %>% filter(Bank == "Vor2") %>% select(-c(1:3)) %>% decostand(,method = "log")
+log_com <- com %>% filter(Bank == "Vor2") %>% select(-c(1:3)) %>% decostand(.,method = "log")
 
 
-log_ascam <- ascam %>% filter(Bank == "Vor2") %>% select(-c(1:2)) %>% decostand(,method = "log")
+log_ascam <- ascam %>% filter(Bank == "Vor2") %>% select(-c(1:2)) %>% decostand(.,method = "log")
 
 ord_log_com <- metaMDS(log_com, autotransform = F)
 
@@ -267,8 +258,8 @@ gradient_model <- vegdist(com$Year[com$Bank == "Vor2"], method="euclidian")
 gradient_model
 
 ## Тестируем гипотезу о наличии градиента с помощью теста Мантела
-dist_vor2_com <- vegdist(, method = "bray")
-dist_vor2_ascam <- vegdist(, method = "euclidean")
+dist_vor2_com <- vegdist(  , method = "bray")
+dist_vor2_ascam <- vegdist(  , method = "euclidean")
 
 ### 1) Наличие градиента в структуре сообщества
 mantel(dist_com, gradient_model)
@@ -376,13 +367,4 @@ hist + geom_histogram (bin=0.1, fill="blue", colour="black")+geom_vline(xinterce
 
 
 
-
-# Самостоятельная работа
-
-
-
-read.table(data/mafragh_species.csv, header = TRUE)
-
-library(ade4)
-data(package = "ade4")
 

@@ -41,10 +41,10 @@ ggplot(MDS, aes(x = MDS1, y = MDS2, fill = )) +
 
 # **Задание:**
 #
-# 1. Вычислите матрицу коэффициентов Брея-Куртиса на основе матрицы `log_com`
-# 2. Разверните полученную матрицу в вектор.
-# 3. На основе полученного вектора создайте вектор, содержащий ранги расстояний.
-
+# # 1. Вычислите матрицу коэффициентов Брея-Куртиса на основе матрицы `log_com`
+# # 2. Разверните полученную матрицу в вектор.
+# # 3. На основе полученного вектора создайте вектор, содержащий ранги расстояний.
+#
 dist_com <- vegdist( , method = "bray")
 #
 # write.table(as.data.frame(dist_com), "clipboard", sep = "\t", row.names = F)
@@ -186,16 +186,16 @@ bank_anosim <- anosim(log_com, grouping = )
 plot(bank_anosim)
 
 
-## Модельные матрицы, тест Мантела и ANOSIM
-
-n <- length(com$Bank)
-
-m <- vegdist(as.numeric(com$Bank), method = "euclidean")
-mm <- m
-mm[m > 0] <- (1/sum(m > 0))/(n*(n-1)/4)
-mm[m == 0] <- (-1/sum(m == 0))/(n*(n-1)/4)
-
-mantel(vegdist(log_com), mm, method = "spearman")
+# ## Модельные матрицы, тест Мантела и ANOSIM
+#
+# n <- length(com$Bank)
+#
+# m <- vegdist(as.numeric(com$Bank), method = "euclidean")
+# mm <- m
+# mm[m > 0] <- (1/sum(m > 0))/(n*(n-1)/4)
+# mm[m == 0] <- (-1/sum(m == 0))/(n*(n-1)/4)
+#
+# mantel(vegdist(log_com), mm, method = "spearman")
 
 
 

@@ -75,32 +75,39 @@ Hint. В качестве меры различия используйте ко�
 
 
 
-## Решение {.columns-2 .smaller}
+## Решение {.smaller .columns-2}
+
+<!-- ```{r, eval=FALSE} -->
+<!-- veg_ord <- metaMDS(varespec, trace = 0) -->
+<!-- veg_MDS <- as.data.frame(veg_ord$points) -->
+
+<!-- ``` -->
 
 
-<!-- :::::::::::::: {.columns} -->
+<!-- ```{r message=FALSE, eval=FALSE} -->
+<!-- library(ggplot2) -->
+<!-- Pl_mds <-  -->
+<!--   ggplot(veg_MDS, aes(x = MDS1, y = MDS2,  -->
+<!--                     fill = varechem$Al))  + -->
+<!--   geom_point(shape=21, size =4)+ -->
+<!--   ggtitle(paste("Stress = ", round(veg_ord$stress, 2))) +  -->
+<!--   theme_bw() + -->
+<!--   theme(legend.position = "bottom") + -->
+<!--   labs(fill = "Aluminium concentration") + -->
+<!--   scale_fill_gradient(high = "red", low = "yellow")  -->
 
-::: {.column}
-```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, include=FALSE}
-veg_ord <- metaMDS(varespec)
+<!-- ``` -->
+
+```{r, echo=FALSE, fig.height=5, fig.width=5, message=FALSE, echo=TRUE}
+veg_ord <- metaMDS(varespec, trace = FALSE)
 veg_MDS <- as.data.frame(veg_ord$points)
 
 ```
 
-```{r, eval=FALSE}
-veg_ord <- metaMDS(varespec, trace = 0)
-veg_MDS <- as.data.frame(veg_ord$points)
-
-```
-
-:::
-
-
-::: {.column}
-
-```{r, fig.height=5, fig.width=5, message=FALSE}
+```{r message=FALSE, echo=TRUE}
 library(ggplot2)
-ggplot(veg_MDS, aes(x = MDS1, y = MDS2, 
+Pl_mds <- 
+  ggplot(veg_MDS, aes(x = MDS1, y = MDS2, 
                     fill = varechem$Al))  +
   geom_point(shape=21, size =4)+
   ggtitle(paste("Stress = ", round(veg_ord$stress, 2))) + 
@@ -110,9 +117,13 @@ ggplot(veg_MDS, aes(x = MDS1, y = MDS2,
   scale_fill_gradient(high = "red", low = "yellow") 
 
 ```
-:::
 
-<!-- :::::::::::::: -->
+```{r fig.height=6, fig.width=5, echo=FALSE }
+Pl_mds
+```
+
+
+
 
 ## Анализ связи с переменными c помощью функции envfit() 
 
