@@ -160,7 +160,7 @@ p_value <- mean(tperm <= -t_initial |tperm >= t_initial )
 
 
 
-# Пермутационная оценка значимсоти корреляции
+# Пермутационная оценка значимости корреляции
 library(coin)
 
 library(MASS)
@@ -173,7 +173,7 @@ Sigma <- matrix(.7, nrow=2, ncol=2)
 
 diag(Sigma) <- c(1, 3)
 
-# Sigma Коварационная матрица
+# Sigma --- ковариационная матрица
 
 dat <- as.data.frame(mvrnorm(n=100, mu=mu, Sigma=Sigma))
 
@@ -185,7 +185,7 @@ spearman_test( V1 ~ V2, data = dat, distribution = approximate(B=99999))
 
 
 
-# Пермутационная оыенка значимости мантеловской корреляции
+# Пермутационная оценка значимости мантеловской корреляции
 
 mant <- mantel(dist_com, dist_chem, method="pearson", permutations = 9999)
 mant

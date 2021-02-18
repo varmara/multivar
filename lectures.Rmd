@@ -94,7 +94,7 @@ install.packages("coin")
 
 
 
-## 4. ANOSIM, SIMPER (пн 22 февраля, ВХ)
+## 4. ANOSIM, SIMPER (чт 18 февраля, ВХ)
 
 - Презентация [html](04_ANOSIM_SIMPER.html)
 - [код R](04_ANOSIM_SIMPER.R)
@@ -114,7 +114,7 @@ install.packages("coin")
     + [mussel_experiment.csv](data/mussel_experiment.csv)
 
 
-## 5. PERMANOVA (пн 1 марта, МВ)
+## 5. PERMANOVA (пн 22 февраля, МВ)
 
 ```{r eval=FALSE}
 install.packages("readxl")
@@ -136,7 +136,7 @@ install.packages("readxl")
 <!-- - __Гематология сонных ящериц _Tiliqua rugosa_.__ Данные из работы *Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia's cereal croplands, 2010, Version 1.0. http://doi.org/10.4227/05/537C5C5553F9E. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.* -->
 <!--     + [Sleepy lizard.xlsx](data/Sleepy lizard.xlsx) -->
 
-## 6. Кластерный анализ (пн 15 марта, МВ)
+## 6. Кластерный анализ (пн 1 марта, МВ)
 
 ```{r eval=FALSE}
 install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
@@ -149,7 +149,7 @@ install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
 
 <!-- С прошлого занятия. -->
 
-## 7. Основы линейной алгебры. SVD. (пн 22 марта, ВХ)
+## 7. Основы линейной алгебры. SVD. (пн 15--22 марта, ВХ)
 
 ```{r eval=FALSE}
 install.packages("jpeg")

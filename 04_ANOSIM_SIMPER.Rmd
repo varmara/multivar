@@ -255,7 +255,7 @@ for(i in 1:9999) R_perms[i] <- R_perm(comm = log_com, group = com$Mussel_size)
 ```
 
 
-Вопрос: Что надо добавить в вектор R_prems?
+Вопрос: Что надо добавить в вектор `R_perms`?
 
 
 
