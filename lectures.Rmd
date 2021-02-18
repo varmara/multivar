@@ -70,7 +70,7 @@ install.packages("ggmap")
 ## 3. Связь между наборами данных. Тест Мантела (чт 18 февраля, ВХ)
 
 
-<!-- - Презентация [html](03_Mantel_correlation-based_methods.html) -->
+- Презентация [html](03_Mantel_correlation-based_methods.html)
 - [код R](03_Mantel_correlation-based_methods.R)
 - Данные
     + [Coordinates.txt](data/Coordinates.txt)
@@ -96,7 +96,7 @@ install.packages("coin")
 
 ## 4. ANOSIM, SIMPER (пн 22 февраля, ВХ)
 
-<!-- - Презентация [html](04_ANOSIM_SIMPER.html) -->
+- Презентация [html](04_ANOSIM_SIMPER.html)
 - [код R](04_ANOSIM_SIMPER.R)
 - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv)
 
