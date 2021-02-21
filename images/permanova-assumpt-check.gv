@@ -1,0 +1,16 @@
+digraph {
+  graph [layout = dot, rankdir = LR, ratio = compress]
+  node [shape = rectangle, fontsize = 16, fontname="Helvetica", fixedsize = true, height = 1.5, style = filled, color="#E8E8E8"];
+ edge [ fontname=Courier, fontsize = 18];
+  rec1 [label = 'Исходные  \nданные', width = 1.5]
+  rec2 [label = 'Матрица \nкоэффициентов различия, \nв т.ч. неевклидовых', width = 3]
+  rec3 [label =  'PCoA: \nцентроиды\nи координаты точек, \nЕвклидово пространство', width = 3]
+#  rec4 [label = 'График \nординации\nPCoA', width = 2]
+  rec5 [label = 'PERMDISP2\n Тест различий \nвнутригрупповых \nдисперсий', width = 2]
+  # edge definitions with the node IDs
+  rec1 -> rec2 [ label="vegdist()" ];
+  rec2 -> rec3 [label = "betadisper()"];
+#  rec3 -> rec4 [label = "plot()"];
+  rec3 -> rec5 [label = "anova()"];
+
+  }
