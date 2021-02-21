@@ -17,5 +17,3 @@ StripTrailingWhitespace: Yes
 
 BuildType: Website
 DisableExecuteRprofile: Yes
-
-SpellingDictionary: ru_RU
