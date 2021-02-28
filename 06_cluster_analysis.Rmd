@@ -256,8 +256,9 @@ gg_single
 
 ```{r ani-dat, include=FALSE, cache=TRUE, purl=FALSE}
 # Данные
-dat <- data.frame(x = c(9, 19, 27, 32, 38, 50), y = c(42, 40, 10, 30, 60, 35))
-rownames(dat) <- LETTERS[1:6]
+dat <- data.frame(x = c(9, 19, 30, 32, 38, 50, 20, 50), y = c(42, 40, 10, 30, 60, 35, 42, 31))
+rownames(dat) <- LETTERS[1:8]
+plot(dat, type = "n"); text(dat, rownames(dat))
 # Кластеризация
 hc_s <- hclust(dist(dat), method = "single")
 hc_c <- hclust(dist(dat), method = "complete")
@@ -303,10 +304,10 @@ cluster_ani <- function(dat, gg_dat, dist_fun = "vegdist", dist_method = "euclid
 suppressWarnings(ord <- metaMDS(dat, distance = "euclidean", autotransform = FALSE))
 gg_dat <- data.frame(ord$points)
 
-gg_list_s <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "single", k = x))
-gg_list_c <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "complete", k = x))
-gg_list_a <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "average", k = x))
-gg_list_w <- lapply(6:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "ward.D2", k = x))
+gg_list_s <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "single", k = x))
+gg_list_c <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "complete", k = x))
+gg_list_a <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "average", k = x))
+gg_list_w <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "ward.D2", k = x))
 ```
 
 ```{r fig.width=5, fig.height=5, echo=FALSE, purl=FALSE}
