@@ -78,15 +78,6 @@ d <- c(1, -1)
 
 #' Аналитическое решение
 
-# a vs b
-a %*% b
-
-# a vs c
-
-a %*% c
-# c vs d
-c %*% d
-
 
 
 #' ## Нормализованные векторы
@@ -98,7 +89,6 @@ Vec
 
 #' ##Решение
 
-Vec/norm(t(Vec), type = "F")
 
 
 
@@ -181,6 +171,7 @@ retailer %*% cost
 #'
 
 
+
 y = c(2,2,3,3,2,2,3,4,5,6,6,5,4,3,2)
 x = c(2,3,4,5,6,7,7,7,6,5,4,3,2,2,2)
 
@@ -247,20 +238,19 @@ ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gra
 # Задание: Поверните изображение на угол 30 и 90 градусов
 
 
-angle <-  -30*pi/180 #Задаем угол поворота в радианах
+angle  #Задаем угол поворота в радианах
 
 # Вращающая матрица
-Rot <- matrix(c(cos(angle), sin(angle),
-                -sin(angle), cos(angle)), nrow = 2)
+Rot <-
 
-Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), value = faceData_XY[3]) #Надо заполнить пропуски
+Image_rot <-   data.frame(t((  ) %*% t(   )), value = faceData_XY[3]) #Надо заполнить пропуски
 
 ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
 
 
 # Задание: Проведите масштабирование полученного изображения
 
-Scale <- matrix(c(3, 0, 0, 1), nrow = 2)
+Scale <- matrix(c(    ), nrow = 2)
 
 Image_trans <-   data.frame(t((Scale) %*% t(Image_rot[,1:2])), value = faceData_XY$value)
 
@@ -268,6 +258,12 @@ ggplot(Image_trans, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + sc
 
 
 
+# Задание
+# Загрузите матрицу, содержащую изображение
+matr <- read.csv("data/a_matrix.csv")
+
+# Визуализируйте эту матрицу в виде множества точек в двумерных координатах
+#Произведите вращение и масштабирование этой матрицы
 
 
 
@@ -290,7 +286,7 @@ Cent_M
 
 #' Вычислите ковариационную матрицу с помощью методов линейной алгебры и сравните ее с матрицей, полученной с помощью функции `cov()`
 
-Cov_M <- t(Cent_M) %*% M * (1/(nrow(M)-1))    #код для вычислению ковариационной матрицы с помощью матричной алгебры
+Cov_M <-     #код для вычислению ковариационной матрицы с помощью матричной алгебры
 
 cov(M)
 
@@ -302,13 +298,12 @@ apply(M, 2, FUN = function(x)sd(x)^2)
 
 #' ## Вычисление матрицы  корреляций с помощью линейной алгебры {.smaller .columns-2}
 
-Stand_M <- scale(M, center = TRUE, scale = TRUE)
+Stand_M <- scale(  )
 Stand_M
 
 
 # Вычисление вручную
-Cor_M <- t(Stand_M) %*% Stand_M*(1/(nrow(M)-1))
-
+Cor_M <-
 
 
 
