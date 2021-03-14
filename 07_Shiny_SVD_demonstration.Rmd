@@ -116,7 +116,7 @@ v <- svd_fig$v
 
 ```
 
-## Реконструкция изображения
+<!-- ## Реконструкция изображения -->
 
 ```{r, eval=FALSE}
 reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
@@ -140,7 +140,7 @@ inputPanel(
   )
 
 renderPlot({
-  gg_face(reduction(input$n_svd, u, d, v)) + ggtitle(paste("Доля использованной информации: ", round(sum(d[1:input$n_svd])/ sum(d) * 100, 1), "%"))   
+  gg_face(reduction(input$n_svd, u, d, v)) + ggtitle(paste("Доля использованной информации: ", round(sum(d[1:input$n_svd])/ sum(d) * 100, 1), "%"))
 })
 ```
 
