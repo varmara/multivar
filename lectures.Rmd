@@ -158,10 +158,16 @@ install.packages("jpeg")
 ```
 
 
-<!-- - Презентация [html](07_introduction_to_linear_algebra.html) -->
-<!-- - [код R](07_introduction_to_linear_algebra.R) -->
-<!-- - Данные -->
-<!--     + [Матрица](data/face.rda) -->
+<!-- - Презентация [html](07_introduction_to_linear_algebra_part1.html) -->
+- [код R](07_introduction_to_linear_algebra_part1.R)
+
+<!-- - Презентация [html](07_introduction_to_linear_algebra_part2.html) -->
+<!-- - [код R](07_introduction_to_linear_algebra_part2.R) -->
+
+
+- Данные
+    + [Матрица 1](data/face.rda)
+    + [Матрица 2](data/a_matrix.csv)
 
 
 <!-- [**Данные для самостоятельной работы**](07_linear_algebra_task.html) -->
