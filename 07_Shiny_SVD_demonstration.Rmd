@@ -135,8 +135,8 @@ reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
 
 inputPanel(
-   sliderInput("n_svd", label = "Number of singular triplets:",
-              min = 2, max = 50, value = 2, step = 1)
+    selectInput("n_svd", label = "Number of singular triplets:",
+              choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30), selected = 2)
   )
 
 renderPlot({
@@ -154,9 +154,9 @@ renderPlot({
 
 
 ```{r, echo=FALSE}
-u_hp <- as.matrix(read.csv("data/u_hp.csv"))
-d_hp <- as.matrix(read.csv("data/d_hp.csv"))
-v_hp <- as.matrix(read.csv("data/v_hp.csv"))
+u_hp2 <- as.matrix(read.csv("data/u_hp.csv"))
+d_hp2 <- as.matrix(read.csv("data/d_hp.csv"))
+v_hp2 <- as.matrix(read.csv("data/v_hp.csv"))
 
 ```
 
@@ -164,12 +164,12 @@ v_hp <- as.matrix(read.csv("data/v_hp.csv"))
 ```{r, echo=FALSE}
 
 inputPanel(
-   selectInput("n_svd", label = "Number of singular triplets:",
+   selectInput("n_svd2", label = "Number of singular triplets:",
               choices = c(2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30), selected = 2)
   )
 
 renderPlot({
-gg_face(reduction(input$n_svd, u_hp, d_hp, v_hp)) + ggtitle(paste("Доля использованной информации: ", round(sum(d_hp[1:input$n_svd])/ sum(d_hp) * 100, 1), "%"))
+gg_face(reduction(input$n_svd2, u_hp2, d_hp2, v_hp2)) + ggtitle(paste("Доля использованной информации: ", round(sum(d_hp2[1:input$n_svd2])/ sum(d_hp2) * 100, 1), "%"))
   })
 
 

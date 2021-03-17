@@ -162,7 +162,7 @@ install.packages("jpeg")
 - [код R](07_introduction_to_linear_algebra_part1.R)
 
 <!-- - Презентация [html](07_introduction_to_linear_algebra_part2.html) -->
-<!-- - [код R](07_introduction_to_linear_algebra_part2.R) -->
+- [код R](07_introduction_to_linear_algebra_part2.R)
 
 
 - Данные
@@ -170,7 +170,7 @@ install.packages("jpeg")
     + [Матрица 2](data/a_matrix.csv)
 
 
-<!-- [**Данные для самостоятельной работы**](07_linear_algebra_task.html) -->
+[**Данные для самостоятельной работы**](07_linear_algebra_task.html)
 
 
 ## 8. Анализ главных компонент (Principal Component Analysis, PCA) (пн 29 марта, МВ)

@@ -7,11 +7,14 @@
 #' Во многих многомерных методах требуется найти оси максимального варьирования
 
 set.seed(123456789)
+set.seed(123456789)
 
-x <- rnorm(1000, 50, 10)
-y <- 10 * x + rnorm(1000, 0, 100)
+x1 <- rnorm(500, 30, 4)
+y1 <- rnorm(500, 700, 50)
+x2 <- rnorm(500, 40, 5)
+y2 <- 10 * x2 + 200 + rnorm(500, 0, 100)
 
-XY <-data.frame(x = x, y = y)
+XY <-data.frame(x = c(x1, x2), y = c(y1, y2) )
 
 qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная 2") +
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
@@ -90,9 +93,7 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) + geom_point() +
   geom_line(data = PC1, aes(x = x, y = y), color = "yellow", size = 1.5)  +
   geom_line(data = PC2, aes(x = x, y = y), color = "yellow", size = 1.5) +
   coord_equal() + geom_abline(slope = tan(acos(U[1,1])), color = "blue") +
-  geom_abline(slope = tan(acos(U[1,1]) + acos(U[2,1]) + acos(U[2,2])), color = "blue")
-
-
+  geom_abline(slope = (U[2,2])/(U[1,2]), color = "blue")
 
 #' ## Вращение осей {.smaller .columns-2}
 
@@ -113,8 +114,25 @@ ggplot(XY_norm_cent, aes(x = x, y = y)) +
   labs(x = "Первая главная ось", y = "Вторая главная ось")
 
 
+## Задание
+# Исследуйте структуру матрицы *X*.
 
 
+set.seed(123456789)
+
+x1 <- c(rnorm(250, 30, 4), rnorm(250, 60, 4))
+x2 <- rnorm(500, 70, 50)
+x3 <- rnorm(500, 40, 5)
+x4 <- c(rnorm(100, 10, 5), rnorm(100, 40, 5), rnorm(100, 70, 5), rnorm(200, 100, 5))
+x5 <- c(rnorm(250, 50, 5), rnorm(250, 100, 5))
+
+
+X <-data.frame(x1 = x1, x2 = x2, x3 = x3, x4 = x4, x5 = x5)
+
+
+
+
+# *****************
 
 
 #' ## Сингулярное разложение матрицы средствами R {.smaller}
@@ -140,7 +158,7 @@ U %*% diag(D) %*% t(V)
 #' ##Решение
 
 
-B_reconstructed <- U[ ,1:5] %*% diag(D[1:5]) %*% t(V[ ,1:5])
+B_reconstructed <-
 
 
 qplot(as.vector(B), as.vector(B_reconstructed)) + geom_abline()
@@ -172,30 +190,6 @@ names(faceData_XY) <- c("X1", "X2", "value")
 ggplot(faceData_XY, aes(X1, X2)) + geom_tile(aes(fill = value)) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
 
 
-# Задание: Поверните изображение на угол 30 и 90 градусов
-
-
-angle <-  -30*pi/180 #Задаем угол поворота в радианах
-
-# Вращающая матрица
-Rot <- matrix(c(cos(angle), sin(angle),
-                -sin(angle), cos(angle)), nrow = 2)
-
-Image_rot <-   data.frame(t((Rot) %*% t(faceData_XY[, 1:2] )), value = faceData_XY[3]) #Надо заполнить пропуски
-
-ggplot(Image_rot, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" )
-
-
-# Задание: Проведите масштабирование полученного изображения
-
-Scale <- matrix(c(3, 0, 0, 1), nrow = 2)
-
-Image_trans <-   data.frame(t((Scale) %*% t(Image_rot[,1:2])), value = faceData_XY$value)
-
-ggplot(Image_trans, aes(X1, X2)) + geom_point(aes(color = value), size = 5) + scale_fill_gradient(low = "darkblue",   high =  "white" ) + coord_equal()
-
-
-
 ################ Применение сингулярного разложения матриц  в сжатии изображений #########333
 
 load("data/face.rda")
@@ -221,41 +215,26 @@ V_face <- SVD_face$v
 
 
 
-# Задание про волков
-
-# Здесь надо немного попреобразовывть объекты
-
-Lambda <- as.matrix(read.csv("data/Eigen_wolv.csv"))
-
-Lambda <- as.numeric(Lambda)
-
-U <- as.matrix(read.csv("data/U_wolv.csv"))
-
-cor_wol <- U %*% diag(Lambda) %*% solve(U) #Реконструируем матрицу корреляций
-
-cor_wol <- as.dist(cor_wol)
-
-plot(hclust(cor_wol))
-
-
-
-
 #' ##Рекоструируем изображение, используя только часть информации
 
 reduction <- function(x, U, D, V) U[,1:x] %*% diag(D[1:x]) %*% t(V[, 1:x])
 
-gg_face(reduction(30, U_face, D_face, V_face))
+gg_face(reduction(2, U_face, D_face, V_face))
 
 
-# Помощь в самостоятельной работе
 
 
-u1 <- as.matrix(read.csv("data/u1.csv"))
-d1 <- as.matrix(read.csv("data/d1.csv"))
-v1 <- as.matrix(read.csv("data/v1.csv"))
+### Самостоятельная работа ############################
 
-# Реконструкция изображения
-gg_face(reduction(2, u1, d1, v1))
+
+# Задание про волков
+
+
+# Восстановление изображения
+
+
+# Сжатие изображения
+
 
 
 
