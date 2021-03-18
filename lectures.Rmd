@@ -161,7 +161,7 @@ install.packages("jpeg")
 - Презентация [html](07_introduction_to_linear_algebra_part1.html)
 - [код R](07_introduction_to_linear_algebra_part1.R)
 
-<!-- - Презентация [html](07_introduction_to_linear_algebra_part2.html) -->
+- Презентация [html](07_introduction_to_linear_algebra_part2.html)
 - [код R](07_introduction_to_linear_algebra_part2.R)
 
 
