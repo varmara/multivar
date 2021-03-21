@@ -23,8 +23,7 @@ opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, 
 
 ## Вы сможете
 
-- Найти собственые значения и собственные векторы матрицы и объяснить их смысл.
-- Проводить анализ главных компонент при помощи базовых функций R и функций из пакета `vegan`
+- Проводить анализ главных компонент при помощи функций из пакета `vegan`
 - Оценивать долю дисперсии, объясненной компонентами
 - Снизить размерность данных, оставив небольшое число компонент
 - Интерпретировать смысл компонент по их факторным нагрузкам
@@ -63,8 +62,6 @@ Cat's shadow by Marina del Castell on [Flickr](https://flic.kr/p/ebe5UF)
 
 - Снижение размерности многомерных данных (dimension reduction) и создание синтетических взаимонезависимых признаков для других анализов (например, для регрессии, дискриминантного анализа)
 
-# Вспомним математику PCA на игрушечном примере
-
 ## Пример: Размеры медуз
 
 Данные о размерах медуз _Catostylus mosaicus_ (Lunn & McNeil 1991). Медузы собраны в реке Хоксбери (Новый Южный Уэльс, Австралия): часть --- на острове Дангар, другая --- в заливе Саламандер.
@@ -83,29 +80,6 @@ head(jelly, 10)
 
 </div>
 
-## Двумерные исходные данные {.columns-2}
-
-```{r echo = FALSE, fig.width=5, purl = FALSE}
-library(ggplot2)
-theme_set(theme_bw() + theme(legend.key = element_blank()))
-update_geom_defaults("point", list(shape = 19))
-
-jelly <- read.delim("data/jellyfish.csv")
-X_raw <- jelly[, 2:3]
-
-# График исходных данных
-gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) + 
-  geom_point(size = 2) 
-gg + coord_equal(expand = c(0, 0))
-```
-
-```{r, echo = FALSE, purl = FALSE}
-head(jelly, 10)
-```
-
-Исходные переменные скоррелированы. 
-
-
 ## Задача анализа главных компонент
 
 Нужно найти такую трансформацию исходных данных, чтобы "новые" переменные:
@@ -117,6 +91,17 @@ head(jelly, 10)
 Интуитивно, мы можем добиться этого, если проведем одну ось вдоль направления, в котором максимально вытянуто облако исходных данных. Вторую ось проведем перпендикулярно первой (и они будут независимы).
 
 ```{r echo = FALSE, purl = FALSE, message=FALSE}
+library(ggplot2)
+theme_set(theme_bw() + theme(legend.key = element_blank()))
+update_geom_defaults("point", list(shape = 19))
+
+X_raw <- jelly[, 2:3]
+
+# График исходных данных
+gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) + 
+  geom_point(size = 2) 
+# gg + coord_equal(expand = c(0, 0))
+
 # Центрируем
 X <- scale(X_raw, center = TRUE, scale = FALSE)
 A <- cov(X)    # Матрица ковариаций
@@ -132,205 +117,86 @@ gg_rotated <- gg %+% as.data.frame(Y) +
   labs(x = "PC1", y = "PC2") %+% 
   coord_equal() 
 
+# Исходные данные
+jelly <- read.delim("data/jellyfish.csv")
+X_raw <- jelly[, 2:3]
+X <- scale(X_raw, center = TRUE, scale = FALSE) # Центрируем
+A <- cov(X)    # Матрица ковариаций
+E <- eigen(A)            # Спектральное разложение
+U <- E$vectors           # Собственные векторы
+Lambda <- E$values       # Собственные числа
+
 library(cowplot)
 plot_grid(gg + ggtitle("До"),
           gg_rotated + ggtitle("После"),
           align = "h")
-```
 
-## Задача PCA на языке матриц
-
-Нужно найти такую матрицу $P$, которая позволит вместо $\mathbf{X}$ взаимозависимых признаков получить $\mathbf{Y}$ взаимонезависимых признаков.
-
-$$\mathbf{Y} = \mathbf{X}\mathbf{P}$$
-
-Как математически выражается взаимонезависимость?
-
->- Для независимых признаков ковариационная матрица $cov(\mathbf{Y}) = cov(\mathbf{X}\mathbf{P})$ --- диагональная матрица, выше и ниже диагонали нули. Числа на диагонали --- дисперсии --- упорядочены в порядке убывания.
-
-Как нам выбрать $\mathbf{P}$?
-
->- Если исходные данные $\mathbf{X}$ центрированы, то  $\mathbf{A} = cov(X) = \frac{1}{n - 1} \mathbf{X}\mathbf{X'}$ --- это симметричная квадратная матрица.
->- Для симметричных квадратных матриц должно существовать спектральное разложение $\mathbf{A} = \mathbf{U \Lambda U'}$.
->- __Если использовать $\mathbf{P} = \mathbf{U}$ --- матрицу собственных векторов для $\mathbf{A}$, то ковариационная матрица $cov(\mathbf{X}\mathbf{P})$ будет обладать нужными нам свойствами__.
-
-
-## Исходные данные
-
-```{r}
-# Исходные данные
-jelly <- read.delim("data/jellyfish.csv")
-
-X_raw <- jelly[, 2:3]
-
-gg <- ggplot(as.data.frame(X_raw), aes(x = width, y = length)) + 
-  geom_point(size = 2) +
-  geom_hline(yintercept = 0) + 
-  geom_vline(xintercept = 0)
-gg + coord_equal(xlim = c(0, 25), ylim = c(0, 25))
-```
-
-## Как работает PCA?
-
-1.Исходные данные предварительно центрируют $\mathbf{X}$
-
-```{r}
-X <- scale(X_raw, center = TRUE, scale = FALSE) # Центрируем
-```
-
-2.Из $\mathbf{X}$ получают ковариационную матрицу $\mathbf{A} = \frac{1}{n - 1}\mathbf{X}\mathbf{X'}$
-
-```{r}
-A <- cov(X)    # Матрица ковариаций
-```
-
-3.После спектрального разложения $\mathbf{A} = \mathbf{U \Lambda U'}$ получают матрицы собственных векторов $\mathbf{U}$ и собственных чисел $\mathbf{\Lambda}$
-
-```{r}
-E <- eigen(A)            # Спектральное разложение
-U <- E$vectors           # Собственные векторы
-Lambda <- E$values       # Собственные числа
-```
-
-# Результаты работы PCA
-
-
-## Собственные векторы == Факторные нагрузки
-
-__Собственные векторы__ $\mathbf{U}$ перпендикулярны друг другу (ортогональны, независимы). Они задают __главные компоненты__ --- направления новых осей. 
-
-Собственные векторы также называются __факторные нагрузки__, т.к. это линейные комбинации исходных признаков.
-
-```{r}
+# # собственные векторы
 dimnames(U) <- list(colnames(X),paste0("PC", 1:ncol(X)))
-U
-```
-
-Обычно собственные векторы масштабируют (стандартизуют)
-
-## Собственные числа
-
-__Собственные числа__ $\mathbf{\Lambda}$ показывают дисперсию вдоль осей, заданных собственными векторами.
-
-```{r}
-Lambda
-```
-
-Первый собственный вектор соответствует максимальной дисперсии, второй --- чуть меньшей и т.д.
-
-По значениям собственных чисел можно вычислить долю общей изменчивости, связанной с каждой из главных компонент.
-
-```{r}
+# # Собственные числа
 Explained <- Lambda/sum(Lambda)       # Доля объясненной изменчивости
-Explained
-```
-
-
-## Факторные координаты 
-
-Координаты точек в пространстве главных компонент --- __факторные координаты__ --- можно получить так: $\mathbf{Y} = \mathbf{X}\mathbf{U}$.
-
-```{r}
+# Факторные координаты
 Y <- X %*% U # Координаты точек в новом пространстве
-
-gg_rotated <- gg %+% as.data.frame(Y) + 
-  aes(x = PC1, y = PC2) + 
-  labs(title = "После вращения") +
-  coord_equal(ylim = c(-10, 10))
-gg_rotated
 ```
 
-## Медузы упорядочились по размеру
+## Вспомним, как устроен PCA.
+
+![](images/PCA.png)
+
+## Результаты работы PCA  {.columns-2 .smaller}
+
+- __Собственные векторы__ (__факторные нагрузки__)
+  - перпендикулярны друг другу (ортогональны, независимы) 
+  - задают __главные компоненты__ --- направления новых осей
+  - линейные комбинации исходных признаков
+  - упорядочены в порядке убывания дисперсии
+- __Собственные числа__
+  - показывают дисперсию вдоль главных компонент
+  - упорядочены в порядке убывания дисперсии
+  - используются для вычисления доли общей изменчивости, связанной с каждой из главных компонент
+- __Факторные координаты__
+  - координаты объектов в пространстве главных компонент
+
+<br/>
+
+```{r echo=FALSE, fig.width=5, fig.height=4.5, message=FALSE}
+plot_grid(gg + ggtitle("До"),
+          gg_rotated + ggtitle("После") + labs(x = "PC1", y = "PC2"),
+          ncol = 1,
+          align = "hv", axis = "b")
+```
 
 ```{r echo=FALSE, fig.width=9, message=FALSE}
-gg_rotated + 
-  aes(colour = jelly$location) + 
+# plot_grid(gg + ggtitle("До"),
+#           gg_rotated + ggtitle("После") +
+#   aes(colour = jelly$location) +
+#   scale_color_brewer("Location", palette = "Set1") +
+#   labs(
+#        x = paste0("PC1, ", round(Explained[1] * 100, 1), "%"),
+#        y = paste0("PC2, ", round(Explained[2] * 100, 1), "%")),
+#   rel_widths = c(1, 1.3),
+#           align = "hv", axis = "l")
+```
+
+
+## Результаты работы PCA
+
+- Главные компоненты 
+  - новые "синтетические" признаки объектов, которые сочетают несколько исходных признаков
+  - упорядочены по убыванию доли объясненной изменчивости
+  - используя разное число главных компонент можно снизить размерность исходных данных
+
+```{r echo=FALSE, fig.width=9, message=FALSE}
+gg_rotated +
+  aes(colour = jelly$location) +
   scale_color_brewer("Location", palette = "Set1") +
   labs(title = "Результаты PCA",
        x = paste0("PC1, ", round(Explained[1] * 100, 1), "%"),
        y = paste0("PC2, ", round(Explained[2] * 100, 1), "%"))
 ```
 
-- PC1 --- больше всего изменчивости
-- PC2 --- то, что осталось
-
-# Новые наблюдения на ординации
-
-## Новые наблюдения на ординации
-
-```{r}
-new_raw <- as.matrix(data.frame(width = 6, length = 11))
-new_cent <- (new_raw - colMeans(X_raw)) # Центрируем
-# Факторные координаты (координаты точек в новом пространстве)
-new_y <- new_cent %*% E$vectors
-
-gg_rotated + geom_point(data = data.frame(new_y), 
-                        aes(x = X1, y = X2), colour = "red") +
-  labs(title = "Предсказание для нового наблюдения")
-
-```
-
-# Восстановление исходных данных и их редукция
-
-## Можно восстановить исходные данные
-
-Мы видели, что матрица факторных координат $\mathbf{Y} = \mathbf{XU}$
-
-$\mathbf{\hat{X}} = \mathbf{YU'} = \mathbf{XUU'}$
-
-Матрица $\mathbf{UU'}$ называется __проекционной матрицей__ (или ротационной матрицей)
-
->- Если мы используем все собственные векторы, то  
-$\mathbf{UU'} = \mathbf{I}$,  
-$\mathbf{\hat{X}} = \mathbf{X}$
-
->- Если используем только часть, то  
-$\mathbf{UU'} \ne \mathbf{I}$,  
-$\mathbf{\hat{X}} \ne \mathbf{X}$
-
->- Чем больше собственных векторов мы используем, тем точнее будут восстановленные данные (см. предыдущую лекцию).
- 
-## Восстанавливаем исходные данные с использованием разного числа главных компонент
-
-```{r}
-X_back_full <- X %*% U %*% t(U)
-gg_back_full <- gg %+% as.data.frame(X_back_full) +
-  labs(x = "width", y = "length", title = "Восстановленные")
-
-X_back_pc1 <- X %*% U[, 1] %*% t(U[, 1])
-gg_back_pc1 <- gg_back_full %+% as.data.frame(X_back_pc1) +
-  labs(title = "Редуцированные")
-  
-plot_grid(gg %+% as.data.frame(X) + ggtitle("Исходные"),
-          gg_back_full, gg_back_pc1, align = "h", nrow = 1)
-
-```
-
-# PCA и SVD
-
-## Сейчас PCA обычно делают при помощи SVD. 
-
-Покажем, что результаты эквивалентны.  
-Пусть $\mathbf{A} = \mathbf{E \Lambda E'}$ (спектральное разложение), и 
-$\mathbf{X} = \mathbf{UDV'}$ (сингулярное разложение)
-
-Если $\mathbf{Х}$ --- матрица центрированных данных, то тогда  
-$$\begin{align}\mathbf{A} & = \frac{1}{n - 1}\mathbf{XX'} = \\
-& = \frac{1}{n - 1}\mathbf{X'X} = \\
-& = \frac{1}{n - 1}\mathbf{(UDV')'UDV'} = \\
-& = \frac{1}{n - 1}\mathbf{VDU'UDV'} = \\
-& = \frac{1}{n - 1}\mathbf{V D^2 V'}\end{align}$$
-
->- Т.е. $\mathbf{V} = \mathbf{E}$ --- собственные векторы  
-- $\mathbf{D}^2/{(n - 1)} = \mathbf{\Lambda}$ --- собственные числа.
-
-## Можно найти главные компоненты при помощи SVD:
-
-$$\begin{align}\mathbf{Y} & = \mathbf{XE} = \\
-& = \mathbf{UDV'V} = \\
-& = \mathbf{UD}\end{align}$$
-
-Более того, можно сказать, что PCA это частный случай SVD для центрированной матрицы исходных данных.
+- PC1 --- "размер медузы" --- больше всего изменчивости
+- PC2 --- остаточная изменчивость
 
 # Действительно многомерные данные
 
@@ -338,14 +204,14 @@ $$\begin{align}\mathbf{Y} & = \mathbf{XE} = \\
 
 ![](./images/PaleoDiet-zsoolt-Flickr.jpg)
 
-Paleo Diet by zsoolt on [Flickr](https://flic.kr/p/pPK1nz)
+<small>Paleo Diet by zsoolt on [Flickr](https://flic.kr/p/pPK1nz)</small>
 
 <div class = "footnote">Данные из Weber, 1973</div>
 
 
 ## Открываем данные {.smaller}
 
-```{r}
+```{r R.options=list(width = 100)}
 protein <- read.table(file="data/protein.csv", sep="\t", dec=".", header=TRUE)
 protein$region <- factor(protein$region)
 rownames(protein) <- protein$country
@@ -354,28 +220,28 @@ head(protein)
 
 <div class = "footnote">Данные из Weber, 1973</div>
 
-## Делаем PCA {.columns-2}
+## Делаем PCA
 
-```{r message=FALSE, fig.width=5, fig.height=5}
+```{r pca-owl, message=FALSE, fig.width=5, fig.height=3, eval=TRUE, echo=-c(3, 5), fig.align='left'}
 library(vegan)
-prot_pca <- rda(protein[, -c(1, 2)], 
-                scale = TRUE)
+prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
+op <- par(mar = c(5, 4, 0, 2) + 0.1)
 biplot(prot_pca)
+par(op)
 ```
 
-<br/><br/><br/><br/><br/><br/><br/>
+## Делаем PCA
 
-## Делаем PCA {.columns-2}
-
-```{r message=FALSE, fig.width=5, fig.height=5}
-library(vegan)
-prot_pca <- rda(protein[, -c(1, 2)], 
-                scale = TRUE)
-biplot(prot_pca)
+```{r pca-owl, message=FALSE, fig.width=5, fig.height=4, eval=FALSE, echo=-c(3, 5), purl=FALSE}
 ```
 
+<div class="columns-2">
+
+```{r pca-owl, message=FALSE, fig.width=5, fig.height=5, eval=TRUE, echo=FALSE, purl=FALSE}
+```
 
 ![](images/how-to-owl.jpg)
+</div>
 
 ## Разбираемся с результатами PCA
 
@@ -385,7 +251,7 @@ summary(prot_pca)
 
 # 1. Сколько компонент нужно оставить?
 
-## Собственные векторы и собственные числа
+## Собственные числа показывают вклады главных компонент в общую изменчивость
 
 ```
 Eigenvalues, and their contribution to the correlations 
@@ -403,19 +269,18 @@ eigenvals(prot_pca) # собственные числа
 
 ## Сколько компонент нужно оставить, если мы хотим редуцировать данные?
 
-- Эмпирические правила
+- Эмпирические правила (выберите любое, но одно)
     - Компоненты у которых соб. число > 1 (правило Кайзера-Гатмана)
     - В сумме объясняют заданный % от общей изменчивости (60-80%) - слишком субъективно
     - Объясняют больше чем по Broken Stick Model.
     
+![](images/broken-stick-md.png)
 
 ```{r}
 eigenvals(prot_pca) # собственные числа
 
 bstick(prot_pca) # ожидаемое по Broken Stick Model
 ```
-
-> - Это условности!
 
 ## График собственных чисел
 
@@ -458,22 +323,23 @@ par(op)
 ## Те же самые графики можно построить в ggplot2
 
 ```{r load-p, echo=FALSE}
+# Данные для графиков
 df_load <- as.data.frame(scores(prot_pca, display = "species", 
                                 choices = c(1, 2, 3), scaling = "species"))
 # поправки для размещения подписей
-df_load$hjust[df_load$PC1 >= 0] <- -0.1
-df_load$hjust[df_load$PC1 < 0] <- 1
-df_load$vjust[df_load$PC2 >= 0] <- -0.1
-df_load$vjust[df_load$PC2 < 0] <- 1
+df_load$hjust <- ifelse(df_load$PC1 >= 0, -0.1, 1)
+df_load$vjust <- ifelse(df_load$PC2 >= 0, -0.1, 1)
+
 library(grid) # для стрелочек
 ar <- arrow(length = unit(0.25, "cm"))
 
+## График нагрузок в ggplot
 p_load <- ggplot(df_load) + 
   geom_text(aes(x = PC1, y = PC2, label = rownames(df_load)), 
             size = 3, vjust = df_load$vjust, hjust = df_load$hjust) + 
   geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC2), 
                colour = "grey40", arrow = ar) + 
-  coord_equal(xlim = c(-1.9, 1.9), ylim = c(-1.9, 1.9))
+  coord_equal(xlim = c(-2, 2), ylim = c(-2, 2))
 ```
 
 ```{r, ord-p, echo=FALSE}
@@ -489,7 +355,6 @@ p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) +
 ```{r, warning=FALSE, fig.width=10, echo=FALSE}
 plot_grid(p_load, p_scores, align = "h",
           rel_widths = c(0.36, 0.64))
-# 
 ```
 
 ## Исходный код графика нагрузок
@@ -502,11 +367,11 @@ plot_grid(p_load, p_scores, align = "h",
 ```{r ord-p, eval=FALSE, purl = FALSE}
 ```
 
-
-
 # 3. Интерпретация компонент
 
-## Интерпретация компонент {.smaller .columns-2}
+## Интерпретация компонент {.smaller}
+
+<div class="columns-2">
 
 Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте
 
@@ -517,16 +382,27 @@ plot_grid(p_load, p_scores, align = "h",
 scores(prot_pca, display = "species", 
        choices = c(1, 2, 3), scaling = 0)
 ```
-
-### Первая главная компонента:
-
-Высокие __положительные нагрузки по первой главной компоненте__ у переменных `cereals` и `nuts`. Значит, чем больше значение первой компоненты, тем больше потребление злаков и орехов.
-
-Высокие __отрицательные нагрузки__ у переменных `eggs`, `milk`, `whitemeat`, `redmeat`. Значит, чем меньше значение первой компоненты, тем больше потребление яиц, молока, белого и красного мяса. 
 
 > - Т.е. первую компоненту можно назвать "Мясо -- злаки и орехи"
 
-## Интерпретация компонент {.smaller .columns-2}
+<br/><br/>
+
+### Первая главная компонента:
+
+Высокие __положительные нагрузки по первой главной компоненте__ у переменных `cereals` и `nuts`. Значит, чем больше значение PC1, тем больше потребление этих продуктов.
+
+Высокие __отрицательные нагрузки__ у переменных `eggs`, `milk`, `whitemeat`, `redmeat`. Т.е., чем меньше значение PC1, тем больше их потребление. 
+
+```{r echo=FALSE, purl=FALSE}
+p_load
+```
+
+
+</div>
+
+## Интерпретация компонент  {.smaller}
+
+<div class="columns-2">
 
 Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте
 
@@ -538,63 +414,119 @@ scores(prot_pca, display = "species",
        choices = c(1, 2, 3), scaling = 0)
 ```
 
+> - Т.е. вторую компоненту можно назвать "Рыба и овощи"
+
+<br/><br/>
 
 ### Вторая главная компонента:
 
-Высокие __положительные нагрузки по второй главной компоненте__ у переменных `fish`, `frveg`. Значит, чем больше значение второй компоненты, тем больше потребление рыбы, овощей.
+Высокие __положительные нагрузки по второй главной компоненте__ у переменных `fish`, `frveg`. Значит, чем больше значение PC2, тем больше потребление рыбы, овощей.
 
 Высоких __отрицательных нагрузок по второй главной компоненте__ нет ни у одной из переменных. 
 
-> - Т.е. вторую компоненту можно назвать "Рыба и овощи"
-
-# PCA и nMDS
-
-## Задание
-
-- Постройте ординацию стран при помощи nMDS с использованием евклидова расстояния
-- Постройте график ординации
-- Нанесите при помощи envfit векторы изменения исходных переменных
-
-## Решение
-
-```{r, message=FALSE, fig.width = 7, fig.height=4, purl = FALSE}
-library(vegan)
-sprotein <- scale(protein[, 3:ncol(protein)])
-ord_nmds <- metaMDS(sprotein,
-                    distance = "euclidean",
-                    trace = 0, autotransform = F)
-ef <- envfit(ord_nmds, sprotein)
-plot(ord_nmds, display = "site", type = "t", cex = 0.8)
-plot(ef)
+```{r echo=FALSE, purl=FALSE}
+p_load
 ```
 
-## В данном случае, результаты PCA похожи на nMDS
+</div>
 
-```{r, compare-nmds, echo=FALSE, fig.height=6, fig.width=8, purl = FALSE}
-nMDS <- ggplot(as.data.frame(ord_nmds$points), aes(x=MDS1, y=MDS2)) + geom_text(aes(color = protein$region, label = protein$country)) + coord_equal()
 
+
+# PCA и другие методы
+
+##  {.smaller}
+
+<div class="columns-2">
+
+### PCA
+
+- Метод обучения "без учителя" (unsupervised learning)
+- Все переменные-признаки равноправны
+- Задачи:
+  - описать сходство объектов
+  - снизить размерность данных
+  - интерпретировать связи между переменными
+- Главные компоненты --- линейные комбинации переменных, задающие направления максимального варьирования исходных данных. 
+
+<br/>
+
+### Линейная регрессия
+
+- Метод обучения "с учителем" (supervised learninig)
+- Переменные делятся на зависимые (один или несколько откликов) и независимые (предикторы)
+- Задачи:
+  - описать зависимость значений отклика от предикторов
+  - предсказать значения отклика при известных значениях предикторов
+- Линия регрессии --- направление, вдоль которого минимален разброс значений зависимой переменной (сумма квадратов остатков).
+
+</div>
+
+```{r echo=FALSE, purl=FALSE, fig.width=5, fig.height=3}
+set.seed(392987)
+dat <- data.frame(x = 1:100) %>% 
+  mutate(y = 15 + 0.8 * x + rnorm(100, 0, 20),
+         y_lm_yx = predict(lm(y ~ x)),
+         x_lm_xy = predict(lm(x ~ y)),
+         )
+#covariance
+xyCov <- cov(scale(dat[, c("x", "y")], scale = FALSE))
+eigenVectors <- eigen(xyCov)$vectors
+
+# Где-то ошибка со знаком собственных векторов
+# intercept = mean(y) - tan(acos(eigenVectors[1,1])) * mean(x)
+dat %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point(alpha = 0.3) +
+  geom_abline(aes(slope = tan(acos(eigenVectors[1,1])), intercept = mean(y) - tan(acos(eigenVectors[1,1])) * mean(x), colour = "PC1")) +
+  geom_line(aes(x = x, y = y_lm_yx, colour = "lm(x~y)")) +
+  geom_line(aes(x = x_lm_xy, y = y, colour = "lm(y~x)")) +
+  
+  guides(colour = guide_legend(override.aes = list(linetype = c(1, 1, 1)))) +
+  scale_colour_manual(values = c("PC1" = "#E41A1C", "lm(y~x)" = "#377EB8", "lm(x~y)" = "#4DAF4A"), breaks = c("PC1", "lm(y~x)", "lm(x~y)")) +
+  coord_fixed() +
+  labs(colour = "")
+```
+
+
+##  
+
+<div class="columns-2">
+
+### PCA
+
+- PCA представляет многомерные данные в пространстве независимых осей, ранжированных по важности, поэтому __есть возможность оставить только самые важные оси изменчивости__.
+
+- Расстояния между объектами на любой ординации PCA соответствуют их евклидовым расстояниям в пространстве главных компонент.
+
+- Исходные признаки --- количественные переменные, связанные друг с другом линейно. Для описания различий между такими объектами подходит евклидово расстояние.
+
+
+### nMDS
+
+- nMDS пытается найти отображение многомерного пространства в заданном числе измерений (например, на плоскости) __с максимальным сохранением информации из всех измерений__.
+
+- Ранги расстояний между объектами на nMDS будут соответствовать их рангам в исходной матрице различий.
+<br/><br/>
+
+- Исходные признаки могут быть любыми, т.к. может быть использована любая мера различий между объектами.
+
+</div>
+
+## Результаты PCA и nMDS будут похожи, если для nMDS-ординации использовано евклидово расстояние {.smaller}
+
+```{r echo=FALSE, message=FALSE, fig.width = 7, fig.height=4, purl = FALSE, fig.align='center'}
+ord_nmds <- metaMDS(scale(protein[, 3:ncol(protein)]),
+                    distance = "euclidean",
+                    trace = 0, autotransform = FALSE)
+nMDS <- ggplot(as.data.frame(ord_nmds$points), aes(x=MDS1, y=MDS2)) + 
+  geom_text(aes(color = protein$region, label = protein$country)) + 
+  coord_equal()
 plot_grid(p_scores + guides(color=FALSE) + ggtitle("PCA"),
   nMDS + guides(color=FALSE) + ggtitle("nMDS"),
   align = "h")
 ```
 
 
-## В этом примере результаты PCA похожи на nMDS потому что:
-
-- Исходные признаки --- количественные переменные, связанные друг с другом линейно. Для ординации объектов с такими признаками подходит PCA. Для описания различий между объектами подходит евклидово расстояние.
-- Расстояния между объектами на любой ординации PCA соответствуют их евклидовым расстояниям в пространстве главных компонент.
-- Для данной nMDS-ординации использовано евклидово расстояние.
-
-```{r, compare-nmds, echo=FALSE, fig.height=4, fig.width=7, purl = FALSE}
-```
-
-## Между PCA и nMDS есть принципиальное различие:
-
-- PCA представляет многомерные данные в пространстве независимых осей, ранжированных по важности, поэтому __есть возможность оставить только самые важные оси изменчивости__.
-- nMDS пытается найти отображение многомерного пространства в заданном числе измерений (например, на плоскости) __с максимальным сохранением информации из всех измерений__.
-
-```{r, compare-nmds, echo=FALSE, fig.height=4, fig.width=7, purl = FALSE}
-```
 
 # Создание составных переменных при помощи PCA
 
@@ -618,12 +550,7 @@ head(scores(prot_pca, display = "sites",
        choices = c(1, 2, 3), scaling = "sites"))
 ```
 
-## Задание
-
-При помощи дисперсионного анализа проверьте, различается ли значение первой главной компоненты ("Мясо -- злаки и орехи") между разными регионами Европы
-
 ## При помощи дисперсионного анализа можно проверить, различается ли значение первой главной компоненты ("Мясо -- злаки и орехи") между разными регионами Европы
-
 
 ```{r}
 # Значения факторов (= факторные координаты)
@@ -667,7 +594,7 @@ TukeyHSD(aov(mod))
 ```
 
 
-## Summary
+## Take-home messages
 
 - Применение метода главных компонент (PCA):
     - снижение размерности данных
