@@ -168,18 +168,20 @@ plot_shape_change <- function(ord, ref_shape, PC,
                               horiz = TRUE,
                               gridPars = NULL, ...){
   if(horiz){
-    mfrow <- c(1, 2)
+    op <- par(mfrow = c(1, 2), mar = c(0, 0 , 0, 0))
+    plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min,
+                    gridPars = gridPars,  ...)
+    plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
+                    gridPars = gridPars, ...)
+    par(op)
     } else {
-     mfrow <- c(2, 1)
+     op <- par(mfrow = c(2, 1), mar = c(0, 0 , 0, 0))
+     plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
+                     gridPars = gridPars,  ...)
+     plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min,
+                     gridPars = gridPars, ...)
+     par(op)
     }
-  op <- par(mfrow = mfrow, mar = c(0, 0 , 0, 0))
-  # изменение формы вдоль PC в положительном направлении
-  plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min,
-                  gridPars = gridPars,  ...)
-  # изменение формы вдоль PC в отрицательном направлении
-  plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
-                  gridPars = gridPars, ...)
-  par(op)
 }
 
 # ## Изменение формы вдоль главных компонент относительно средней формы

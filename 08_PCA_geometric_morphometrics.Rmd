@@ -371,23 +371,26 @@ head(ord$x[, 1:5]) # Факторные координаты по 1-5 компо
 ## Чтобы легко рисовать изменения формы вдоль главной компоненты нам понадобится функция {.smaller}
 
 ```{r, fig.show='hold', fig.height=4}
-plot_shape_change <- function(ord, ref_shape, PC, 
-                              horiz = TRUE, 
+plot_shape_change <- function(ord, ref_shape, PC,
+                              horiz = TRUE,
                               gridPars = NULL, ...){
   if(horiz){
-    mfrow <- c(1, 2)
+    op <- par(mfrow = c(1, 2), mar = c(0, 0 , 0, 0))
+    plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min,
+                    gridPars = gridPars,  ...)
+    plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
+                    gridPars = gridPars, ...)
+    par(op)
     } else {
-     mfrow <- c(2, 1)
+     op <- par(mfrow = c(2, 1), mar = c(0, 0 , 0, 0))
+     plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
+                     gridPars = gridPars,  ...)
+     plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min,
+                     gridPars = gridPars, ...)
+     par(op)
     }
-  op <- par(mfrow = mfrow, mar = c(0, 0 , 0, 0))
-  # изменение формы вдоль PC в положительном направлении
-  plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$min, 
-                  gridPars = gridPars,  ...)
-  # изменение формы вдоль PC в отрицательном направлении
-  plotRefToTarget(M1 = ref_shape, M2 = ord$shapes[[PC]]$max,
-                  gridPars = gridPars, ...)
-  par(op)
 }
+
 ```
 
 ## Изменение формы вдоль главных компонент относительно средней формы {.smaller}
@@ -404,7 +407,7 @@ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 2, links = plethodon$link
 
 ```{r forms-pca-p, echo=FALSE, results='hide', fig.show='hold', fig.width=10, fig.height=5, purl=FALSE}
 my_gridPar <- gridPar(tar.pt.size = 0.6, grid.lwd = 0.7)
-
+library(cowplot)
 gg_pca <- plot_grid(
   ~ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 2,
                       horiz = FALSE, links = plethodon$links,

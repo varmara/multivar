@@ -181,7 +181,7 @@ install.packages(c("cowplot", "geomorph"))
 
 __Анализ главных компонент__
 
-<!-- - Презентация [html](08_PCA.html) -->
+- Презентация [html](08_PCA.html)
 
 - Код: [08_PCA.R](08_PCA.R)
 - Данные: [protein.csv](data/protein.csv)
@@ -189,7 +189,7 @@ __Анализ главных компонент__
 
 __(Геометрическая) морфометрия__
 
-<!-- - Презентация [html](08_PCA_geometric_morphometrics.html) -->
+- Презентация [html](08_PCA_geometric_morphometrics.html)
 
 - Код: [08_PCA_geometric_morphometrics.R](08_PCA_geometric_morphometrics.R)
 - Данные: [turtles.txt](data/turtles.txt)
