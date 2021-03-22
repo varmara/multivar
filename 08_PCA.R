@@ -46,6 +46,7 @@ biplot(prot_pca, display = "sites")
 par(op)
 
 # ## Те же самые графики можно построить в ggplot2
+library(ggplot2)
 # Данные для графиков
 df_load <- as.data.frame(scores(prot_pca, display = "species", choices = c(1, 2, 3), scaling = "species"))
 # поправки для размещения подписей
@@ -69,6 +70,7 @@ p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) +
   coord_equal(xlim = c(-1.2, 1.2), ylim = c(-1.2, 1.2))
 
 # Все вместе
+library(cowplot)
 plot_grid(p_load, p_scores, align = "h", rel_widths = c(0.36, 0.64))
 
 
