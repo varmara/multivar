@@ -134,18 +134,12 @@ par(op)
 
 
 # ## Шаг 2. Создаем морфопространство
-#
-# __Анализ главных компонент по координатам меток для выравненных образцов__. Главные компоненты отражают изменения формы.
-#
-## ----fig.width=10, fig.height=5--------------------------------
 ord <- gm.prcomp(gpa$coords)
 plot(ord, main = "PCA")
 
 #
 #
 # ## Можно раскрасить по группам
-#
-## ----pca-p, fig.width=10, fig.height=5, echo=FALSE-------------
 op <- par(mar = c(4, 4, 1, 1))
 gp <- as.factor(paste(plethodon$species, plethodon$site)) # группа должна быть фактором
 # задаем соответствие цветов уровням фактора
@@ -164,39 +158,12 @@ legend("topright", legend = levels(gp),
                    pt.bg = levels(as.factor(colvec)))
 par(op)
 
-#
-# ## Код для графика ординации и для легенды
-#
-## ----pca-p, eval=FALSE-----------------------------------------
-## op <- par(mar = c(4, 4, 1, 1))
-## gp <- as.factor(paste(plethodon$species, plethodon$site)) # группа должна быть фактором
-## # задаем соответствие цветов уровням фактора
-## colvec <- c("Jord Allo" = "yellow2",
-##             "Jord Symp" = "orange",
-##             "Teyah Allo" = "green4",
-##             "Teyah Symp" = "green1")
-## # вектор цветов в порядке заданном фактором gp
-## colvec <- colvec[match(gp, names(colvec))]
-## # график
-## plot(ord, bg = colvec, pch = 21, col = "grey20")
-## # легенда
-## legend("topright", legend = levels(gp),
-##                    bty = "n", pch = 21,
-##                    col = "grey20",
-##                    pt.bg = levels(as.factor(colvec)))
-## par(op)
 
-#
 # ## Доля объясненной изменчивости и факторные координаты
-#
-## --------------------------------------------------------------
 expl <- round(ord$d[1:5]/sum(ord$d) * 100, 1) # Доля изменчивости объясненной 1-5 компонентами
 head(ord$x[, 1:5]) # Факторные координаты по 1-5 компонентам
 
-#
-# ## Чтобы легко рисовать изменения формы вдоль главной компоненты нам понадобится функция {.smaller}
-#
-## ---- fig.show='hold', fig.height=4----------------------------
+# ## Чтобы легко рисовать изменения формы вдоль главной компоненты нам понадобится функция
 plot_shape_change <- function(ord, ref_shape, PC,
                               horiz = TRUE,
                               gridPars = NULL, ...){
@@ -215,103 +182,44 @@ plot_shape_change <- function(ord, ref_shape, PC,
   par(op)
 }
 
-#
-# ## Изменение формы вдоль главных компонент относительно средней формы {.smaller}
-#
-## ----fig.height=1.25-------------------------------------------
+# ## Изменение формы вдоль главных компонент относительно средней формы
 plot_shape_change(ord, ref_shape = gpa$consensus, PC = 1, links = plethodon$links, method = "TPS")
 
-#
-## ---- fig.width=3, fig.height=2.5------------------------------
 plot_shape_change(ord, ref_shape = gpa$consensus, PC = 2, links = plethodon$links, method = "TPS", horiz = FALSE)
 
-#
 # ## Можно нарисовать одновременно изменение формы вдоль обеих компонент и ординацию
-#
 
-#
-#
-# ## Код для графика
-#
-## ----forms-pca-p, echo=TRUE, eval=FALSE, purl=TRUE-------------
-## my_gridPar <- gridPar(tar.pt.size = 0.6, grid.lwd = 0.7)
-##
-## gg_pca <- plot_grid(
-##   ~ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 2,
-##                       horiz = FALSE, links = plethodon$links,
-##                       method = "TPS", gridPars = my_gridPar),
-##   ~ {plot(ord, bg = colvec, pch = 21, col = "grey20")
-##     legend("topright", legend = levels(gp),  bty = "n",
-##            pch = 21, col = "grey20",
-##            pt.bg = levels(as.factor(colvec)))},
-##   NULL,
-##   ~ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 1,
-##                       links = plethodon$links,
-##                       method = "TPS", gridPars = my_gridPar),
-##   ncol = 2, rel_heights = c(5, 1), rel_widths = c(1, 4)
-## )
-##
-## gg_pca
+my_gridPar <- gridPar(tar.pt.size = 0.6, grid.lwd = 0.7)
 
-#
+gg_pca <- plot_grid(
+  ~ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 2,
+                      horiz = FALSE, links = plethodon$links,
+                      method = "TPS", gridPars = my_gridPar),
+  ~ {plot(ord, bg = colvec, pch = 21, col = "grey20")
+    legend("topright", legend = levels(gp),  bty = "n",
+           pch = 21, col = "grey20",
+           pt.bg = levels(as.factor(colvec)))},
+  NULL,
+  ~ plot_shape_change(ord, ref_shape = gpa$consensus, PC = 1,
+                      links = plethodon$links,
+                      method = "TPS", gridPars = my_gridPar),
+  ncol = 2, rel_heights = c(5, 1), rel_widths = c(1, 4)
+)
+
+gg_pca
+
+
 # # Эволюционные изменения формы
-#
-#
-# ## Фило-морфо пространство
-#
-# Если у вас есть данные о средних формах для каждого вида и данные о филогении (из любого источника), то можно изобразить эволюционные изменения формы
-#
-# Этапы:
-#
-# 1. Выравнивание средних форм для таксонов при помощи обобщенного прокрустова анализа
-# 1. Ординация таксонов при помощи анализа главных компонент
-# 1. Поиск анцестральных состояний количественных признаков (форм) методом максимального правдоподобия
-# 1. Наложение филогенетического дерева и анцестральных форм на график ординации
-#
-#
+
 # ## Фило-морфопространство саламандр рода Plethodon
-#
-# P. serratus, P. cinereus, P. shenandoah, P. hoffmani, P. virginia, P. nettingi, P. hubrichti, P. electromorphus, P. richmondi
-#
-## --------------------------------------------------------------
 data(plethspecies)
 str(plethspecies, vec.len = 2, give.attr = F)
 
-#
-#
 # ## Выравниваем средние формы для видов
-#
-## --------------------------------------------------------------
 species_gpa <- gpagen(plethspecies$land) #GPA-alignment
 
-#
-#
 # ## Наложение филогенетического дерева и анцестральных форм на график PCA ординации
-#
+
 # Филоморфопространство
-#
-## ---- fig.height=5---------------------------------------------
 pca_with_phylo <- gm.prcomp(species_gpa$coords, phy = plethspecies$phy)
 plot(pca_with_phylo, phylo = TRUE)
-
-#
-#
-# ## Take-home messages
-#
-# - Классический подход к морфометрии
-#     - анализируют расстояния между метками
-#     - для корректного анализа необходимо удалить влияние размера и оставить форму, но сделать это корректно почти невозможно
-# - Геометрическая морфометрия
-#     - анализируют координаты меток
-#     - различные конфигурации выравнивают при помощи обобщенного прокрустова анализа
-#     - преобразованные координаты точек используют в анализе главных компонент
-#     - чтобы визуализировать эволюцию форм, можно наложить филогенетическое древо на ординацию
-#
-#
-# ## Дополнительные ресурсы
-#
-# - Bookstein, F.L., 2003. Morphometric Tools for Landmark Data Geometry and Biology. Cambridge University Press.
-# - Claude, J., 2008. Morphometrics With R. Springer.
-# - GEOL G562 - Geometric Morphometrics [WWW Document], n.d. URL http://www.indiana.edu/~g562/PBDB2013/ (accessed 4.1.15).
-# - Zelditch, M., Swiderski, D.L., Sheets, D.H., Fink, W.L., 2004. Geometric Morphometrics for Biologists. Academic Press.
-# - Zuur, A.F., Ieno, E.N., Smith, G.M., 2007. Analysing ecological data. Springer.
