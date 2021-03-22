@@ -47,7 +47,7 @@ center <- function(x){
 dbcent <- t(apply(turt[, 8:31], 1, center))
 
 # PCA
-turt_db_pca <- rda(dbcent)
+turt_db_pca <- rda(dbcent, scale = TRUE)
 eig_db <- eigenvals(turt_db_pca)[1:5]
 eig_db*100/sum(eig_db)
 screeplot(turt_db_pca, bstick = TRUE)
@@ -55,7 +55,7 @@ biplot(turt_db_pca, display = "species", scaling = 2)
 
 
 # ## Код для графика ординации черепах по морфометрии черепов
-op <- par(mfrow = c(1, 2), mar = c(4, 4, 0.5, 0.5), cex = 1.3)
+op <- par(mfrow = c(1, 2), mar = c(4, 4, 0.5, 0.5), cex = 1)
 biplot(turt_db_pca, display = "species", scaling = 2)
 # цвета для графика факторных координат
 colvec <- c("orange2", "limegreen", "steelblue", "red3")
@@ -65,7 +65,7 @@ plot(turt_db_pca, type = "n", scaling = 1)
 points(turt_db_pca, display = "sites", scaling = 1, pch = 21,
        col = colvec[turt$Environment3], bg = colvec[turt$Environment3])
 # легенда
-legend("bottomright", legend = levels(turt$Environment3), bty = "n", pch = 21,
+legend("topright", legend = levels(turt$Environment3), bty = "n", pch = 21,
        col = colvec, pt.bg = colvec)
 par(op)
 
