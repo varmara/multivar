@@ -197,7 +197,8 @@ __(Геометрическая) морфометрия__
 
 ## 9. Анализ избыточности (Redundancy analysis, RDA) (пн 29 марта, МВ)
 
-<!-- - Презентация [html](09_RDA.html) -->
+- Презентация [html](09_RDA.html)
+
 - [код R](09_RDA.R)
 - Данные butterfly{ade4}
     - [butterfly_envir.csv](data/butterfly_envir.csv)
