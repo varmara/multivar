@@ -29,6 +29,10 @@ theme_set(theme_bw(base_size = 16) + theme(legend.key = element_blank()))
 update_geom_defaults("point", list(shape = 19, size = 4))
 library(gridExtra)
 library(dplyr)
+library(cowplot)
+library(ggvegan)
+
+
 ```
 
 ## Корреспондентрый анализ и анализ главных компонент
@@ -219,29 +223,42 @@ rownames(dat2) <-make.unique(as.character(dat$Site))
 
 Pl_grad <- ggplot(dat2, aes(x = 1:100))+ geom_point(aes(y=Sp1), color = "black", size = 1)  + geom_point(aes(y=Sp2), color = "green", size = 1) +  geom_point(aes(y=Sp3), color = "red", size = 1)  + geom_point(aes(y=Sp4), color = "blue", size = 1) + geom_point(aes(y=Sp5), color = "darkblue", size = 1) + geom_point(aes(y=Sp6), color = "pink", size = 1) + geom_smooth(aes(y=Sp1), color = "black", se = F)  + geom_smooth(aes(y=Sp2), color = "green", se= F) +  geom_smooth(aes(y=Sp3), color = "red", se = F)  + geom_smooth(aes(y=Sp4), color = "blue", se = F) + geom_smooth(aes(y=Sp5), color = "darkblue", se = F) + geom_smooth(aes(y=Sp6), color = "pink", se = F) + labs(x = "Точки сбора", y = "Обилия видов")
 
-Pl_grad
+
 
 ```
-
-## Эффект подковы в симулированном примере {.columns-2}
-
-```{r, echo=F, message=FALSE, fig.width=4,}
-Pl_grad 
-```
-
-<br>
-<br>
 
 
 
 ```{r,  echo=F, message=FALSE}
-library(ggvegan)
+res_pca <- dat2 %>% rda(.) 
+# res_ca <- dat2 %>% cca(.) 
 
-sites <- dat2 %>% rda(.) %>% fortify(.) %>% filter(Score == "sites")
+sites <- as.data.frame(scores(res_pca)$sites)
 
-ggplot(sites, aes(PC1, PC2, color = 1:100)) + geom_point() + guides(color ="none")
+Pl_grad_pca <- ggplot(sites, aes(PC1, PC2, color = 1:100)) + geom_point() + guides(color ="none")
 
 ```
+
+
+
+```{r}
+Pl_grad
+
+```
+
+
+
+## Эффект подковы в симулированном примере
+<br>
+<br>
+```{r, echo=F, message=FALSE, fig.width=10}
+
+plot_grid(Pl_grad + geom_point(aes(x =1:100, y = 0, color = 1:100)) +guides(color ="none"), Pl_grad_pca)
+
+```
+
+
+
 
 ## Для успешного применения анализа главных компонент нужно:
 
@@ -292,7 +309,7 @@ head(mite[, 1:5])
 
 
 
-## Задание: {.columns-2 .smaller}
+## Задание: {.smaller}
 
 - Проведите анализ главных компонент, Нарисуйте биплот, сохраняющий эвклидовы расстояния между объектами. Получите вот такие иллюстрации
 
@@ -885,13 +902,21 @@ sum(eig_values)
 
 Это в точности значение $Inertia$!
 
+## Главные оси  {.smaller}
 
-## Главные оси {.columns-2 .smaller}
+Вспомним суть перехода от одной системы координат к другой
+
+![](images/Principal_axes.png)
+
+## Главные оси  {.smaller}
 
 В корреспондентном анализе оси, соответствующие собственным значениям матрицы **A**, называются *главными осями* (principal axes).
 
 Информативность главных осей оценивается как отношение значения данного собственного числа к сумме собственных чисел, то есть к $Inertia$
 
+:::: {style="display: flex;"}
+
+::: {}
 ```{r, echo=TRUE}
 Information <- data.frame(
   CA = 1:length(eig_values), 
@@ -903,24 +928,20 @@ Information <- data.frame(
 head(round(Information, 3))
 ```
 
-<br>
-<br>
-<br>
-<br>
-<br>
+:::
 
-<br>
-<br>
-<br>
-<br>
-<br>
+::: {}
+
+
 ```{r}
 tail(round(Information, 3))
 ```
 
 Обратите внимание, что последнее собственное значение (№35) равно нулю.
 
+:::
 
+::::
 
 ## Свойства главных осей
 
@@ -932,11 +953,16 @@ tail(round(Information, 3))
 
 ## Scaling
 В PCA мера расстояния между точками n-мерном пространстве -- эвклидово расстояние
-$$D = \sqrt{\sum(y_{i,j} - y_{i,k})^2}$$
+
+$$
+D = \sqrt{\sum(y_{i,j} - y_{i,k})^2}
+$$
 
 В CA мера расстояния между точками в n-мерном пространстве -- расстояние $\chi^2$
 
-$$\chi^2 = \sqrt{ \sum {\frac{1}{f_{+j}/Ft}} \left( \frac{f_{1j}}{f_{1+}} - \frac{f_{2j}}{f_{2+}} \right)^2}$$ 
+$$
+\chi^2 = \sqrt{ \sum {\frac{1}{f_{+j}/Ft}} \left( \frac{f_{1j}}{f_{1+}} - \frac{f_{2j}}{f_{2+}} \right)^2}
+$$ 
 
 ## Scaling
 
@@ -953,11 +979,13 @@ $$\chi^2 = \sqrt{ \sum {\frac{1}{f_{+j}/Ft}} \left( \frac{f_{1j}}{f_{1+}} - \fra
 
 
 
-## Нарисуем ординацию проб в первых двух главных осях {.columns-2 .smaller}
+## Нарисуем ординацию проб в первых двух главных осях {.smaller}
 
 Для этого нам понадобятся первые две колонки матрицы U полученной в SVD (они соответствуют первым двум сингулярным числам и, стало быть, первым двум собственным значениям и первым двум собственным векторам). 
 
-Поскольку строки и столбцы матрицы **Q** равнозначны, то существет две точки отсчета, два центроида: центроид строк (пробы) и центроид колонок(виды)
+Поскольку строки и столбцы матрицы **Q** равнозначны, то существет две точки отсчета, два центроида:
+
+центроид строк (пробы) и центроид колонок(виды)
 
 Координаты центроидов задаются векторами:
 
@@ -973,7 +1001,7 @@ $$\chi^2 = \sqrt{ \sum {\frac{1}{f_{+j}/Ft}} \left( \frac{f_{1j}}{f_{1+}} - \fra
 
 
 $$
-\textbf diag(p_i)^{-1/2} \times U
+\textbf {diag}(p_i)^{-1/2} \times U
 $$
 
 
@@ -1025,7 +1053,7 @@ Pl_CA_st
 
 
 $$
-\textbf diag(p_j)^{-1/2} \times V
+\textbf {diag}(p_j)^{-1/2} \times V
 $$
 
 
@@ -1084,25 +1112,24 @@ head(round(Information, 3), 4)
 
 Все аналогично!
 
-## Сравним с результатами специализированной функции `cca()` из пакета `vegan`  {.columns-2 .smaller}
+## Сравним с результатами специализированной функции `cca()` из пакета `vegan`  {.smaller}
 
+:::: {style="display: flex;"}
 
+:::{}
 ```{r, echo = FALSE, fig.width=4}
 Pl_CA_st
 ```
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+:::
 
-
+::: {}
 ```{r, echo=FALSE,  fig.width=5, fig.height=4}
 plot(cca(mite), display = "sites")
 ```
+:::
 
+::::
 
 Ординация проб. Все аналогично результатам, полученным вручную!
 
@@ -1128,19 +1155,19 @@ plot(cca(mite), display = "species")
 
 Ординация видов. Все аналогично результатам, полученным вручную!
 
-## Визуализация результатов CA {.columns-2}
+## Визуализация результатов CA 
 
+
+:::: {style="display: flex;"}
+
+:::{}
 ```{r, echo=FALSE, fig.height=5, fig.width=5}
 plot(cca(mite), display = "sites")
 ```
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+:::
 
-```{r, echo=FALSE, fig.align='right', fig.height=6}
+:::{}
+```{r, echo=FALSE, fig.align='right', fig.height=5}
 mite_ca_final <- data.frame(mite.xy, scores(mite_ca)$sites)
 library(akima)
 library(reshape2)
@@ -1181,7 +1208,13 @@ ggplot(mite_inter, aes(x=x2, y=y2, fill = CA1)) + geom_tile() + scale_fill_gradi
 
 
 ```
-<!-- Становится виден отчетливый градиент! -->
+
+:::
+
+::::
+
+
+Становится виден отчетливый градиент!
 
 
 ## Задание
