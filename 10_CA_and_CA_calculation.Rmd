@@ -241,7 +241,7 @@ Pl_grad_pca <- ggplot(sites, aes(PC1, PC2, color = 1:100)) + geom_point() + guid
 
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=5}
 Pl_grad
 
 ```
@@ -251,7 +251,7 @@ Pl_grad
 ## Эффект подковы в симулированном примере
 <br>
 <br>
-```{r, echo=F, message=FALSE, fig.width=10}
+```{r, echo=F, message=FALSE, fig.width=10, fig.height=5}
 
 plot_grid(Pl_grad + geom_point(aes(x =1:100, y = 0, color = 1:100)) +guides(color ="none"), Pl_grad_pca)
 
@@ -317,13 +317,18 @@ head(mite[, 1:5])
 
 mite_pca <- rda(mite, scaling = TRUE)
 
-screeplot(mite_pca, bstick = T)
-
-biplot(mite_pca,  scaling = "sites", type = "t")
-
-
 ```
 
+
+```{r fig.height=5, echo=F}
+
+op <- par(mfrow = c(1, 2))
+
+screeplot(mite_pca, bstick = T)
+biplot(mite_pca,  scaling = "sites", type = "t")
+
+par(op)
+```
 
 
 ## Решение 

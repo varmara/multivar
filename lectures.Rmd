@@ -226,7 +226,7 @@ install.packages("DAAG")
 install.packages("ade4")
 ```
 
-<!-- - Презентация [html](10_CA_and_CA_calculation.html) -->
+- Презентация [html](10_CA_and_CA_calculation.html)
 - [код R](10_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx)
 
