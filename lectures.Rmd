@@ -55,9 +55,9 @@ install.packages("ggmap")
 
 <!-- **Данные для самостоятельной работы** -->
 
-<!-- <!-- - __Фауна Долгой губы__ (Данные В.М.Хайтова) --> -->
-<!-- <!--     + [dolg_abundance.txt](data/dolg_abundance.txt) --> -->
-<!-- <!--     + [dolg_hydrology.txt](data/dolg_hydrology.txt) --> -->
+<!-- - __Фауна Долгой губы__ (Данные В.М.Хайтова) -->
+<!--     + [dolg_abundance.txt](data/dolg_abundance.txt) -->
+<!--     + [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
 
 <!-- - __Растительные сообщества во франции La Mafragh (Annaba, Algérie).__ Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
 <!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
@@ -195,7 +195,6 @@ install.packages(c("cowplot", "geomorph"))
 <!-- - Код: [08.2_PCA_geometric_morphometrics.R](08.2_PCA_geometric_morphometrics.R) -->
 <!-- - Данные: [turtles.txt](data/turtles.txt) -->
 <!-- - Задание: [08.2_PCA_geometric_morphometrics_task.R](08.2_PCA_geometric_morphometrics_task.R) -->
-
 
 ## 9. Корреспондентный анализ (Corespondence Analysis, CA) (пн 31 марта, ВХ)
 
