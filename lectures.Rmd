@@ -10,17 +10,17 @@ install.packages("vegan")
 
 <!-- - Презентация [html](01_multivariate_data_and_dissimilarities.html) -->
 
-<!-- - [код R](01_multivariate_data_and_dissimilarities_code.R) -->
+- [код R](01_multivariate_data_and_dissimilarities_code.R)
 
-<!-- - __Фауна Долгой губы__ (Данные В.М.Хайтова) -->
-<!--     + [dolg_abundance.txt](data/dolg_abundance.txt) -->
-<!--     + [dolg_hydrology.txt](data/dolg_hydrology.txt) -->
+- __Фауна Долгой губы__ (Данные В.М.Хайтова)
+    + [dolg_abundance.txt](data/dolg_abundance.txt)
+    + [dolg_hydrology.txt](data/dolg_hydrology.txt)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- - __Обилие полихет на литорали Белого моря__ (Данные В.М.Хайтова) -->
-<!--     + [Polychaetes_species.csv](data/Polychaetes_species.csv) -->
-<!--     + параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv) -->
+- __Обилие полихет на литорали Белого моря__ (Данные В.М.Хайтова)
+    + [Polychaetes_species.csv](data/Polychaetes_species.csv)
+    + параметры среды [Polychaeta_env.csv](data/Polychaeta_env.csv)
 
 ## 2. nMDS, envfit, ordisurf (чт 17 февраля, МВ)
 
