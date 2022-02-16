@@ -1,6 +1,18 @@
 ---
 title: Анализ и визуализация многомерных данных с использованием R
 description: Презентации к курсу Анализ и визуализация многомерных данных с использованием R
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+    theme: flatly
+    highlight: haddock
+    include:
+      after_body: _footer.html
+    css: my_styles.css
+    lib_dir: site_libs
+    self_contained: no
 ---
  
 ## О курсе

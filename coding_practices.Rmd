@@ -1,5 +1,17 @@
 ---
 title: Правила хорошего кода
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+    theme: flatly
+    highlight: haddock
+    include:
+      after_body: _footer.html
+    css: my_styles.css
+    lib_dir: site_libs
+    self_contained: no
 ---
 
 Правила хорошего кода - это правила, которых стоит придерживаться, чтобы ваш код через какое-то время смог прочесть и легко понять кто-то другой или вы сами. Поэтому хорошо, если ваш код разделен на логические блоки и в достаточной степени прокомментирован.

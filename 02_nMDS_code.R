@@ -14,7 +14,7 @@ library(broom)
 
 # Графики
 library(ggmap)
-theme_set(theme_bw())
+theme_set(theme_bw(base_size = 12))
 
 # install.packages("devtools")
 # devtools::install_github("gavinsimpson/ggvegan")
@@ -178,6 +178,8 @@ env <- dat[, c("Zone", "Site", "L", "Age")] # свойства мидий-хоз
 
 
 
+## Украшенный график
+
 # Палитры
 pal_col <- c("red", "green", "steelblue")
 pal_sh <- c(1, 2, 0)
@@ -186,10 +188,29 @@ pal_sh <- c(1, 2, 0)
 ordiplot(ord_mus, type = "n")
 points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
 
-# ## Украшенный график с центроидами видов
+# Легенда (пример относительного и абсолютного расположения)
+legend("topleft", bty = "n",
+       title = "Intertidal levels: ",
+       legend = levels(env$Zone), col = pal_col, pch = 15)
+legend(x = 3, y = 1.5, xjust = 1, yjust = 1,
+       title = "Sites: ",
+       legend = levels(env$Site), col = "black", pch = pal_sh)
+
+
+## Украшенный график с центроидами видов
+
+op <- par(mar = c(3, 3, 0.1, 0.1), mgp = c(2, 1, 0))
 ordiplot(ord_mus, type = "n")
 points(ord_mus, col = pal_col[env$Zone], pch = pal_sh[env$Site])
+legend("topleft", bty = "n",
+       title = "Intertidal levels: ",
+       legend = levels(env$Zone), col = pal_col, pch = 15)
+legend("topright", bty = "n",
+       title = "Sites: ",
+       legend = levels(env$Site), col = "black", pch = pal_sh)
 text(ord_mus, display = "spec", cex = 0.9, col = "grey20")
+par(op)
+
 
 # # Визуализация ординации в ggplot2
 #
