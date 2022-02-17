@@ -53,7 +53,7 @@ install.packages("devtools")
 devtools::install_github("gavinsimpson/ggvegan")
 ```
 
-<!-- - Презентация [html](02_nMDS.html) -->
+- Презентация [html](02_nMDS.html)
 
 - [код R](02_nMDS_code.R)
 
