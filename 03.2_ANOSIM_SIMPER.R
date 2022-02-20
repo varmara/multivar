@@ -99,16 +99,15 @@ R_glob <-
 
 R_perm <- function(comm = log_com, group = com$Mussel_size){
   require(vegan)
-
-  ##
-  ##
-
-  dummy_dist <- dist(sample(as.numeric(group))) #Перемешиваем группы
-  ##
-  ##
-  ##
-  ##
-  ##
+  dist_com <- vegdist(comm)
+  rank_dist_com <- rank(dist_com)
+  dummy_dist <- dist(     ) #Придумайте как перемешать  группы
+  dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
+  dists <- data.frame(rank = rank_dist_com, dummy = as.vector(dummy_dist))
+  require(dplyr)
+  mean_dists <- dists %>% group_by(dummy) %>% summarize(rank_type = mean(rank))
+  n <- nrow(log_com)
+  R_p <- (mean_dists$rank_type[2] - mean_dists$rank_type[1])/(n * (n - 1)/4)
   R_p
 }
 

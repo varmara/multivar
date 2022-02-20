@@ -65,6 +65,9 @@ theme_set(theme_bw())
 <br>
 ```{r, echo=TRUE}
 com <- read.csv("data/mussel_beds.csv", sep=';', header = T)
+
+com$Mussel_size <- factor(com$Mussel_size)
+
 ascam <- read.csv("data/ASCAM.csv", sep=';', header = T)
 ```
 
@@ -181,7 +184,7 @@ rank_dist_com <- rank(dist_com)
 ## Решение
 
 ```{r}
-dummy_dist <- dist(as.numeric(com$Mussel_size))
+dummy_dist <- dist(as.numeric(factor(com$Mussel_size)))
 
 dummy_dist <- ifelse(dummy_dist == 0, 0, 1)
 

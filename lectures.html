@@ -506,31 +506,51 @@ div.tocify {
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Пермутационные тесты</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;coin&quot;</span>)</span></code></pre></div>
 <!-- - Презентация [html](03.1_Mantel_correlation-based_methods.html) -->
-<!-- - [код R](03.1_Mantel_correlation-based_methods.R) -->
-<!-- - Данные -->
-<!--     + [Coordinates.txt](data/Coordinates.txt) -->
-<!--     + [mussel_beds.csv](data/mussel_beds.csv) -->
-<!--     + [ASCAM.csv](data/ASCAM.csv) -->
-<!-- **Данные для самостоятельной работы** -->
-<!-- - __Растительные сообщества во франции La Mafragh (Annaba, Algérie).__ Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
-<!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
-<!--     + параметры среды [mafragh_env.csv](data/mafragh_env.csv) -->
-<!-- - __Деревья на острове Barro Colorado.__ Данные из работы *Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. & Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.* -->
-<!--     + [BCI_species.csv](data/BCI_species.csv) -->
-<!--     + параметры среды [BCI_env.csv](data/BCI_env.csv) -->
+<ul>
+<li><a href="03.1_Mantel_correlation-based_methods.R">код R</a></li>
+<li>Данные
+<ul>
+<li><a href="data/Coordinates.txt">Coordinates.txt</a></li>
+<li><a href="data/mussel_beds.csv">mussel_beds.csv</a></li>
+<li><a href="data/ASCAM.csv">ASCAM.csv</a></li>
+</ul></li>
+</ul>
+<p><strong>Данные для самостоятельной работы</strong></p>
+<ul>
+<li><strong>Растительные сообщества во франции La Mafragh (Annaba, Algérie).</strong> Данные из работы <em>de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d’une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d’Ecologie, 18, 393–407.</em>
+<ul>
+<li><a href="data/mafragh_species.csv">mafragh_species.csv</a></li>
+<li>параметры среды <a href="data/mafragh_env.csv">mafragh_env.csv</a></li>
+</ul></li>
+<li><strong>Деревья на острове Barro Colorado.</strong> Данные из работы <em>Condit, R, Pitman, N, Leigh, E.G., Chave, J., Terborgh, J., Foster, R.B., Nuñez, P., Aguilar, S., Valencia, R., Villa, G., Muller-Landau, H.C., Losos, E. &amp; Hubbell, S.P. (2002). Beta-diversity in tropical forest trees. Science 295, 666–669.</em>
+<ul>
+<li><a href="data/BCI_species.csv">BCI_species.csv</a></li>
+<li>параметры среды <a href="data/BCI_env.csv">BCI_env.csv</a></li>
+</ul></li>
+</ul>
 </div>
 <div id="anosim-simper" class="section level3">
 <h3>3.2 ANOSIM, SIMPER</h3>
 <!-- - Презентация [html](03.2_ANOSIM_SIMPER.html) -->
-<!-- - [код R](03.2_ANOSIM_SIMPER.R) -->
-<!-- - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv) -->
-<!-- **Данные для самостоятельной работы** -->
-<!-- - __Сообщества макробентоса в друзах мидий.__ Данные из работы *Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами  Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.* -->
-<!--     + [mussel_patches.csv](data/mussel_patches.csv) -->
-<!-- - __Сообщества лишайников на стволах сосен и елей в Северной Швеции.__ Данные из работы *Bäcklund, S., Jönsson, M., Strengbom, J., Frisch, A., & Thor, G. (2016). A pine is a pine and a spruce is a spruce–the effect of tree species and stand age on epiphytic lichen communities. PloS one, 11(1), e0147004.* -->
-<!--     + [Backlund_et_al_2016_PLOS.XLSX](data/Backlund_et_al_2016_PLOS.XLSX) -->
-<!-- - __Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий.__ Данные из работы *Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308* -->
-<!--     + [mussel_experiment.csv](data/mussel_experiment.csv) -->
+<ul>
+<li><a href="03.2_ANOSIM_SIMPER.R">код R</a></li>
+<li>Данные <a href="data/mussel_beds.csv">mussel_beds.csv</a> | <a href="data/ASCAM.csv">ASCAM.csv</a></li>
+</ul>
+<p><strong>Данные для самостоятельной работы</strong></p>
+<ul>
+<li><strong>Сообщества макробентоса в друзах мидий.</strong> Данные из работы <em>Хайтов В. М., Артемьева А. В., Фокин М. В., Яковис Е. Л. Структурно-динамическая организация консорциев друз Mytilus edulis на литорали губы Долгой острова Большого Соловецкого. Ч. II. Структура и динамика сообщества, связанного с друзами Вестн. С.-Петерб. ун-та. Сер. 3. 2002. Вып. 4 (№ 27). С. 18−29.</em>
+<ul>
+<li><a href="data/mussel_patches.csv">mussel_patches.csv</a></li>
+</ul></li>
+<li><strong>Сообщества лишайников на стволах сосен и елей в Северной Швеции.</strong> Данные из работы <em>Bäcklund, S., Jönsson, M., Strengbom, J., Frisch, A., &amp; Thor, G. (2016). A pine is a pine and a spruce is a spruce–the effect of tree species and stand age on epiphytic lichen communities. PloS one, 11(1), e0147004.</em>
+<ul>
+<li><a href="data/Backlund_et_al_2016_PLOS.XLSX">Backlund_et_al_2016_PLOS.XLSX</a></li>
+</ul></li>
+<li><strong>Сообщества макробентоса в экспериментах с искусственно созданными друзами мидий.</strong> Данные из работы <em>Хайтов В. М.Бровкина Ю.Б. Механизмы заселения друз Mytilus edulis Linnaeus, 1758 (Bivalvia: Mytilidae) обитателями беломорского песчаного пляжа // БИОЛОГИЯ МОРЯ, 2014. — Vol. 40, — № 4. — P. 302-308</em>
+<ul>
+<li><a href="data/mussel_experiment.csv">mussel_experiment.csv</a></li>
+</ul></li>
+</ul>
 </div>
 </div>
 <div id="permanova-чт-24-февраля-мв" class="section level2">
