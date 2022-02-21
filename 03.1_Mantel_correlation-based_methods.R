@@ -25,28 +25,45 @@ sum(is.na(varespec))
 
 # Код для построения ординаци в осях nMDS
 
-stressplot()
+set.seed(12345)
+ord <- metaMDS(comm = varespec, distance = "bray", k = 2, trymax = 40)
 
+plot(ord)
 
-scores()
+stressplot(ord)
 
-mds_points <- as.data.frame(scores())
+stres_ord <- ord$stress
 
-ggplot(mds_points, )) + geom_point(aes(), size = 4) + scale_color_gradient(low = "yellow", high = "red") + theme_bw() + theme(legend.position = "bottom") + labs(color = "Концентрация алюминия") + ggtitle(paste("Stress = ", ) ))
+ord$points
+
+scores(ord)
+
+mds_points <- as.data.frame(scores(ord))
+
+ggplot(mds_points, aes(x = NMDS1, y = NMDS2)) +
+  geom_point(aes(color = varechem$Al), size = 4) +
+  scale_color_gradient(low = "yellow", high = "red") +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(color = "Концентрация алюминия") +
+  ggtitle(paste("Stress = ", stres_ord))
 
 
 
 # Применяем функцию envfit()
-env_fit <- envfit()
+env_fit <- envfit(ord  ~ ., data = varechem)
 
 
 # Визуализация результатов
-ordiplot(veg_ord, display = "sites")
+ordiplot(ord, display = "sites")
 plot(env_fit)
+
+env_fit
 
 
 # Анализ связи с переменными c помощью функции `ordisurf()`
 
+veg_ord <- ord
 
 ordiplot(veg_ord, display = "sites")
 
@@ -64,7 +81,12 @@ ordisurf(veg_ord,varechem$Mn,
 
 
 # Вычисление мантеловской корреляции
+str(varespec)
+str(varechem)
+
+
 dist_com <- vegdist(varespec, method = "bray")
+
 dist_chem <- vegdist(varechem, method = "euclidean")
 
 x <- as.vector(dist_com)

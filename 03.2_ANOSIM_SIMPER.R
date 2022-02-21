@@ -20,15 +20,17 @@ str(com)
 library(vegan)
 library(ggplot2)
 
-log_com <- decostand()
+log_com <- decostand(com[,-c(1:3)], method = "log")
 
-ord_log_com <- metaMDS(, distance = "bray", k=2)
+ord_log_com <- metaMDS(log_com, distance = "bray", k=2)
 
-MDS <- data.frame()
+MDS <- data.frame(scores(ord_log_com))
 
-ggplot(MDS, aes(x = MDS1, y = MDS2, fill = )) +
+ggplot(MDS, aes(x = NMDS1, y = NMDS2, fill = com$Mussel_size)) +
   geom_point(shape = 21, size = 4) +
-  scale_fill_manual() + ggtitle(paste("Stress = ", round(, 2))) + theme_bw()
+  scale_fill_manual(values = c("red", "blue")) +
+  ggtitle(paste("Stress = ", round(ord_log_com$stress, 2))) +
+  theme_bw()
 
 
 
@@ -45,11 +47,11 @@ ggplot(MDS, aes(x = MDS1, y = MDS2, fill = )) +
 # # 2. Разверните полученную матрицу в вектор.
 # # 3. На основе полученного вектора создайте вектор, содержащий ранги расстояний.
 #
-dist_com <- vegdist( , method = "bray")
+dist_com <- vegdist(log_com , method = "bray")
 #
 # write.table(as.data.frame(dist_com), "clipboard", sep = "\t", row.names = F)
 
-unfold_dist_com <-
+unfold_dist_com <- as.vector(dist_com)
 
 
 rank_dist_com <-

@@ -88,7 +88,7 @@ devtools::install_github("gavinsimpson/ggvegan")
 install.packages("coin")
 ```
 
-<!-- - Презентация [html](03.1_Mantel_correlation-based_methods.html) -->
+- Презентация [html](03.1_Mantel_correlation-based_methods.html)
 - [код R](03.1_Mantel_correlation-based_methods.R)
 - Данные
     + [Coordinates.txt](data/Coordinates.txt)
@@ -107,7 +107,7 @@ install.packages("coin")
 
 ### 3.2 ANOSIM, SIMPER
 
-<!-- - Презентация [html](03.2_ANOSIM_SIMPER.html) -->
+- Презентация [html](03.2_ANOSIM_SIMPER.html)
 - [код R](03.2_ANOSIM_SIMPER.R)
 - Данные [mussel_beds.csv](data/mussel_beds.csv) | [ASCAM.csv](data/ASCAM.csv)
 
