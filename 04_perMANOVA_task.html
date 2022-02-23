@@ -1,64 +1,56 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
 <title>Задания для самостоятельной работе по теме perMANOVA</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 
-
-
-
 <style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
 
 <link rel="stylesheet" href="my_styles.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -66,13 +58,8 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -86,40 +73,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 60px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
-.section h2 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
-.section h3 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
-.section h4 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
-.section h5 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
-.section h6 {
-  padding-top: 65px;
-  margin-top: -65px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -147,7 +107,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -159,7 +119,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -170,14 +130,25 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -187,7 +158,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -223,6 +193,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -235,48 +206,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -290,6 +222,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -325,8 +263,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -342,8 +278,18 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -384,7 +330,8 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+
+<div id="header">
 
 
 
@@ -393,19 +340,22 @@ div.tocify {
 </div>
 
 
-<div id="------." class="section level2">
-<h2>Влияние выпаса скота на зообентос рек о.Тасмания</h2>
+<div id="датасет-1.-влияние-выпаса-скота-на-зообентос-рек-о.тасмания" class="section level2">
+<h2>Датасет 1. Влияние выпаса скота на зообентос рек о.Тасмания</h2>
 <p>Из-за сельскохозяйственной деятельности поступление грунта и питательных веществ в реки увеличивается. Влияние, которое оказывают эти факторы сложно оценить по-отдельности без специальных экспериментов. Полевые наблюдения за сообществами макробентоса рек можно рассматривать как результат “естественного многолетнего эксперимента”, который оценивает влияние сельского хозяйства вцелом.</p>
 <a data-flickr-embed="true"  href="https://www.flickr.com/photos/27071105@N04/32354260361/in/photolist-Ri33pc-5uNfPj-6A8k6J-98bmkJ-dDvMNj-9a4qPT-dM5V1Z-ccNRTf-5FitNE-6A8mCs-7pJWJ7-fSc6SR-L8mAp-j4nNJ2-7W7e4d-8i7HdF-ajQziw-ihNL3k-7pLroX-NTWrrn-bFi48H-bsoas7-gQjAhM-ajMM46-ajMMEi-ihPhNN-RjSkjn-dp5SQN-b9pDnM-reAnaJ-nWbDDp-tLk7N-tLkmD-tLkfd-86pFRn-u8gnJG-tLkdH-9gkeyN-i3miUc-4qN1Gv-4qN426-8zVD3e-tLkiZ-6aAec5-8gVYSN-tEsAP-3UN759-2KKfrg-i3jRND-qYhQc2" title="Tasmania"><img src="https://c1.staticflickr.com/1/584/32354260361_bbb927147e_n.jpg" width="320" height="180" alt="Tasmania" style="display:block;margin:auto;"></a>
 <script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
 <p>Чтобы проверить, как выпас скота в масштабах территории водосбора влияет на население дна рек, летом 2008–9 и 2009-10 были взяты пробы бентоса и измерены различные характеристики среды в 27 речных сайтах в северной Тасмании. Данные в файле <code>Grazing_Magierowski_et_al_2015.xls</code>: лист “env” — характеристики среды; лист “fauna” — фауна.</p>
-<p><img src="05_perMANOVA_task_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p><strong>Задание 1</strong>. При помощи perMANOVA проверьте, меняется ли фауна в реках Тасмании в зависимости от уровня выпаса скота в зоне водосбора (переменная <code>GrazingRank</code>).</p>
+<p><img src="04_perMANOVA_task_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="задание-1" class="section level3">
+<h3>Задание 1</h3>
+<p>При помощи perMANOVA проверьте, меняется ли фауна в реках Тасмании в зависимости от уровня выпаса скота в зоне водосбора (переменная <code>GrazingRank</code>).</p>
 <p><code>GrazingRank</code> — доля территории водосбора, занятой выпасом скота (Low — 0-10%; Medium – 10-50%; Severe &gt;50%)</p>
 <p><strong>Источник</strong>: Magierowski, RH, Davies, PE, Read, SM (2015). Biological and physical data collected from river sites selected across a gradient of catchment area under grazing in northern Tasmania., Version 1. <a href="http://doi.org/10.4227/05/54BEEE248D22B" class="uri">http://doi.org/10.4227/05/54BEEE248D22B</a>. ÆKOS Data Portal, rights owned by University of Tasmania. Accessed 02 Mar 2017.</p>
 </div>
-<div id="---tiliqua-rugosa" class="section level2">
-<h2>Гематология сонных ящериц <em>Tiliqua rugosa</em></h2>
+</div>
+<div id="датасет-2.-гематология-сонных-ящериц-tiliqua-rugosa" class="section level2">
+<h2>Датасет 2. Гематология сонных ящериц <em>Tiliqua rugosa</em></h2>
 <p>Физиологическое состояние живых существ часто используют для оценки качества среды. Делать такого рода измерения дешевле и проще на модельных объектах. Сонная ящерица <em>Tiliqua rugosa</em> — широко распространенный вид в южной Австралии. В частности, в районе Мюррей Мали, который является территорией интенсивного земледелия и скотоводства. Гематологические характеристики <em>Tiliqua rugosa</em> можно использовать для оценки качества среды.</p>
 <div style="text-align: center;">
 <p>
@@ -426,13 +376,16 @@ div.tocify {
 </ul>
 <p>Известно, что гематологическая картина у ящериц зависит в том числе от общего физиологического состояния, которое косвенно можно оценить при помощи индекса, описывающего размеры тела, вернее, отклонение от обычных размеров (переменная <code>LBSI</code> — Linear Body Size Index, остаток от RMA-регрессии логарифма массы от логарифма длины тела).</p>
 <p><img src="images/Sleepy%20lizards.png" /></p>
+<div id="задание-2" class="section level3">
+<h3>Задание 2</h3>
 <p>Упрощенные варианты анализа:</p>
-<p><strong>Задание 1</strong>: Различается ли состав крови ящериц из немодифицированного и сильно модифицированного ландшафтов?</p>
-<p><strong>Задание 2</strong>: Проверьте, различается ли состав крови ящериц в разных местообитаниях в сильно модифицированном ландшафте</p>
-<p><strong>Задание 3</strong>: Проверьте, влияет ли степень связности на состав крови ящериц из сильно модифицированного ландшафта.</p>
+<p><strong>a</strong>: Различается ли состав крови ящериц из немодифицированного и сильно модифицированного ландшафтов?</p>
+<p><strong>b</strong>: Проверьте, различается ли состав крови ящериц в разных местообитаниях в сильно модифицированном ландшафте</p>
+<p><strong>c</strong>: Проверьте, влияет ли степень связности на состав крови ящериц из сильно модифицированного ландшафта.</p>
 <p>“Правильный”, наиболее полный вариант:</p>
-<p><strong>Задание 4</strong>: Влияют ли на состав крови ящериц из сильно модифицированного ландшафта тип местообитания и степень связности.</p>
+<p><strong>d</strong>: Влияют ли на состав крови ящериц из сильно модифицированного ландшафта тип местообитания и степень связности.</p>
 <p><strong>Источник</strong>: Smyth, A. K., Smee, E., Godfrey, S. S., Crowther, M., Phalen, D. (2014). Haematology of the Sleepy Lizard (Tiliqua rugosa) in Australia’s cereal croplands, 2010, Version 1.0. <a href="http://doi.org/10.4227/05/537C5C5553F9E" class="uri">http://doi.org/10.4227/05/537C5C5553F9E</a>. ÆKOS Data Portal, rights owned by University of Adelaide, University of Sydney, Commonwealth Scientific and Industrial Research Organisation. Accessed 03 Mar 2017.</p>
+</div>
 </div>
 
 <p><small>
@@ -449,13 +402,59 @@ div.tocify {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

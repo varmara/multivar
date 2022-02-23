@@ -1,19 +1,25 @@
 ---
 title: "Тестирование гипотез <br/>при помощи perMANOVA"
 subtitle: "Анализ и визуализация многомерных данных с использованием R"
-author: Марина Варфоломеева, Вадим Хайтов
-presenters: [{
-  name: 'Марина Варфоломеева',
-  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
-  }]
+author: 
+  - Марина Варфоломеева
+  - Вадим Хайтов
+company: 'Каф. Зоологии беспозвоночных, СПбГУ'
 output:
- ioslides_presentation:
-  widescreen: true
-  css: assets/my_styles.css
-  logo: assets/Linmod_logo.png
+  xaringan::moon_reader:
+    self-contained: true
+    lib_dir: libs
+    css: [default, tamu-fonts, ninjutsu, "assets/xaringan.css"]
+    df_print: default
+    nature:
+      highlightStyle: vs
+      highlightLines: true
+      countIncrementalSlides: false
+      titleSlideClass: [top, center, inverse]
+    includes:
+      in_header: "assets/xaringan_in_header.html"
+      after_body: "assets/xaringan_after_body.html"
 ---
-
-##
 
 - Еще раз про множественные сравнения
 - Пример: Поведение песчанок в тесте открытое поле
@@ -32,22 +38,36 @@ output:
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE)
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 5, warning = FALSE)
 ```
+
+---
+
+class: middle, center, inverse
 
 # Еще раз про множественные сравнения 
 
+---
+
 ## В чем опасность множественных сравнений?
+
+--
 
 $\alpha$ --- это __вероятность совершить ошибку первого рода при тестировании гипотезы__ (= вероятность отвергнуть истинную нулевую гипотезу, = вероятность найти различия там, где их нет).
 
 Обычно принимается, что $H_0$ отвергают на уровне значимости $\alpha = 0.05$. 
 
-Когда у нас два средних --- все просто, сравнение всего одно. Естественно, __вероятность совершить ошибку I рода для группы сравнений $\alpha _{familywise}$ равна уровню значимости для единственного сравнения $\alpha _{per\,comparison}$__.
+--
+
+Когда у нас два средних --- все просто, сравнение всего одно.
+
+Естественно, __вероятность совершить ошибку I рода для группы сравнений $\alpha _{familywise}$ равна уровню значимости для единственного сравнения $\alpha _{per\,comparison}$__.
 
 $\alpha _{familywise} = \alpha _{per\,comparison}$
 
 Но если сравнений много, то растет вероятность совершить хотя бы одну ошибку I рода (найти различия там, где их нет).
+
+---
 
 ## Если сравнений много...
 
@@ -55,11 +75,17 @@ $\alpha _{familywise} = \alpha _{per\,comparison}$
 
 Пусть мы решили, что в каждом из сравнений будем использовать уровень значимости $0.05$.
 
+--
+
 Тогда в каждом из сравнений вероятность совершить ошибку первого рода будет $\alpha_{per\,comparison} = 0.05$.
+
+--
 
 Если сделать $N$ тестов, то вероятность совершить хотя бы одну ошибку I рода в группе тестов (family-wise error rate, FWER) значительно возрастает.
 
 $$\alpha_{familywise} = 1 - (1 - \alpha_{per\,comparison})^N$$
+
+---
 
 ## Чем больше сравнений, тем больше вероятность обнаружить различия там, где их на самом деле нет.
 
@@ -77,11 +103,17 @@ library(knitr)
 kable(df)
 ```
 
+---
 
 ## Для решения проблемы есть два подхода
 
-1. Взять более жесткий порог уровня значимости. (Например, ввести поправку Бонферрони, поправку Хольма-Бонферрони, воспользоваться процедурой Бенъямини-Хохберга).
+1. Взять более жесткий порог уровня значимости. Например,
+  - поправка Бонферрони,
+  - поправка Хольма-Бонферрони,
+  - процедура Бенъямини-Хохберга.
 2. Изменить схему тестирования гипотезы --- тестировать не три независимых гипотезы, а одну сложную (так это, например, происходит в ANOVA).
+
+---
 
 ## Поправка Бонферрони
 
@@ -101,6 +133,8 @@ library(knitr)
 kable(df1)
 ```
 
+---
+
 ## Метод Хольма-Бонферрони
 
 Метод Хольма-Бонферрони --- это пошаговая процедура.
@@ -112,6 +146,8 @@ $$p_{1} \le p_{2} \le \cdots \le p_{N - 1} \le p_{N}$$
 2. Вводим поправку для значений $p$   
 $${p^*_{j}} = min{\{(N - j + 1) \cdot p_{j},\;1\}}$$
 3. Сравниваем с $\alpha$. Отвергаем $H_0$, если $p^*_{j} < \alpha_{familywise}$
+
+---
 
 ## Пример поправки Хольма-Бонферрони
 
@@ -130,35 +166,47 @@ dat$p_adj <- pmin(dat$adj * dat$p_val, 1)
 dat$h0 <- ifelse(dat$p_adj <= alph, "Да", "Нет")
 frst_neg <- match("Нет", dat$h0)
 dat$h0[frst_neg] <- "Нет, и дальше везде сохраняем $H_0$"
-dat$h0[(frst_neg + 1):nrow(dat)] <- ""
-colnames(dat) <- c("Ранг($j$)", "$\\mathbf{p_{j}}$", "$N - j + 1$",  "$\\mathbf{p^*_{j}} = min{\\{(N - j + 1) \\cdot p_{j},\\;1\\}}$", "Отвергаем $H_0$?")
+dat$h0[(frst_neg + 1):nrow(dat)] <- "Нет"
+colnames(dat) <- c("Ранг(_j_)", "$\\mathbf{p_{j}}$", "$N - j + 1$",  "$\\mathbf{p^*_{j}} = min{\\{(N - j + 1) \\cdot p_{j},\\;1\\}}$", "Отвергаем $H_0$?")
 
 library(knitr)
 kable(dat, format = "markdown")
 ```
 
+---
+
+class: middle, center, inverse
+
 # Дисперсионный анализ (повторение)
+
+---
 
 ## Классический дисперсионный анализ
 
-<div class="columns-2">
-
+.pull-left-33[
 <img src="images/fisher.jpg" height="200" alt="Ronald Fisher">
 
 <small>Рональд Элмер Фишер</small>
+]
+
+.pull-right-66[
 
 Пусть имеется несколько градаций фактора _A_  
 (например, $A _{1...3}$)
 
 - Почему  появляется __межгрупповая__ изменчивость, то есть разные средние значения для групп по фактору _А_?
+
 - Почему  появляется __внутригрупповая__ изменчивость, то есть разные значения _y_ в группах?
 
-</div>
+]
+
 
 | A1  | A2 | A3 |   |
-| --------- | --------- | --------- | -- |
-| $y_{11}, y_{12}, y_{13}$ | $y_{21}, y_{22}, y_{23}$ | $y_{31}, y_{32}, y_{33}$ |    |
-| $\bar{y}_{A_1}$ |$\bar{y}_{A_2}$ | $\bar{y}_{A_3}$ | $\bar{Y}_{gen}$ |
+|: --------- :|: --------- :|: --------- :|: -- :|
+| $y_{11}, y_{12}, y_{13}, ...$ | $y_{21}, y_{22}, y_{23}, ...$ | $y_{31}, y_{32}, y_{33}, ...$ |    |
+| $\bar{y}_{A_1}$ | $\bar{y}_{A_2}$ | $\bar{y}_{A_3}$ | $\bar{Y}_{gen}$ |
+
+---
 
 ## Суммарная дисперсия может быть разложена на две составляющие
 
@@ -166,7 +214,7 @@ $SS_{total} = SS_{between} + SS_{within}$
 
 ```{r echo = FALSE, warning=FALSE, fig.width = 10, fig.height=4, message=FALSE, purl=FALSE}
 library(ggplot2)
-theme_set(theme_bw())
+theme_set(theme_bw(base_size = 14))
 library(plyr)
 library(gridExtra)
 set.seed(3451)
@@ -210,14 +258,18 @@ gg_anova_error <- gg_anova +
 grid.arrange(gg_anova_total, gg_anova_factor, gg_anova_error, ncol = 3, widths = c(0.38, 0.31, 0.31))
 ```
 
+---
 
-## Для тестирования гипотезы о влиянии фактора надо сравнить межгрупповую изменчивость ($SS_{between}$) и внутригрупповую ($SS_{within}$). 
+## Тестирование гипотезы о влиянии фактора
 
-Для этого сравнения Фишер предложил статистику $F = \frac{SS_{between} / (a - 1)}{SS_{within} / (N - a)}$, где $a$ --- число групп.
+Чтобы сравнить межгрупповую изменчивость ( $SS_{between}$) и внутригрупповую ( $SS_{within}$), Фишер предложил статистику
+
+$$F = \frac{SS_{between} / (a - 1)}{SS_{within} / (N - a)}$$
+где $a$ --- число групп.
 
 ### F-распределение
 
-Если межгрупповая изменчивость равна внутригрупповой, то $F$ принадлежит $F$-распределению с двумя параметрами $df_{between} = a - 1$ и $df_{within} = N - a$, где $a$ --- число классов, $N$ --- общее количество объектов в анализе.
+Если межгрупповая изменчивость равна внутригрупповой ( $H_0$), то $F$ принадлежит $F$-распределению с двумя параметрами $df_{between} = a - 1$ и $df_{within} = N - a$, где $a$ --- число классов, $N$ --- общее количество объектов в анализе.
 
 
 ```{r, echo=FALSE, fig.height=2.5, purl=FALSE}
@@ -230,6 +282,7 @@ shade <- rbind(c(F_crit, 0), subset(df_f, x > F_crit), c(df_f[nrow(df_f), "x"], 
 ggplot(data = df_f, aes (x = x, y = y)) + geom_line(size = 2, color = "steelblue") + xlab("F for df = 3 and df = 36") + ylab ("Probability") + geom_polygon(data = shade, aes(x, y), fill = "orangered") + geom_vline(aes(xintercept = F_crit), linetype = "dashed") + annotate(geom = "text", x = F_crit, y = max(df_f$y), label = "F when p = 0.05", hjust = -0.1) + annotate(geom = "text", x = F_crit, y = max(df_f$y)/2, label = "reject H0", hjust = -0.1) + annotate(geom = "text", x = F_crit/2, y = max(df_f$y)/2, label = "fail to reject H0", hjust = 0)
 ```
 
+---
 
 ## Однофакторный дизайн
 
@@ -237,14 +290,14 @@ ggplot(data = df_f, aes (x = x, y = y)) + geom_line(size = 2, color = "steelblue
 Выявляется влияние фактора А.
 
 ![](images/anova-designs-one-way.png)
-
+---
 
 ## Многофакторный ортогональный дизайн
 
-Выявляется влияние фактора А, B и их взаимодействия A$\times$B.
+Выявляется влияние фактора А, B и их взаимодействия A $\times$ B.
 
 ![](images/anova-designs-two-way.png)
-  
+---
 
 ## Иерархический дизайн
 
@@ -256,82 +309,141 @@ ggplot(data = df_f, aes (x = x, y = y)) + geom_line(size = 2, color = "steelblue
 
 Влияние вложенного фактора B можно оценить, но чаще всего оно не представляет интереса для исследователя.
 
+---
 
 ## Рандомизированный полный блочный дизайн
-
 
 
 ![](images/anova-designs-block.png)
 
 Влияние блокриующего фактора тоже можно оценить, но часто оно не представляет интереса для исследователя. Обычно блокирующий фактор рассматривается как случайный.
 
+---
+
+class: middle, center, inverse
+
 # Пример: Поведение песчанок в тесте открытое поле
 
+---
+
+class: split-20
+
+.row.bg-main1[.content[
 
 ## Пример: Поведение песчанок в тесте открытое поле
 
 **Гипотеза:** Разные виды песчанок различаются по поведению в тесте "Открытое поле"
 
-<center>
+]]
+
+.row.bg-main2[
+.split-three[
+.column[
 <img src="images/Peschanka-karl.jpg" height="180" alt="Карликовая песчанка">
+
+Карликовая песчанка (_Gerbillus gerbillus_)
+
+.small[XV8-Crisis]
+]
+.column[
 <img src="images/Peschanka-mongol.jpg" height="180" alt="Монгольская песчанка">
+
+Монгольская песчанка (_Meriones unguiculatus_)
+
+.small[Alastair Rae]
+]
+.column[
 <img src="images/Peschanka-zhirn.jpg" height="180" alt="Жирнохвостая песчанка">
-</center>
 
-Виды:
+Жирнохвостая песчанка (_Pachyuromys duprasi_)
 
-* Карликовая песчанка (_Gerbillus gerbillus_)
-* Монгольская песчанка (_Meriones unguiculatus_)
-* Жирнохвостая песчанка (_Pachyuromys duprasi_)
+.small[P.H.J. (Peter) Maas / www.petermaas.nl]
+]
+]]
 
-<br/><br/><br/><br/>
-<small>Фото: (1) XV8-Crisis; (2) Alastair Rae; (3) P.H.J. (Peter) Maas / www.petermaas.nl </small>
+
+
+---
 
 ## Тест "открытое поле"
 
 <div align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LifsadrTAUY?rel=0&start=73" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="500" src="https://www.youtube.com/embed/LifsadrTAUY?rel=0&start=73" frameborder="0" allowfullscreen></iframe>
 </div>
+
+---
+
+
+class: split-20
+
+.row.bg-main1[.content[
 
 ## Пример: Поведение песчанок в тесте открытое поле
 
 **Гипотеза:** Разные виды песчанок различаются по поведению в тесте "Открытое поле"
 
-<center>
+]]
+
+.row.bg-main2[.content[
+.split-two[
+.split-three[
+.column[
 <img src="images/Peschanka-karl.jpg" height="180" alt="Карликовая песчанка">
+
+Карликовая песчанка (_Gerbillus gerbillus_)
+
+.small[XV8-Crisis]
+]
+.column[
 <img src="images/Peschanka-mongol.jpg" height="180" alt="Монгольская песчанка">
+
+Монгольская песчанка (_Meriones unguiculatus_)
+
+.small[Alastair Rae]
+]
+.column[
 <img src="images/Peschanka-zhirn.jpg" height="180" alt="Жирнохвостая песчанка">
-</center>
 
-Оценка поведения песчанок трех видов по семи признакам:
+Жирнохвостая песчанка (_Pachyuromys duprasi_)
 
-* Время до выхода в квадрат открытого поля
-* Количество актов мочеиспускания
-* Количество актов дефекации
-* Количество пересеченных квадратов
-* Число вертикальных стоек
-* Количество актов смещенной активности
-* Время проведенное в центре квадрата открытого поля
+.small[P.H.J. (Peter) Maas / www.petermaas.nl]
+]
+]
 
-<small>Фото: (1) XV8-Crisis; (2) Alastair Rae; (3) P.H.J. (Peter) Maas / www.petermaas.nl </small>
+.row[
+<br/>
+1. Время до выхода в квадрат открытого поля
+1. Количество актов мочеиспускания
+1. Количество актов дефекации
+1. Количество пересеченных квадратов
+1. Число вертикальных стоек
+1. Количество актов смещенной активности
+1. Время проведенное в центре квадрата открытого поля
+]
+]]]
 
-## Данные наблюдений
 
-```{r eval=FALSE}
-pesch <- read.csv("data/pesch.csv", header = TRUE, sep = ";")
-head(pesch)
-```
 
-```{r echo=FALSE}
-pesch <- read.csv("data/pesch.csv", header = TRUE, sep = ";")
-rmarkdown::paged_table(head(pesch))
-```
+---
 
 ## Задание
 
 - Какую меру различия можно использовать с этими данными?
 - Как можно преобразовать данные?
 - Постройте ординацию объектов в осях MDS и раскрасьте точки в соответствии с видами
+
+```{r eval=FALSE}
+## Данные наблюдений
+pesch <- read.csv("data/pesch.csv", header = TRUE, sep = ";")
+head(pesch)
+```
+
+```{r pesch-dat, echo=FALSE}
+pesch <- read.csv("data/pesch.csv", header = TRUE, sep = ";")
+rmarkdown::paged_table(head(pesch))
+```
+
+---
 
 ## Решение
 
@@ -344,12 +456,14 @@ log_pesch[, 3:ncol(pesch)] <- log(pesch[, 3:ncol(pesch)] + 1)
 head(log_pesch)
 ```
 
+---
+
 ## Решение
 
 ```{r ord-pesch, message=FALSE, purl=FALSE, results='hide'}
 library(ggplot2)
 library(vegan)
-theme_set(theme_bw())
+theme_set(theme_bw(base_size = 14))
 
 mds_pesch <- metaMDS(log_pesch[, 3:ncol(pesch)], distance = "euclidean")
 mds_pesch <- as.data.frame(mds_pesch$points)
@@ -359,6 +473,8 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) +
   geom_point(size = 5)
 ```
 
+---
+
 ## Различаются ли виды песчанок по поведению?
 
 Каким способом можно ответить на этот вопрос?
@@ -366,11 +482,22 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) +
 ```{r ord-pesch, echo=FALSE, message=FALSE, purl=FALSE, results='hide'}
 ```
 
->- Мы могли бы взять каждый из поведенческих признаков отдельно и провести одномерный однофакторный дисперсионный анализ.
+--
+
+- Мы могли бы взять каждый из поведенческих признаков отдельно и провести одномерный однофакторный дисперсионный анализ.
+
+--
+
 - Но нас интересует поведение в целом --- нужен многомерный анализ.
 
 
+---
+
+class: middle, center, inverse
+
 # Методы выявления различий между группами для многомерных данных
+
+---
 
 ## ANOVA разработан для одномерных данных
 
@@ -383,11 +510,15 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) +
 * Метаболом как целое (много метаболитов)
 * Ответы респондентов на множество вопросов в анкетах
 
+--
+
 Варианты решений:
 
->- MANOVA (Fisher, 1925, Wilks, 1932)
-- distance-based Redundancy Analysis (db-RDA) (Legendre, Anderson, 1999)
+- MANOVA (Fisher, 1925, Wilks, 1932)
 - perMANOVA (Anderson, 2001; McArdle, Anderson, 2001)
+- distance-based Redundancy Analysis (db-RDA) (Legendre, Anderson, 1999)
+
+---
 
 ## Многомерный дисперсионный анализ (MANOVA)
 
@@ -395,32 +526,45 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) +
 
 В MANOVA сравниваются:
 
-- __<span class="red">отклонения точек от групповых центроидов</span>__ (аналог $SS_{within}$)
-- __<span class="blue">отклонения групповых центроидов от общего центроида</span>__ (аналог $SS_{between}$).
+- __.red[отклонения точек от групповых центроидов]__ (аналог $SS_{within}$)
+- __.blue[отклонения групповых центроидов от общего центроида]__ (аналог $SS_{between}$).
 
-<div class="columns-2">
+.pull-left[
 
 <img src="images/MANOVA_mod.png" height="260" alt="MANOVA">
 
-<small>Anderson, 2001</small>
+.small[Anderson, 2001]
 
-<br /><br /><br /><br />
+]
+
+--
+
+.pull-right[
+
 Ограничения MANOVA:
 
 - Многомерная нормальность распределения
 - Гомогенность дисперсий
 
+]
 
-## Permutational Multivariate Analysis of Variance (perMANOVA) {.columns-2}
 
+---
+
+## Permutational Multivariate Analysis of Variance (perMANOVA)
+
+.pull-left-33[
 <img src="images/Anderson.jpg" width="450" alt="Marti Anderson">
 
 <small>Марти Джейн Андерсон</small>
 
-<br /><br /><br /><br />
 
+]
+.pull-right-66[
 <img src="images/Anderson 2001.jpg" width="500" alt="Anderson 2001">
+]
 
+---
 
 ## Теорема
 
@@ -429,54 +573,63 @@ ggplot(mds_pesch, aes(x = MDS1, y = MDS2, colour = Species)) +
 
 Для Евклидовых расстояний эта закономерность была известна давно (например, Kendall, Stuart 1963).
 
-<div class="columns-2">
+.pull-left[
 
-<img src="images/Centroid and distance-mod.png" width="450" alt="Centroid and distance"><small>Anderson, 2001</small>
+<img src="images/Centroid and distance-mod.png" width="450" alt="Centroid and distance">
 
-<br /><br /><br /><br />
+<small>Anderson, 2001</small>
+
+]
+
+.pull-right[
 
 В случае Евклидова расстояния (именно его имплицитно использует MANOVA) центроиды найти очень просто --- это средние значения соответствующих координат. Поэтому обычно сначала непосредственно вычисляли центроиды, и затем --- сумму квадратов отклонений от них.
 
+]
+
 Для других мер различия центроиды найти гораздо сложнее. Например, для коэффициента Брея-Куртиса (не метрика), среднее значение не будет соответствовать центроиду.
 
-</div>
+---
 
 ## Марти Андерсон показала, что можно обойтись без вычисления центроидов и для других мер различия
 
 <center><img src="images/Centroid and distance.png" height="170" alt="Centroid and distance"></center><small>Anderson, 2001</small>
 
-<div class="columns-2">
+.pull-left[
 
+<br/>
 MANOVA (Евклидово расстояние)
 
-<img src="images/MANOVA.png" height="260" alt="MANOVA">
+<img src="images/MANOVA.png" height="260" alt="MANOVA"><small>Anderson, 2001</small>
 
-<small>Anderson, 2001</small>
+]
+
+.pull-right[
 
 perMANOVA (любой коэффициент)
 
 <img src="images/distances-permanova.png" height="260" alt="perMANOVA">
 
-<br />
+]
 
-</div>
+---
 
 ## Можно непосредственно из матрицы любых коэффициентов различия найти и общую и внутригрупповые суммы квадратов
 
 <img src="images/Matrix transformation.png" height="500" alt=" "><small>Anderson, 2001</small>
 
+---
+
 ## Разложение дисперсии становится очень простым
 
-<div class="columns-2">
-
+.pull-left[
 <img src="images/distances-total-within-between.png" width="450" alt="distances-total-within-between">
 <small>Anderson, 2001</small>
+]
 
-<br /><br />
-
+.pull-right[
 Пусть всего _N_ элементов, принадлежащих _a_ группам по _n_ элементов в каждой, _d_ - расстояние между _i_-тым и _j_-тым объектами, $\epsilon$ - 1 если объекты _i_ и _j_ из одной группы и 0, если из разных.
-
-</div>
+]
 
 $SS_{total} = \frac{1}{N}\sum \sum {d_{ij}^2}$  
 Сумма квадратов взаимных расстояний --- это сумма квадратов субдиагональных элементов, деленная на число объектов _N_. 
@@ -485,6 +638,8 @@ $SS_{within} = \frac{1}{n}\sum \sum {d_{ij}^2 \cdot \epsilon_{ij}}$
 Внутригрупповая сумма квадратов --- это сумма всех сумм квадратов расстояний между элементами для каждой группы, деленная на _n_ число объектов в группе.
 
 Тогда межгрупповая сумма квадратов $SS_{between} = SS_{total} - SS_{within}$
+
+---
 
 ## Псевдо-F статистика
 
@@ -498,8 +653,13 @@ $$F = \frac{SS_{between} / (a - 1)}{SS_{within}/(N - a)}$$
 * Внимание! Для иерархического дизайна процедура пермутации имеет свои особенности (обсудим позднее).
 
 $$p = \frac {N_{F_{perm} \ge F}} {N_{permutations}}$$
+---
+
+class: middle, center, inverse
 
 # perMANOVA в примере
+
+---
 
 ## Применим метод perMANOVA (функция `adonis()`)
 
@@ -512,6 +672,8 @@ permanova_pesch
 
 Мы видим традиционную для ANOVA таблицу результатов. Что здесь что?
 
+---
+
 ## Результаты perMANOVA
 
 ```{r, echo=FALSE, purl=FALSE}
@@ -519,9 +681,17 @@ permanova_pesch
 pvalue <- permanova_pesch$aov.tab$`Pr(>F)`[1]
 ```
 
->- Поведение разных видов песчанок в тесте открытое поле значимо различалось (perMANOVA, p = `r pvalue`).
+--
+
+- Поведение разных видов песчанок в тесте открытое поле значимо различалось (perMANOVA, p = `r pvalue`).
+
+---
+
+class: middle, center, inverse
 
 # Условия применимости perMANOVA
+
+---
 
 ## Условия применимости perMANOVA
 
@@ -529,26 +699,33 @@ pvalue <- permanova_pesch$aov.tab$`Pr(>F)`[1]
 
 2. Желательно использование сбалансированных данных (с равным объемом групп), т.к. этом случае perMANOVA устойчив к гетерогенности дисперсии (Anderson, Walsh, 2013).
 
+---
 
 ## Проверка равенства внутригрупповых дисперсий
 
 Для проверки можно использовать функцию `betadisper()`, изначально предназначенную для сравнения $\beta$-разнообразия сообществ.
 
+--
+
 Функция `betadisper()` вычисляет внутригрупповые центроиды и координаты точек в пространстве главных координат (_Principal Coordinate Analysis = PCoA = metric MDS_). 
 
 Затем, значимость различий отклонений от центроидов в разных группах проверяется с помощью процедуры `PERMDISP2`.
 
-```{r flow, echo=FALSE, fig.width=9, fig.height=2}
+```{r flow, echo=FALSE, fig.width=7, fig.height=2}
 library(DiagrammeR)
-grViz("images/permanova-assumpt-check.gv", width = 975)
+grViz("images/permanova-assumpt-check.gv", width = 850)
 ```
 
-<p></p>
+<br/>
+
+--
 
 ```{r}
 dist_pesch <- vegdist(log_pesch[,3:ncol(pesch)], method  = "euclidean")
 PCO_pesch <- betadisper(dist_pesch, log_pesch$Species)
 ```
+
+---
 
 ## График ординации PCoA 
 
@@ -558,23 +735,34 @@ PCO_pesch <- betadisper(dist_pesch, log_pesch$Species)
 plot(PCO_pesch, main = "PCoA ordination")
 ```
 
+---
+
 ## Процедура  `PERMDISP2` для проверки равенства внутригрупповых дисперсий
 
 Процедура `PERMDISP2` реализована в пакете `vegan` в функции `anova.betadisper()`. Это многомерный аналог теста Левина на гомогенность дисперсий в группах, который иногда используется для проверки условий применимости дисперсионного анализа.
+
+--
 
 ```{r results='markup'}
 anova(PCO_pesch)
 ```
 
->- Не выявлено значимых различий разброса внутригрупповых расстояний.
+- Не выявлено значимых различий разброса внутригрупповых расстояний.
+
+---
 
 ## Для визуализации можно нарисовать боксплот 
 
 ```{r fig.height=5}
 boxplot(PCO_pesch)
 ```
+---
+
+class: middle, center, inverse
 
 # Более подробная интерпретация результатов perMANOVA
+
+---
 
 ## Post hoc тесты в perMANOVA
 
@@ -592,26 +780,57 @@ pl_pesch + geom_point(size = 5)
 
 Для выявления попарных различий нужны попарные сравнения.
 
+---
+
+class: split-20
+
+.row.bg-main1[.content[
+
 ## Попарные сравнения как замена post hoc тесту
 
 Внимание! В пакете `vegan` пост хок тест не реализован. Но мы можем сделать простейшую его версию самостоятельно.
 
+]]
 
-<center>
+.row.bg-main2[.content[
+.split-two[
+.split-three[
+.column[
 <img src="images/Peschanka-karl.jpg" height="180" alt="Карликовая песчанка">
-<img src="images/Peschanka-mongol.jpg" height="180" alt="Монгольская песчанка">
-<img src="images/Peschanka-zhirn.jpg" height="180" alt="Жирнохвостая песчанка">
-</center>
 
+Карликовая песчанка (_Gerbillus gerbillus_)
+
+.small[XV8-Crisis]
+]
+.column[
+<img src="images/Peschanka-mongol.jpg" height="180" alt="Монгольская песчанка">
+
+Монгольская песчанка (_Meriones unguiculatus_)
+
+.small[Alastair Rae]
+]
+.column[
+<img src="images/Peschanka-zhirn.jpg" height="180" alt="Жирнохвостая песчанка">
+
+Жирнохвостая песчанка (_Pachyuromys duprasi_)
+
+.small[P.H.J. (Peter) Maas / www.petermaas.nl]
+]
+]
+
+.row[
 <br/>
 Проведем __попарные сравнения__ между группами, то есть:
 
 * Карликовые _vs._ Монгольские
 * Карликовые _vs._ Жирнохвостые
 * Монгольские _vs._ Жирнохвостые
+]
+]]]
 
-<br/><br/><br/>
-<small>Фото: (1) XV8-Crisis; (2) Alastair Rae; (3) P.H.J. (Peter) Maas / www.petermaas.nl </small>
+
+
+---
 
 ## Функция для попарных сравнений perMANOVA
 
@@ -635,6 +854,8 @@ pairwise_permanova <- function(dat, group, strata = NULL, ...){
 }
 ```
 
+---
+
 ## Результаты попарных сравнений
 
 <center>
@@ -655,6 +876,8 @@ p_vals
 <br/><br/>
 <small>Фото: (1) XV8-Crisis; (2) Alastair Rae; (3) P.H.J. (Peter) Maas / www.petermaas.nl </small>
 
+---
+
 ## Поправка на множественные сравнения
 
 Мы делали три пары сравнений --- нужно ввести поправку для уровня значимости. Будем считать значимыми различия в тех сравнениях, где после введения поправки $p < 0.05$.
@@ -665,7 +888,13 @@ p_vals
 p.adjust(p_vals, method = "holm")
 ```
 
+---
+
+class: middle, center, inverse
+
 # Более сложные дизайны в perMANOVA
+
+---
 
 ## Многофакторный дизайн в perMANOVA
  
@@ -677,7 +906,9 @@ p.adjust(p_vals, method = "holm")
 log_pesch2 <- log_pesch[log_pesch$Species != "zhirnokhvost", ]
 ```
 
-## Проведем двухфакторный анализ perMANOVA {.smaller}
+---
+
+## Проведем двухфакторный анализ perMANOVA
 
 Различается ли поведение песчанок в зависимости от видовой принадлежности и пола?
 
@@ -687,7 +918,9 @@ twofact_pesch <- adonis(log_pesch2[,3:ncol(pesch)] ~ Gender * Species,
 twofact_pesch
 ```
 
-## Здесь возможен иерархический дизайн {.smaller}
+---
+
+## Здесь возможен иерархический дизайн
 
 Различается ли поведение самцов и самок у этих видов песчанок?
 
@@ -700,12 +933,16 @@ nested_pesch
 
 Внимание! Пермутации производятся только в пределах группирующего фактора (аргумент `strata`)
 
+---
+
 ## Задание
 
 + Создайте датафрейм из файла `simulated_data.csv` (Это данные симулированные по алгоритму, приведенному в справке по функции `adonis()`)
 + В этом датафрейме записано обилие двух видов на экспериментальных площадках двух типов: без добавления и с добавлением NO3, по 6 повторностей в каждом эксперименте.  
 Эксперименты были независимо проведены на 3 полях. 
 + Оцените, зависит ли структура совместного поселения этих двух видов от концентрации NO3.
+
+---
 
 ## Решение
 
@@ -720,6 +957,8 @@ com_permanova2 <- adonis(com[,1:2] ~ com$NO3, strata = com$field)
 
 ```
 
+---
+
 ## Summary
 
 + При одновременном тестировании нескольких гипотез растет вероятность ошибки I рода.
@@ -729,11 +968,15 @@ com_permanova2 <- adonis(com[,1:2] ~ com$NO3, strata = com$field)
 + Для применения perMANOVA требуется равенство разбросов точек между центроидами их групп, но при равных объемах групп анализ устойчив к отклонениям от этого условия.
 + При использовании perMANOVA важно не запутаться в дизайне.
 
+---
+
 ## Другие программы
 
 * *Primer 6.0 + PERMANOVA* Коммерческий продукт.
 * *PAST* Некоммерческая программа. Здесь метод называется NPMANOVA. 
 * Оригинальная программа М. Андерсон *PERMANOVA* и  *PERMDISP*.
+
+---
 
 ## Что почитать
 

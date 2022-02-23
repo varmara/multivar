@@ -1,16 +1,24 @@
 ---
 title: "Кластерный анализ"
 subtitle: "Анализ и визуализация многомерных данных с использованием R"
-author: Марина Варфоломеева, Вадим Хайтов
-presenters: [{
-  name: 'Марина Варфоломеева',
-  company: 'Каф. Зоологии беспозвоночных, СПбГУ',
-  }]
+author: 
+  - Марина Варфоломеева
+  - Вадим Хайтов
+company: 'Каф. Зоологии беспозвоночных, СПбГУ'
 output:
- ioslides_presentation:
-  widescreen: true
-  css: assets/my_styles.css
-  logo: assets/Linmod_logo.png
+  xaringan::moon_reader:
+    self-contained: true
+    lib_dir: libs
+    css: [default, tamu-fonts, ninjutsu, "assets/xaringan.css"]
+    df_print: default
+    nature:
+      highlightStyle: vs
+      highlightLines: true
+      countIncrementalSlides: false
+      titleSlideClass: [top, center, inverse]
+    includes:
+      in_header: "assets/xaringan_in_header.html"
+      after_body: "assets/xaringan_after_body.html"
 ---
 
 ## Кластерный анализ
@@ -38,8 +46,9 @@ output:
 options(width = 70, scipen = 6, digits = 3)
 library(knitr)
 # chunk default options
-opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 7, fig.height = 3, warning = FALSE, message = FALSE)
+opts_chunk$set(fig.align='center', tidy = FALSE, fig.width = 9, fig.height = 6, warning = FALSE, message = FALSE, global.par = TRUE)
 par_spbu <- par(
+  cex = 1.7,
     mar = c(3, 3, 2, 0.5), # Dist' from plot to side of page
     mgp = c(2, 0.4, 0), # Dist' plot to label
     las = 1, # Rotate y-axis text
@@ -51,7 +60,13 @@ par_spbu <- par(
 par(par_spbu)
 ```
 
+---
+
+class: middle, center, inverse
+
 # Кластерный анализ
+
+---
 
 ## Какие бывают методы построения деревьев?
 
@@ -68,8 +83,13 @@ par(par_spbu)
 
 ### И это еще далеко не все
 
+---
 
-# Примеры
+class: middle, center, inverse
+
+# Пример: Волки
+
+---
 
 ## Пример: Волки
 
@@ -87,6 +107,8 @@ library(candisc)
 data("Wolves")
 ```
 
+---
+
 ## Знакомимся с данными
 
 ```{r}
@@ -97,91 +119,80 @@ any(is.na(Wolves))
 table(Wolves$group)
 ```
 
-## Пример: Ирисы
+---
 
-```{r}
-data("iris")
-```
+## Задание
 
-## Знакомимся с данными
-
-```{r}
-dim(iris)
-colnames(iris)
-head(rownames(iris))
-# Делаем осмысленные имена строк
-Species <- substr(iris$Species, 0, 2)
-rownames(iris) <- make.unique(Species)
-# Делаем случайную выборку для этой демонстрации
-set.seed(191231)
-ids <- sample(nrow(iris), 30)
-siris <- iris[ids, ]
-```
-
-
-
-## Задание:
-
-- Постройте ординацию nMDS данных о морфометрии волков и ирисов
+- Постройте ординацию nMDS данных
 - Оцените качество ординации
 - Обоснуйте выбор коэффициента
-- Раскрасьте точки на ординации волков в зависимости от географического происхождения (`group`), а на ординации ирисов --- от вида (`Species`)
+- Раскрасьте точки на ординации волков в зависимости от географического происхождения (`group`)
 
-## Решение: Волки
+---
 
-```{r}
+## Решение
+
+.scroll-box-20[
+```{r results='hold', echo=-c(3, 4)}
 library(vegan)
-library(ggplot2); theme_set(theme_bw())
+library(ggplot2); theme_set(theme_bw(base_size = 16))
+update_geom_defaults("point", list(size = 4)); 
+update_geom_defaults("text", list(size = 5))
 s_w <- scale(Wolves[, 4:ncol(Wolves)]) ## стандартизируем
 ord_w <- metaMDS(comm = s_w, distance = "euclidean", autotransform = FALSE)
 dfr_w <- data.frame(ord_w$points, Group = Wolves$group)
 gg_w <- ggplot(dfr_w, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = Group))
 ```
+]
 
-## Решение: Волки
+---
+
+## Решение
 
 ```{r, echo=FALSE}
 gg_w
 ```
 
-## Решение: Ирисы
+---
 
-```{r}
-ord_i <- metaMDS(comm = siris[, -5], distance = "euclidean", 
-                 autotransform = FALSE)
-dfr_i <- data.frame(ord_i$points, Species = siris$Species)
-gg_i <- ggplot(dfr_i, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = factor(Species)))
-```
-
-## Решение: Ирисы
-
-```{r, echo=FALSE}
-gg_i
-```
-
+class: middle, center, inverse
 
 # Методы кластеризации на основании расстояний
 
-## Этапы кластеризации
+---
 
-```{r echo=FALSE, fig.width=10, fig.height=6, cache=FALSE}
+## Этапы кластеризации 
+
+.pull-left[
+```{r echo=FALSE, cache=FALSE, fig.width=6, fig.height=7}
 library(DiagrammeR)
-DiagrammeR("images/clust-stages.gv", type = "grViz")
+DiagrammeR(
+  "graph TD; 
+           A(Набор признаков)-->B(Матрица расстояний или сходств); 
+           B-->C(Группировка объектов);
+           C-->D(Отношения между кластерами); D-->E(Поправки); E-->A;
+  ")
 ```
+]
 
-## От чего зависит результат кластеризации
+.pull-right[
 
 Результат кластеризации зависит от
 
+- выбора признаков
 - коэффициента сходства-различия
 - от алгоритма кластеризации
 
+]
+
+---
 
 ## Методы кластеризации
 
 ```{r, echo=FALSE, fig.height=6}
 library(gridExtra)
-theme_set(theme_bw())
+theme_set(theme_bw(base_size = 16))
+update_geom_defaults("point", list(size = 4))
 cl_dat <- data.frame(cl = c(rep("A", 5), rep("B", 4)), 
            x = c(1, 2.7, 2, 1.5, 2, 5, 6, 5.5, 5.8),
            y = c(1, 1.2, 3, 2, 1.5, 1.2, 1, 3, 2))
@@ -214,7 +225,7 @@ cl_means <- cl_dat %>% group_by(cl) %>% summarise(
 betw <- as.matrix(dist(cl_dat[, 2:3]))[6:9, 1:5]
 # which.min(betw)
 # which.max(betw)
-th <- theme_classic() + theme(axis.line = element_blank(), axis.title = element_blank(), axis.ticks = element_blank(), axis.text = element_blank(), legend.position = "none")
+th <- theme_classic(base_size = 16) + theme(axis.line = element_blank(), axis.title = element_blank(), axis.ticks = element_blank(), axis.text = element_blank(), legend.position = "none")
 
 gg <- ggplot(cl_dat, aes(x = x, y = y, colour = cl)) + geom_point() + stat_ellipse(level = 0.8) + geom_point(data = cl_means, size = 4, shape = 5) + th
 
@@ -226,31 +237,39 @@ gg_average <- gg + geom_segment(data = betw_segm, aes(x = x, y = y, xend = xend,
 
 gg_ward <- gg + geom_segment(data = with_segm, aes(x = x, y = y, xend = xend, yend = yend, colour = NULL), colour = "grey60")
 
-grid.arrange(gg_single + ggtitle("Метод ближайшего соседа"), gg_complete + ggtitle("Метод отдаленного соседа"), gg_average + ggtitle("Метод среднегруппового расстояния"), gg_ward + ggtitle("Метод Варда"), ncol = 2)
+grid.arrange(gg_single + ggtitle("Метод ближайшего соседа"), gg_complete + ggtitle("Метод отдаленного соседа"), gg_average + ggtitle("Метод среднегруппового расст."), gg_ward + ggtitle("Метод Варда"), ncol = 2)
 ```
 
+---
 
 ## Метод ближайшего соседа
 
+
+.pull-left-66[
+.content-box-purple[
+
 ### = nearest neighbour = single linkage
-
-<div class="columns-2">
-
-```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
-gg_single
-```
 
 - к кластеру присоединяется ближайший к нему кластер/объект
 - кластеры объединяются в один на расстоянии, которое равно расстоянию между ближайшими объектами этих кластеров
+]
+]
 
-</div>
+.pull-right-33[
 
-### Особенности:
+```{r, echo=FALSE, fig.width=4.5, fig.height=4}
+gg_single
+```
+]
+
+### Особенности
 
 - Может быть сложно интерпретировать, если нужны группы
   - объекты на дендрограмме часто не образуют четко разделенных групп
   - часто получаются цепочки кластеров (объекты присоединяются как бы по-одному)
 - Хорош для выявления градиентов
+
+---
 
 ## Как работает метод ближайшего соседа
 
@@ -283,22 +302,26 @@ cluster_ani <- function(dat, gg_dat, dist_fun = "vegdist", dist_method = "euclid
     # ordination plot
     gg_ord <- ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
       coord_fixed() +
-      geom_point() +
-      geom_text(hjust = 1.1, vjust = 1.1) +
+      geom_point(size = 2) +
+      geom_text(hjust = 1.2, vjust = 1.2) +
       geom_encircle(aes(group = cutree(hc, k = k)), colour = "red", s_shape = 0, expand = 0.01) +
       scale_y_continuous(expand=c(0.1,0.1))
 
     # dendrogram plot
-    par(mar = c(2, 2, 0, 0))
-    if (k == 1) {
-      plot(den)
-    } else {
-      plot(den)
-      rect.dendrogram(den, k = k, lty = 1, lwd = 1, border = "red")
+    gg_tree <- function(){
+      par(mar = c(2, 2, 0, 0))
+      if (k == 1) {
+        plot(den)
+      } else {
+        plot(den)
+        rect.dendrogram(den, k = k, lty = 1, lwd = 1, border = "red")
+      }
     }
-    gg_tree <- recordPlot()
     # together
-    plot_grid(gg_ord, gg_tree, nrow = 1, rel_widths = c(0.6, 0.4), hjust = 0, vjust = 1, scale = c(0.8, 0.9))
+    plot_grid(gg_ord, 
+              gg_tree, 
+              nrow = 1, rel_widths = c(0.6, 0.4), 
+              hjust = 0, vjust = 1, scale = c(0.8, 0.9))
 }
 
 suppressWarnings(ord <- metaMDS(dat, distance = "euclidean", autotransform = FALSE))
@@ -310,213 +333,269 @@ gg_list_a <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "a
 gg_list_w <- lapply(8:1, function(x) cluster_ani(dat, gg_dat, hclust_method = "ward.D2", k = x))
 ```
 
-```{r fig.width=5, fig.height=5, echo=FALSE, purl=FALSE}
+```{r fig.width=8, fig.height=8, echo=FALSE, purl=FALSE}
 ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
-      geom_point() +
-      geom_text(hjust = 1.1, vjust = 1.1) +
+      geom_point(size = 2) +
+      geom_text(hjust = 1.2, vjust = 1.2) +
       scale_y_continuous(expand=c(0.1,0.1))
 ```
 
+---
 
 ## Как работает метод ближайшего соседа
 
-```{r single-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r single-ani, echo=FALSE, purl=FALSE, fig.width=12, fig.height=8, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_s, plot)
 ```
 
+---
 
 ## Метод отдаленного соседа
 
+
+
+.pull-left-66[
+.content-box-purple[
+
 ### = furthest neighbour = complete linkage
-
-<div class="columns-2">
-
-```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
-gg_complete
-```
 
 - к кластеру присоединяется отдаленный кластер/объект
 - кластеры объединяются в один на расстоянии, которое равно расстоянию между самыми отдаленными объектами этих кластеров (следствие - чем более крупная группа, тем сложнее к ней присоединиться)
+]]
 
-</div>
+.pull-right-33[
 
-### Особенности:
+```{r, echo=FALSE, fig.width=4.5, fig.height=5}
+gg_complete
+```
+
+]
+
+### Особенности
 
 - На дендрограмме образуется много отдельных некрупных групп
 - Хорош для поиска дискретных групп в данных
 
+---
+
 ## Как работает метод отдаленного соседа
 
-```{r fig.width=5, fig.height=5, echo=FALSE, purl=FALSE}
+```{r fig.width=8, fig.height=8, echo=FALSE, purl=FALSE}
 ggplot(data = gg_dat, aes(x = MDS1, y = MDS2, label = rownames(gg_dat))) +
-      geom_point() +
+      geom_point(size = 2) +
       geom_text(hjust = 1.1, vjust = 1.1) +
       scale_y_continuous(expand=c(0.1,0.1))
 ```
 
+---
+
 ## Как работает метод отдаленного соседа
 
-```{r complete-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r complete-ani, echo=FALSE, purl=FALSE, fig.width=12, fig.height=8, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_c, plot)
 ```
 
+---
+
 ## Метод невзвешенного попарного среднего
+
+.pull-left-66[
+.content-box-purple[
 
 ### = UPGMA = Unweighted Pair Group Method with Arithmetic mean
 
-<div class="columns-2">
+- кластеры объединяются в один на расстоянии, которое равно среднему значению всех возможных расстояний между объектами из разных кластеров.
+]]
+.pull-right-33[
 
-```{r, echo=FALSE, fig.width=4.5, fig.height=2.5}
+```{r, echo=FALSE, fig.width=4.5, fig.height=4}
 gg_average
 ```
 
-- кластеры объединяются в один на расстоянии, которое равно среднему значению всех возможных расстояний между объектами из разных кластеров.
-</div>
+]
 
-### Особенности:
+### Особенности
+
 - UPGMA и WUPGMС иногда могут приводить к инверсиям на дендрограммах
-
+.pull-left-66[
 ![Инверсии на дендрограммах](images/clust-revert.png)
+]
+.pull-right-33[
+.pull-down[
+из Borcard et al., 2011
+]]
 
-<div class="footnote">из Borcard et al., 2011</div>
+---
 
 ## Как работает метод среднегруппового расстояния
 
-```{r average-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r average-ani, echo=FALSE, purl=FALSE, fig.width=10, fig.height=8, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_a, plot)
 ```
 
+---
+
 ## Метод Варда
+
+.pull-left-66[
+.content-box-purple[
 
 ### = Ward's Minimum Variance Clustering
 
-<div class="columns-2">
+- объекты объединяются в кластеры так, чтобы внутригрупповая дисперсия расстояний была минимальной
+]]
 
-```{r, echo=FALSE, fig.width=4.5, fig.height=3.5}
+.pull-right-33[
+
+```{r, echo=FALSE, fig.width=4.5, fig.height=4}
 gg_ward
 ```
+]
 
-- объекты объединяются в кластеры так, чтобы внутригрупповая дисперсия расстояний была минимальной
-
-</div>
-
-### Особенности:
+### Особенности
 
 - метод годится и для неевклидовых расстояний несмотря на то, что внутригрупповая дисперсия расстояний рассчитывается так, как будто это евклидовы расстояния
 
+---
+
 ## Как работает метод Варда
 
-```{r ward-ani, echo=FALSE, purl=FALSE, fig.width=8, fig.height=5, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
+```{r ward-ani, echo=FALSE, purl=FALSE, fig.width=12, fig.height=8, fig.show='animate', interval=3, animation.hook='gifski', aniopts='control,loop', results='hide'}
 sapply(gg_list_w, plot)
 ```
 
+---
+
+class: middle, center, inverse
+
 # Кластерный анализ в R
 
+---
 
 ## Кластеризация
 
 Давайте построим деревья при помощи нескольких алгоритмов кластеризации (по стандартизованным данным, с использованием Евклидова расстояния) и сравним их.
 
 ```{r}
-# Нам понадобится матрица расстояний
+# Матрица расстояний
 d <- dist(x = s_w, method = "euclidean")
 # Пакеты для визуализации кластеризации
 library(ape)
 library(dendextend)
 ```
 
+---
 
-## Метод ближайшего соседа в R
+## (1.0) Метод ближайшего соседа + `base`
 
 ```{r fig.height=5, fig.width=10}
 hc_single <- hclust(d, method = "single")
-```
-
->- И это все?
->- Нет!
-
-## Визуализируем при помощи базовой графики
-
-```{r fig.height=4.5}
 plot(hc_single)
 ```
 
+---
 
-## Визуализируем средствами ape
-```{r fig.height=4.5}
+## (1.1) Метод ближайшего соседа + `ape`
+
+```{r}
 ph_single <- as.phylo(hc_single)
-plot(ph_single, type = "phylogram", cex = 0.7)
+plot(ph_single, type = "phylogram")
 axisPhylo()
 ```
 
-## Визуализируем средствами dendextend
+---
 
-```{r fig.height=4.5}
+## (1.2) Метод ближайшего соседа + `dendextend`
+
+```{r}
 den_single <- as.dendrogram(hc_single)
 plot(den_single)
 ```
 
+---
 
-## Метод отдаленного соседа в R
+## (2.1) Метод отдаленного соседа + `ape`
 
-```{r  fig.height=5, fig.width=10}
+```{r}
 hc_compl <- hclust(d, method = "complete")
 ph_compl <- as.phylo(hc_compl)
-plot(ph_compl, type = "phylogram", cex = 0.7)
+plot(ph_compl, type = "phylogram")
 axisPhylo()
 ```
 
-## Визуализируем дерево, полученное методом отдаленного соседа, средствами `dendextend`
+---
 
-```{r fig.height=4.5}
+## (2.2)Метод отдаленного соседа + `dendextend`
+
+```{r}
 den_compl <- as.dendrogram(hc_compl)
 plot(den_compl)
 ```
 
-## Метод невзвешенного попарного среднего в R
+---
 
-```{r  fig.height=5, fig.width=10}
+## (3.1) Метод невзвешенного попарного среднего + `ape`
+
+```{r}
 hc_avg <- hclust(d, method = "average")
 ph_avg <- as.phylo(hc_avg)
-plot(ph_avg, type = "phylogram", cex = 0.7)
+plot(ph_avg, type = "phylogram")
 axisPhylo()
 ```
 
-## Визуализируем дерево, полученное методом невзвешенного попарного среднего, средствами `dendextend`
+---
 
-```{r  fig.height=4.5}
+## (3.2) Метод невзвешенного попарного среднего + `dendextend`
+
+```{r}
 den_avg <- as.dendrogram(hc_avg)
 plot(den_avg)
 ```
 
-## Метод Варда в R
+---
 
-```{r  fig.height=5, fig.width=10}
+## (4.1) Метод Варда + `ape`
+
+```{r}
 hc_w2 <-hclust(d, method = "ward.D2")
 ph_w2 <- as.phylo(hc_w2)
-plot(ph_w2, type = "phylogram", cex = 0.7)
+plot(ph_w2, type = "phylogram")
 axisPhylo()
 ```
 
-## Визуализируем дерево, полученное методом Варда, средствами `dendextend`
+---
 
-```{r fig.height=4.5}
+## (4.2) Метод Варда + `dendextend`
+
+```{r}
 den_w2 <- as.dendrogram(hc_w2)
 plot(den_w2)
 ```
 
+---
+
+class: middle, center, inverse
 
 # Качество кластеризации
 
+---
+
 ## Кофенетическая корреляция
 
-__Кофенетическая корреляция__ - мера качества отображения многомерных данных на дендрограмме. Кофенетическую корреляцию можно рассчитать как Пирсоновскую корреляцию (обычную) между матрицами исходных и кофенетических расстояний между всеми парами объектов
-
 __Кофенетическое расстояние__ - расстояние между объектами на дендрограмме
+
+.content-box-purple[
+__Кофенетическая корреляция__ - мера качества отображения многомерных данных на дендрограмме. Кофенетическую корреляцию можно рассчитать как Пирсоновскую корреляцию (обычную) между матрицами исходных и кофенетических расстояний между всеми парами объектов
+]
+
+
+<br/>
 
 Метод агрегации, который дает наибольшую кофенетическую корреляцию, дает кластеры, лучше всего отражающие исходные данные
 
 Можно рассчитать при помощи функции из пакета `ape`
+
+---
 
 ## Кофенетическая корреляция в R
 
@@ -532,11 +611,15 @@ cor(d, as.dist(c_avg))
 cor(d, as.dist(c_w2))
 ```
 
+---
+
 ## Задание:
 
-Оцените для данных об ирисах при помощи кофенетической корреляции качество кластеризаций, полученных разными методами.
+Оцените при помощи кофенетической корреляции качество кластеризаций, полученных разными методами.
 
 Какой метод дает лучший результат?
+
+---
 
 ## Что можно делать дальше с дендрограммой
 
@@ -545,11 +628,20 @@ cor(d, as.dist(c_w2))
     + либо исходя из распределения расстояний ветвления.
 - Можно оценить стабильность кластеризации при помощи бутстрепа.
 
+---
+
 ## Ширина силуэта
 
-Ширина силуэта $s_i$ --- мера степени принадлежности объекта $i$ к кластеру. Это среднее расстояние от данного объекта до других объектов из того же кластера ($\bar{d}_{i~within}$), в сравнении со средним расстоянием до ближайшего кластера ($\bar{d}_{i~to~nearest~cluster}$).
+.content-box-purple[
+Ширина силуэта $s_i$ --- мера степени принадлежности объекта $i$ к кластеру 
+]
 
-$s_i = \frac {\bar{d}_{i~to~nearest~cluster} - \bar{d}_{i~within}} {max\{\bar{d}_{i~to~nearest~cluster}, \bar{d}_{i~within}\}}$
+$$s_i = \frac {\color{purple}{\bar{d}_{i~to~nearest~cluster}} - \color{green}{\bar{d}_{i~within}}} {max\{\color{purple}{\bar{d}_{i~to~nearest~cluster}}, \color{green}{\bar{d}_{i~within}}\}}$$
+
+$s_i$ --- сравнивает между собой средние расстояния от данного объекта:
+- $\color{green} {\bar{d}_{i~within}}$ --- до других объектов из того же кластера
+- $\color{purple} {\bar{d}_{i~to~nearest~cluster}}$ --- до ближайшего кластера
+
 
 $-1 \le s_i \le 1$ --- чем больше $s_i$, тем "лучше" объект принадлежит кластеру.
 
@@ -557,16 +649,19 @@ $-1 \le s_i \le 1$ --- чем больше $s_i$, тем "лучше" объек
 - Средняя ширина силуэта по всем данным --- оценивает общее качество классификации.
 - Чем больше к 1, тем лучше. Если меньше 0.25, то можно сказать, что нет структуры.
 
+---
+
 ## Как рассчитывается ширина силуэта
 
 Оценим ширину силуэта для 3 кластеров
 
-```{r fig.height=4}
+```{r}
 library(cluster)
 complete3 <- cutree(tree = hc_avg, k = 3)
 plot(silhouette(x = complete3, dist = d), cex.names = 0.6)
 ```
 
+---
 
 ## Бутстреп поддержка ветвей
 
@@ -583,27 +678,36 @@ cl_boot <- pvclust(t(s_w), method.hclust = "average", nboot = 100,
 
 Обратите внимание на число итераций: `nboot = 100` --- это очень мало. На самом деле нужно 10000 или больше.
 
+---
 
 ## Дерево с величинами поддержки
 
 AU --- approximately unbiased p-values (красный),
 BP --- bootstrap p-values (зеленый)
 
-```{r fig.width=10, fig.height=6}
+```{r fig-cl-boot, fig.show='hold'}
 plot(cl_boot)
 # pvrect(cl_boot) # достоверные ветвления
 ```
+
+---
 
 ## Для диагностики качества оценок AU
 
 График стандартных ошибок для AU p-value нужен, чтобы оценить точность оценки самих AU. Чем больше было бутстреп-итераций, тем точнее будет оценка AU.
 
-```{r}
-seplot(cl_boot, cex = 0.5)
+```{r fig-seplot, fig.show='hold'}
+seplot(cl_boot)
 # print(cl_boot) # все значения
 ```
 
+---
+
+class: middle, center, inverse
+
 # Сопоставление деревьев: Танглграммы
+
+---
 
 ## Танглграмма
 
@@ -624,24 +728,33 @@ tanglegram(untang_w[[1]], untang_w[[2]],
            margin_top = 3.2, margin_bottom = 2.5,
            margin_inner = 4, margin_outer = 0.5,
            lwd = 1.2, edge.lwd = 1.2, 
-           lab.cex = 1, cex_main = 1)
+           lab.cex = 1.5, cex_main = 2)
 ```
+
+---
 
 ## Танглграмма
 
-```{r tang, eval=TRUE, echo=FALSE,  fig.height=5, fig.width=10}
+```{r tang, eval=TRUE, echo=FALSE}
 ```
 
+---
 
 ## Задание
 
-Постройте танглграмму для данных о морфометрии ирисов из дендрограмм, полученных методом ближайшего соседа и методом Варда.
+Постройте танглграмму из дендрограмм, полученных методом ближайшего соседа и методом Варда.
+
+---
+
+class: middle, center, inverse
 
 # Деревья по генетическим данным
 
+---
+
 ## И небольшая демонстрация - дерево по генетическим данным
 
-```{r, cache=TRUE, fig.height = 4}
+```{r, cache=TRUE, fig.height=5}
 webpage <-"http://evolution.genetics.washington.edu/book/primates.dna"
 primates.dna <- read.dna(webpage)
 d_pri <- dist.dna(primates.dna)
@@ -651,6 +764,7 @@ plot(ph_pri)
 axisPhylo()
 ```
 
+---
 
 ## Take-home messages
 
@@ -658,11 +772,15 @@ axisPhylo()
 - Качество кластеризации можно оценить разными способами.
 - Кластеризации, полученные разными методами, можно сравнить на танглграммах.
 
+---
+
 ## Дополнительные ресурсы
 
 - Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.
 - Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.
 - Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.
+
+---
 
 ## И еще ресурсы
 

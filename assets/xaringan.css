@@ -174,4 +174,67 @@ slides > slide {
 }
 
 
+/*************************
+  Custom classes
+**************************/
+.pull-left-55 {
+  float: left;
+  width: 54%;
+}
+.pull-right-45 {
+  float: right;
+  width: 45%;
+}
 
+.pull-left-45 {
+  float: left;
+  width: 44%;
+}
+.pull-right-55 {
+  float: right;
+  width: 55%;
+}
+
+.pull-left-60 {
+  float: left;
+  width: 59%;
+}
+.pull-right-40 {
+  float: right;
+  width: 40%;
+}
+
+.pull-left-40 {
+  float: left;
+  width: 39%;
+}
+.pull-right-60 {
+  float: right;
+  width: 60%;
+}
+
+
+.pull-left-66 {
+  float: left;
+  width: 65%;
+}
+.pull-right-33 {
+  float: right;
+  width: 34%;
+}
+
+.pull-left-33 {
+  float: left;
+  width: 34%;
+}
+.pull-right-66 {
+  float: right;
+  width: 66%;
+}
+
+
+/* use to position text at the bottom */
+.pull-down {
+  position: absolute;
+  bottom: 50px;
+}
