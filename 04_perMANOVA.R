@@ -27,6 +27,12 @@ head(pesch)
 # точки в соответствии с видами
 
 
+
+
+
+
+
+
 # ## PERMANOVA ###################################
 library(vegan)
 permanova_pesch <- adonis(log_pesch[3:9] ~ log_pesch$Species, method = "euclidean")
