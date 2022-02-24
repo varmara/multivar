@@ -131,7 +131,7 @@ install.packages("coin")
 install.packages("readxl")
 ```
 
-<!-- - Презентация [html](04_perMANOVA.html) -->
+- Презентация [html](04_perMANOVA.html)
 
 - [код R](04_perMANOVA.R)
 - Данные
