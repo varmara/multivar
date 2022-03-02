@@ -156,11 +156,12 @@ install.packages(c("candisc", "ape", "dendextend", "cluster", "pvclust"))
 
 <!-- - Презентация [html](05_cluster_analysis.html) -->
 
-<!-- - [код R](05_cluster_analysis.R) -->
+- [код R](05_cluster_analysis.R)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- С прошлого занятия. -->
+- __Сообщества фораминифер_.__ Данные из работы *Golikova, E., Varfolomeeva, M., Yakovis, E., & Korsun, S. (2020). Saltmarsh foraminifera in the subarctic White Sea: Thrive in summer, endure in winter. Estuarine, Coastal and Shelf Science, 238, 106685.*
+    + [Golikova_etal_2020_cluster_data.csv](data/Golikova_etal_2020_cluster_data.csv)
 
 ## 6. Основы линейной алгебры.  (чт 10 марта, ВХ)
 

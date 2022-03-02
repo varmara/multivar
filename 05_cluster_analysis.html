@@ -182,54 +182,33 @@ gg_w &lt;- ggplot(dfr_w, aes(x = MDS1, y = MDS2)) + geom_point(aes(colour = Grou
 
 ```
 ## Run 0 stress 0.101 
-## Run 1 stress 0.101 
-## ... Procrustes: rmse 0.00000654  max resid 0.0000217 
+## Run 1 stress 0.137 
+## Run 2 stress 0.142 
+## Run 3 stress 0.161 
+## Run 4 stress 0.168 
+## Run 5 stress 0.128 
+## Run 6 stress 0.134 
+## Run 7 stress 0.101 
+## ... Procrustes: rmse 0.00000768  max resid 0.0000269 
 ## ... Similar to previous best
-## Run 2 stress 0.101 
-## ... Procrustes: rmse 0.00000776  max resid 0.0000217 
-## ... Similar to previous best
-## Run 3 stress 0.101 
-## ... New best solution
-## ... Procrustes: rmse 0.0000007  max resid 0.00000153 
-## ... Similar to previous best
-## Run 4 stress 0.101 
-## ... Procrustes: rmse 0.00000179  max resid 0.00000484 
-## ... Similar to previous best
-## Run 5 stress 0.137 
-## Run 6 stress 0.101 
-## ... Procrustes: rmse 0.00000334  max resid 0.0000113 
-## ... Similar to previous best
-## Run 7 stress 0.137 
-## Run 8 stress 0.152 
-## Run 9 stress 0.101 
-## ... Procrustes: rmse 0.00000103  max resid 0.00000299 
-## ... Similar to previous best
-## Run 10 stress 0.101 
-## ... Procrustes: rmse 0.00000136  max resid 0.00000507 
-## ... Similar to previous best
-## Run 11 stress 0.101 
-## ... Procrustes: rmse 0.00000717  max resid 0.0000239 
-## ... Similar to previous best
-## Run 12 stress 0.101 
-## ... New best solution
-## ... Procrustes: rmse 0.0000033  max resid 0.0000107 
-## ... Similar to previous best
-## Run 13 stress 0.101 
-## ... Procrustes: rmse 0.00000478  max resid 0.0000159 
-## ... Similar to previous best
-## Run 14 stress 0.136 
-## Run 15 stress 0.101 
-## ... Procrustes: rmse 0.0000114  max resid 0.0000394 
-## ... Similar to previous best
+## Run 8 stress 0.128 
+## Run 9 stress 0.136 
+## Run 10 stress 0.128 
+## Run 11 stress 0.135 
+## Run 12 stress 0.139 
+## Run 13 stress 0.142 
+## Run 14 stress 0.14 
+## Run 15 stress 0.139 
 ## Run 16 stress 0.101 
-## ... Procrustes: rmse 0.00000354  max resid 0.00000993 
+## ... Procrustes: rmse 0.0000117  max resid 0.0000401 
 ## ... Similar to previous best
-## Run 17 stress 0.101 
-## ... Procrustes: rmse 0.00000646  max resid 0.0000222 
+## Run 17 stress 0.127 
+## Run 18 stress 0.139 
+## Run 19 stress 0.148 
+## Run 20 stress 0.101 
+## ... New best solution
+## ... Procrustes: rmse 0.00000366  max resid 0.0000128 
 ## ... Similar to previous best
-## Run 18 stress 0.128 
-## Run 19 stress 0.141 
-## Run 20 stress 0.124 
 ## *** Solution reached
 ```
 ]
@@ -251,8 +230,8 @@ class: middle, center, inverse
 ## Этапы кластеризации 
 
 .pull-left[
-<div id="htmlwidget-08d78ea3a0e563e88d16" style="width:432px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-08d78ea3a0e563e88d16">{"x":{"diagram":"graph TD; \n           A(Набор признаков)-->B(Матрица расстояний или сходств); \n           B-->C(Группировка объектов);\n           C-->D(Отношения между кластерами); D-->E(Поправки); E-->A;\n  "},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f3e7dbf201b7a08ccb7c" style="width:432px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f3e7dbf201b7a08ccb7c">{"x":{"diagram":"graph TD; \n           A(Набор признаков)-->B(Матрица расстояний или сходств); \n           B-->C(Группировка объектов);\n           C-->D(Отношения между кластерами); D-->E(Поправки); E-->A;\n  "},"evals":[],"jsHooks":[]}</script>
 ]
 
 .pull-right[
@@ -576,40 +555,16 @@ __Кофенетическая корреляция__ - мера качеств�
 
 
 ```r
+# Матрица кофенетических расстояний 
 c_single &lt;- cophenetic(ph_single)
-c_compl &lt;- cophenetic(ph_compl)
-c_avg &lt;- cophenetic(ph_avg)
-c_w2 &lt;- cophenetic(ph_w2)
 
+# Кофенетическая корреляция = 
+# = корреляция матриц кофенетич. и реальн. расстояний
 cor(d, as.dist(c_single))
 ```
 
 ```
 ## [1] 0.565
-```
-
-```r
-cor(d, as.dist(c_compl))
-```
-
-```
-## [1] 0.706
-```
-
-```r
-cor(d, as.dist(c_avg))
-```
-
-```
-## [1] 0.745
-```
-
-```r
-cor(d, as.dist(c_w2))
-```
-
-```
-## [1] 0.726
 ```
 
 ---
@@ -619,6 +574,49 @@ cor(d, as.dist(c_w2))
 Оцените при помощи кофенетической корреляции качество кластеризаций, полученных разными методами.
 
 Какой метод дает лучший результат?
+
+---
+
+## Решение:
+
+
+```r
+c_single &lt;- cophenetic(ph_single)
+cor(d, as.dist(c_single))
+```
+
+```
+## [1] 0.565
+```
+
+```r
+c_compl &lt;- cophenetic(ph_compl)
+cor(d, as.dist(c_compl))
+```
+
+```
+## [1] 0.706
+```
+
+```r
+c_avg &lt;- cophenetic(ph_avg)
+cor(d, as.dist(c_avg))
+```
+
+```
+## [1] 0.745
+```
+
+```r
+c_w2 &lt;- cophenetic(ph_w2)
+cor(d, as.dist(c_w2))
+```
+
+```
+## [1] 0.726
+```
+
+
 
 ---
 
@@ -663,7 +661,7 @@ complete3 &lt;- cutree(tree = hc_avg, k = 3)
 plot(silhouette(x = complete3, dist = d), cex.names = 0.6)
 ```
 
-&lt;img src="05_cluster_analysis_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_cluster_analysis_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -782,7 +780,7 @@ plot(ph_pri)
 axisPhylo()
 ```
 
-&lt;img src="05_cluster_analysis_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_cluster_analysis_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -816,6 +814,74 @@ axisPhylo()
 
 - Paradis, E., 2011. Analysis of Phylogenetics and Evolution with R. Springer.
 
+---
+
+## Данные для самостоятельной работы
+
+### Фораминиферы маршей Белого моря (Golikova et al. 2020)
+
+![map](images/Golikova_etal_2020_Fig1.png)
+---
+
+## Фораминиферы маршей Белого моря
+
+![transect](images/Golikova_etal_2020_fig2.png)
+---
+
+## Фораминиферы маршей Белого моря
+
+.pull-left[
+![forams](images/Golikova_etal_2020_plate1.png)
+]
+
+.pull-right[
+
+Plate 1.
+
+1. _Balticammina pseudomacrescens_. 
+2. _Ammotium salsum_. 
+3. _Jadammina macrescens_. 
+4. _Trochammina inflata_. 
+5. _Ammobaculites balkwilli?_ 
+6. _Miliammina fusca_. 
+7. _Ovammina opaca_. 
+8. _Elphidium albiumbilicatum_. 
+9. _Elphidium williamsoni_. 
+
+Scale bar 500 μm. 
+
+]
+
+---
+
+## Задание
+
+Проанализируйте данные об относительных обилиях фораминифер в пробах на Белом море.
+
+- Выберите и обоснуйте трансформацию данных и расстояние.
+
+- Постройте ординацию nMDS по относительным обилиям фораминифер:
+  - цвет значков --- растение-доминант, 
+  - форма значков --- точка сбора.
+
+- Постройте дендрограмму проб по сходству отн. обилий фораминифер.
+  - оцените при помощи кофенетической корреляции, какой метод аггрегации лучше,
+
+- Опишите получившиеся кластеры при помощи различных параметров:
+  - ширина силуэта
+  - бутстреп-поддержка ветвлений
+
+---
+
+## Фораминиферы маршей Белого моря
+
+![nMDS](images/Golikova_etal_2020_fig5.png)
+
+---
+
+## Фораминиферы маршей Белого моря
+
+![dendrogram](images/Golikova_etal_2020_fig6.png)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
