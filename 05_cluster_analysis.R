@@ -44,11 +44,18 @@ hc_single <- hclust(d, method = "single")
 plot(hc_single)
 ## Визуализируем средствами ape
 ph_single <- as.phylo(hc_single)
-plot(ph_single, type = "phylogram", cex = 0.7)
+
+plot(ph_single, type = "phylogram")
+plot(ph_single, type = "cladogram")
+plot(ph_single, type = "fan")
+plot(ph_single, type = "unrooted")
+plot(ph_single, type = "radial")
+
 axisPhylo()
+
 ## Визуализируем средствами dendextend
 den_single <- as.dendrogram(hc_single)
-plot(den_single)
+plot(den_single, horiz = TRUE)
 
 ## Метод отдаленного соседа  ================================
 hc_compl <- hclust(d, method = "complete")
@@ -58,7 +65,7 @@ axisPhylo()
 ## Визуализируем дерево, полученное методом отдаленного
 ## соседа, средствами `dendextend`
 den_compl <- as.dendrogram(hc_compl)
-plot(den_compl)
+plot(den_compl, horiz = TRUE)
 
 
 ## Метод невзвешенного попарного среднего ==================
@@ -69,7 +76,7 @@ axisPhylo()
 ## Визуализируем дерево, полученное методом невзвешенного
 ## попарного среднего, средствами `dendextend`
 den_avg <- as.dendrogram(hc_avg)
-plot(den_avg)
+plot(den_avg, horiz = TRUE)
 
 
 ## Метод Варда в R =========================================
@@ -79,7 +86,7 @@ plot(ph_w2, type = "phylogram", cex = 0.7)
 axisPhylo()
 ## Визуализируем дерево, полученное методом Варда, средствами `dendextend`
 den_w2 <- as.dendrogram(hc_w2)
-plot(den_w2)
+plot(den_w2, horiz = TRUE)
 
 
 ## Кофенетическая корреляция ===============================
@@ -174,7 +181,7 @@ get_colours <- function(dend, n_chars, palette = "Dark2"){
 
 # Применяем функцию
 library(RColorBrewer)
-cols <- get_colours(dend = den_single, n_chars = 2)
+cols <- get_colours(dend = den_single, n_chars = 3)
 den_single_c <- color_labels(dend = den_single, col = cols)
 plot(den_single_c, horiz = TRUE)
 
