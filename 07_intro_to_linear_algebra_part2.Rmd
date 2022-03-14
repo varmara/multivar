@@ -30,6 +30,7 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 library(dplyr)
+library(cowplot)
 
 
 # chunk default options
@@ -294,6 +295,13 @@ ggplot(XY_norm_cent , aes(x = x, y = y)) + geom_point() + geom_vline(xintercept 
 
 ## Находим ковариационную матрицу {.smaller}
 
+$$
+\textbf{S} = \frac{1}{n - 1} \textbf{Y}_{centered}'\textbf{Y}_{centered}
+$$
+
+
+
+
 ```{r, purl=TRUE}
 mXY_norm_cent <- as.matrix(XY_norm_cent)
 
@@ -495,14 +503,14 @@ Pl_main_axis_rotated +
 
 ```
 
-## Проблема решена! (.smaller)
+## Проблема решена! {.smaller}
 
 ```{r echo=F, message=F}
 Pl_PC1 <-
 ggplot(XY_norm_cent_rot, aes(x = V1)) + geom_histogram(bins = 30) + labs(x = "Координаты по первой главной оси")
 
 Pl_PC2 <-
-ggplot(XY_norm_cent_rot, aes(x = V2)) + geom_histogram(bins = 30) + labs(x = "Координаты по первой главной оси")
+ggplot(XY_norm_cent_rot, aes(x = V2)) + geom_histogram(bins = 30) + labs(x = "Координаты по второй главной оси")
 
 ```
 
@@ -656,14 +664,14 @@ $\textbf{U}_{n \times p}$ и $\textbf{V}_{p \times p}$ - левая и прав�
 set.seed(123456789)
 B <- matrix(round(runif(50, 1, 5))  , byrow = T, ncol=5) #Некоторая матрица
 SVD <- svd(B) #Сингулярное Разложение матрицы B с помощью функции svd()
-V <- SVD$v #"Вспомогательная" матрица - левые сингулярные векторы
+V <- SVD$v #"Вспомогательная" матрица - правые сингулярные векторы
 D <- SVD$d #Вектор сингулярных чисел
-U <- SVD$u #"Вспомогательная" матрица - правые сингулярные векторы 
+U <- SVD$u #"Вспомогательная" матрица - левые сингулярные векторы 
 
 
 ```
 
-Вычислим $\textbf{V} \textbf{D} \textbf{U}'$
+Вычислим $\textbf{U} \textbf{D} \textbf{V}'$
 
 ```{r, purl=TRUE}
 U %*% diag(D) %*% t(V) 

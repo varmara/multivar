@@ -20,6 +20,24 @@ qplot(XY$x, XY$y) + labs(x = "Переменная 1", y = "Переменная
   geom_point(aes(x = mean(x), y = mean(y)), size = 4, color = "yellow")
 
 
+XY_cent <- as.data.frame(scale(XY,
+                               center = T, scale = F))
+
+head(XY_cent)
+
+
+# Угол между векорами в многомерном пространстве
+
+Cos_alpha <-
+  with(XY_cent,
+       (x %*% y) /
+         (norm(t(x), type = "F") *
+            norm(t(y), type = "F"))  )
+
+cor(XY$x, XY$y)
+
+
+
 #' ## Нормализуем векторы
 
 x_norm <- XY$x/sqrt(sum(XY$x)^2)
@@ -55,11 +73,22 @@ eig <- eigen(Sxy_norm_cent) # Стандартная функция R для и�
 
 Lambda <- eig$values # Собственные числа
 
+
+# Превращаем вектор собственный чисел в матрицу
 diag(Lambda)
+
 
 U <- eig$vectors # Собственные векторы
 
-U %*% diag(Lambda) %*% solve(U)
+# Дожна получиться ковариационная матрица
+U %*% diag(Lambda)  %*% solve(U)
+
+# Проверим
+Sxy_norm_cent
+
+
+
+
 
 
 
@@ -67,7 +96,10 @@ U %*% diag(Lambda) %*% solve(U)
 
 U_scaled <- U %*% sqrt(diag(Lambda)) #
 
+
 (U %*% sqrt(diag(Lambda))) %*% t(U %*% sqrt(diag(Lambda)))
+
+
 
 
 #' ## Рисуем собственные векторы {.smaller}
