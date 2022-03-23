@@ -172,21 +172,16 @@ install.packages("jpeg")
 
 - Презентация [html](06_intro_to_linear_algebra_part1.html)
 - [код R](06_intro_to_linear_algebra_part1.R)
-
-
 - Данные
+  + [Матрица 1](data/face.rda)     
+  + [Матрица 2](data/a_matrix.csv)
 
-+ [Матрица 1](data/face.rda)     
-+ [Матрица 2](data/a_matrix.csv)
 
-
-<!-- ## 7. SVD. (пн 14 марта, ВХ) -->
+## 7. SVD. (пн 14 марта, ВХ)
 
 - Презентация [html](07_intro_to_linear_algebra_part2.html)
 - [код R](07_intro_to_linear_algebra_part2.R)
-
 - RMD-файл с рассказом о фотографиях, как матричных объектах. После knitr дает интерактивный html-файл  [RMD](07_Shiny_SVD_demonstration.RMD)
-
 - Данные
     + [Матрица 1](data/face.rda)
     + [Матрица 2](data/a_matrix.csv)
