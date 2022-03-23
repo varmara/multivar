@@ -1,440 +1,200 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
+  <title>Анализ главных компонент</title>
 
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-
-
-<meta name="author" content="Марина Варфоломеева, Вадим Хайтов" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
 
 
-<title>Анализ главных компонент</title>
-
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 
-<style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; } /* Alert */
-code span.an { color: #008000; } /* Annotation */
-code span.at { } /* Attribute */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #0000ff; } /* ControlFlow */
-code span.ch { color: #008080; } /* Char */
-code span.cn { } /* Constant */
-code span.co { color: #008000; } /* Comment */
-code span.cv { color: #008000; } /* CommentVar */
-code span.do { color: #008000; } /* Documentation */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.im { } /* Import */
-code span.in { color: #008000; } /* Information */
-code span.kw { color: #0000ff; } /* Keyword */
-code span.op { } /* Operator */
-code span.ot { color: #ff4000; } /* Other */
-code span.pp { color: #ff4000; } /* Preprocessor */
-code span.sc { color: #008080; } /* SpecialChar */
-code span.ss { color: #008080; } /* SpecialString */
-code span.st { color: #008080; } /* String */
-code span.va { } /* Variable */
-code span.vs { color: #008080; } /* VerbatimString */
-code span.wa { color: #008000; font-weight: bold; } /* Warning */
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Анализ главных компонент',
+                        subtitle: 'Анализ и визуализация многомерных данных с использованием R',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: '08.1_PCA_files/logo.png',
+              },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Марина Варфоломеева, Вадим Хайтов' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
     }
-  }
-})();
-</script>
 
+    em {
+      font-style: italic;
+    }
 
+    summary {
+      display: list-item;
+    }
 
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
 
-<link rel="stylesheet" href="my_styles.css" type="text/css" />
-
-
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-pre code {
-  padding: 0;
-}
-</style>
-
-
-<style type="text/css">
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #adb5bd;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
-}
-</style>
-
-<script type="text/javascript">
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-
-  // Navbar adjustments
-  var navHeight = $(".navbar").first().height() + 15;
-  var style = document.createElement('style');
-  var pt = "padding-top: " + navHeight + "px; ";
-  var mt = "margin-top: -" + navHeight + "px; ";
-  var css = "";
-  // offset scroll position for anchor links (for fixed navbar)
-  for (var i = 1; i <= 6; i++) {
-    css += ".section h" + i + "{ " + pt + mt + "}\n";
-  }
-  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
-  document.head.appendChild(style);
-});
-</script>
-
-<!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
   display: block;
 }
 
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-  background-color: transparent;
-}
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            .sourceCode { overflow: visible; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(08.1_PCA_files/logo.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
+  </style>
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
-<!-- code folding -->
-
-
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-.tocify-subheader {
-  display: inline;
-}
-.tocify-subheader .tocify-item {
-  font-size: 0.95em;
-}
-
-</style>
-
-
+  <link rel="stylesheet" href="assets/my_styles.css" type="text/css" />
 
 </head>
 
-<body>
+<body style="opacity: 0">
 
+<slides class="layout-widescreen">
 
-<div class="container-fluid main-container">
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="08.1_PCA_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+          </hgroup>
+  </slide>
 
+<slide class=""><hgroup><h2>Вы сможете</h2></hgroup><article  id="вы-сможете">
 
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
-
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/multivar/">Multivar</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="index.html">О курсе</a></li>
-        <li><a href="lectures.html">Презентации и данные</a></li>
-<!--/        <li><a href="evaluation_criteria.html">Критерии оценки домашних заданий</a></li> -->
-       <li><a href="resources.html">Ссылки и ресурсы</a></li>
-       <li><a href="coding_practices.html">Правила хорошего кода</a></li>
-<!--/
-        <li class="dropdown">
-          <a href="appendix" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Полезности<span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-             <li><a href="supplement.html">Дополнительные темы</a></li>
-          </ul>
-        </li>
--->
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
-
-
-<div id="header">
-
-
-
-<h1 class="title toc-ignore">Анализ главных компонент</h1>
-<h3 class="subtitle">Анализ и визуализация многомерных данных с использованием R</h3>
-<h4 class="author">Марина Варфоломеева, Вадим Хайтов</h4>
-
-</div>
-
-
-<div id="вы-сможете" class="section level2">
-<h2>Вы сможете</h2>
 <ul>
 <li>Проводить анализ главных компонент при помощи функций из пакета <code>vegan</code></li>
 <li>Оценивать долю дисперсии, объясненной компонентами</li>
@@ -443,40 +203,47 @@ div.tocify {
 <li>Строить ординацию объектов в пространстве главных компонент</li>
 <li>Создавать комплексные переменные и использовать их в других видах анализов</li>
 </ul>
-</div>
-<div id="постановка-задачи-для-анализа-главных-компонент" class="section level1">
-<h1>Постановка задачи для анализа главных компонент</h1>
-<div id="зачем-нужен-анализ-главных-компонент" class="section level2">
-<h2>Зачем нужен анализ главных компонент?</h2>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Постановка задачи для анализа главных компонент</h2></hgroup><article  id="постановка-задачи-для-анализа-главных-компонент">
+
+</article></slide><slide class=""><hgroup><h2>Зачем нужен анализ главных компонент?</h2></hgroup><article  id="зачем-нужен-анализ-главных-компонент">
+
 <p>Когда признаков много, можно представить все объекты как облако точек в многомерном пространстве. Обычно в биологических исследованиях признаки объектов взаимозависимы (между ними есть ненулевая ковариация или корреляция).</p>
-<p><img src="images/Migration-DonMcCullough-Flickr.jpg" /></p>
-<p>Migration by Don McCullough on <a href="https://flic.kr/p/fEFhCj">Flickr</a></p>
-</div>
-<div id="не-все-проекции-несут-важную-информацию" class="section level2">
-<h2>Не все проекции несут важную информацию</h2>
-<p><img src="images/BlackShadows-FerranJorda-Flickr.jpg" /></p>
-<p>black shadows for a white horses / les negres ombres dels cavalls blancs by Ferran Jordà on <a href="https://flic.kr/p/9XJxiL">Flickr</a></p>
-</div>
-<div id="можно-найти-оптимальную-проекцию-чтобы-сохранить-максимум-информации-в-минимуме-измерений" class="section level2">
-<h2>Можно найти оптимальную проекцию, чтобы сохранить максимум информации в минимуме измерений</h2>
-<p><img src="images/CatsShadow-MarinaDelCastell-Flickr.jpg" /></p>
-<p>Cat’s shadow by Marina del Castell on <a href="https://flic.kr/p/ebe5UF">Flickr</a></p>
-</div>
-<div id="анализ-главных-компонент-principal-component-analysis-pca" class="section level2">
-<h2>Анализ главных компонент (Principal Component Analysis, PCA)</h2>
+
+<img src='images/Migration-DonMcCullough-Flickr.jpg' title=''/>
+
+<p>Migration by Don McCullough on <a href='https://flic.kr/p/fEFhCj' title=''>Flickr</a></p>
+
+</article></slide><slide class=""><hgroup><h2>Не все проекции несут важную информацию</h2></hgroup><article  id="не-все-проекции-несут-важную-информацию">
+
+<img src='images/BlackShadows-FerranJorda-Flickr.jpg' title=''/>
+
+<p>black shadows for a white horses / les negres ombres dels cavalls blancs by Ferran Jordà on <a href='https://flic.kr/p/9XJxiL' title=''>Flickr</a></p>
+
+</article></slide><slide class=""><hgroup><h2>Можно найти оптимальную проекцию, чтобы сохранить максимум информации в минимуме измерений</h2></hgroup><article  id="можно-найти-оптимальную-проекцию-чтобы-сохранить-максимум-информации-в-минимуме-измерений">
+
+<img src='images/CatsShadow-MarinaDelCastell-Flickr.jpg' title=''/>
+
+<p>Cat’s shadow by Marina del Castell on <a href='https://flic.kr/p/ebe5UF' title=''>Flickr</a></p>
+
+</article></slide><slide class=""><hgroup><h2>Анализ главных компонент (Principal Component Analysis, PCA)</h2></hgroup><article  id="анализ-главных-компонент-principal-component-analysis-pca">
+
 <ul>
 <li><p>Ординация объектов по многим признакам.</p></li>
 <li><p>Описание системы взаимосвязей между множеством исходных признаков и ранжирование признаков по важности.</p></li>
 <li><p>Снижение размерности многомерных данных (dimension reduction) и создание синтетических взаимонезависимых признаков для других анализов (например, для регрессии, дискриминантного анализа)</p></li>
 </ul>
-</div>
-<div id="пример-размеры-медуз" class="section level2">
-<h2>Пример: Размеры медуз</h2>
+
+</article></slide><slide class=""><hgroup><h2>Пример: Размеры медуз</h2></hgroup><article  id="пример-размеры-медуз">
+
 <p>Данные о размерах медуз <em>Catostylus mosaicus</em> (Lunn &amp; McNeil 1991). Медузы собраны в реке Хоксбери (Новый Южный Уэльс, Австралия): часть — на острове Дангар, другая — в заливе Саламандер.</p>
+
 <div class="columns-2">
 <p><img src="images/Blubberjellies-KirstiScott-Flickr.jpg" height=300></p>
-<p>Blubber jellies! by Kirsti Scott on <a href="https://flic.kr/p/nWikVp">Flickr</a></p>
-<pre><code>##    location width length
+
+<p>Blubber jellies! by Kirsti Scott on <a href='https://flic.kr/p/nWikVp' title=''>Flickr</a></p>
+
+<pre >##    location width length
 ## 1         D   6.0    9.0
 ## 2         D   6.5    8.0
 ## 3         D   6.5    9.0
@@ -486,28 +253,31 @@ div.tocify {
 ## 7         D   8.0    9.5
 ## 8         D   8.0   10.0
 ## 9         D   8.0   10.0
-## 10        D   8.0   11.0</code></pre>
-</div>
-</div>
-<div id="задача-анализа-главных-компонент" class="section level2">
-<h2>Задача анализа главных компонент</h2>
-<p>Нужно найти такую трансформацию исходных данных, чтобы “новые” переменные:</p>
+## 10        D   8.0   11.0</pre></div>
+
+</article></slide><slide class=""><hgroup><h2>Задача анализа главных компонент</h2></hgroup><article  id="задача-анализа-главных-компонент">
+
+<p>Нужно найти такую трансформацию исходных данных, чтобы &ldquo;новые&rdquo; переменные:</p>
+
 <ul>
 <li>содержали всю исходную информацию</li>
 <li>были независимы друг от друга</li>
 <li>были ранжированы в порядке убывания важности (например, в порядке убывания их дисперсии)</li>
 </ul>
+
 <p>Интуитивно, мы можем добиться этого, если проведем одну ось вдоль направления, в котором максимально вытянуто облако исходных данных. Вторую ось проведем перпендикулярно первой (и они будут независимы).</p>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="вспомним-как-устроен-pca." class="section level2">
-<h2>Вспомним, как устроен PCA.</h2>
-<p><img src="images/PCA.png" /></p>
-</div>
-<div id="результаты-работы-pca" class="section level2 columns-2 smaller">
-<h2 class="columns-2 smaller">Результаты работы PCA</h2>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Вспомним, как устроен PCA.</h2></hgroup><article  id="вспомним-как-устроен-pca.">
+
+<img src='images/PCA.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Результаты работы PCA</h2></hgroup><article  id="результаты-работы-pca" class="columns-2 smaller">
+
 <ul>
 <li><strong>Собственные векторы</strong> (<strong>факторные нагрузки</strong>)
+
 <ul>
 <li>перпендикулярны друг другу (ортогональны, независимы)</li>
 <li>задают <strong>главные компоненты</strong> — направления новых осей</li>
@@ -515,84 +285,95 @@ div.tocify {
 <li>упорядочены в порядке убывания дисперсии</li>
 </ul></li>
 <li><strong>Собственные числа</strong>
+
 <ul>
 <li>показывают дисперсию вдоль главных компонент</li>
 <li>упорядочены в порядке убывания дисперсии</li>
 <li>используются для вычисления доли общей изменчивости, связанной с каждой из главных компонент</li>
 </ul></li>
 <li><strong>Факторные координаты</strong>
+
 <ul>
 <li>координаты объектов в пространстве главных компонент</li>
 </ul></li>
 </ul>
+
 <p><br/></p>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-3-1.png" width="480" style="display: block; margin: auto;" /></p>
-</div>
-<div id="результаты-работы-pca-1" class="section level2">
-<h2>Результаты работы PCA</h2>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-3-1.png" width="480" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Результаты работы PCA</h2></hgroup><article  id="результаты-работы-pca-1">
+
 <ul>
 <li>Главные компоненты
+
 <ul>
-<li>новые “синтетические” признаки объектов, которые сочетают несколько исходных признаков</li>
+<li>новые &ldquo;синтетические&rdquo; признаки объектов, которые сочетают несколько исходных признаков</li>
 <li>упорядочены по убыванию доли объясненной изменчивости</li>
 <li>используя разное число главных компонент можно снизить размерность исходных данных</li>
 </ul></li>
 </ul>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" /></p>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" /></p>
+
 <ul>
-<li>PC1 — “размер медузы” — больше всего изменчивости</li>
+<li>PC1 — &ldquo;размер медузы&rdquo; — больше всего изменчивости</li>
 <li>PC2 — остаточная изменчивость</li>
 </ul>
-</div>
-</div>
-<div id="действительно-многомерные-данные" class="section level1">
-<h1>Действительно многомерные данные</h1>
-<div id="пример-потребление-белков-в-странах-европы-с-разными-видами-продуктов-питания" class="section level2">
-<h2>Пример: Потребление белков в странах Европы с разными видами продуктов питания</h2>
-<p><img src="images/PaleoDiet-zsoolt-Flickr.jpg" /></p>
-<p><small>Paleo Diet by zsoolt on <a href="https://flic.kr/p/pPK1nz">Flickr</a></small></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Действительно многомерные данные</h2></hgroup><article  id="действительно-многомерные-данные">
+
+</article></slide><slide class=""><hgroup><h2>Пример: Потребление белков в странах Европы с разными видами продуктов питания</h2></hgroup><article  id="пример-потребление-белков-в-странах-европы-с-разными-видами-продуктов-питания">
+
+<img src='images/PaleoDiet-zsoolt-Flickr.jpg' title=''/>
+
+<p><small>Paleo Diet by zsoolt on <a href='https://flic.kr/p/pPK1nz' title=''>Flickr</a></small></p>
+
 <div class="footnote">
-Данные из Weber, 1973
-</div>
-</div>
-<div id="открываем-данные" class="section level2 smaller">
-<h2 class="smaller">Открываем данные</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>protein <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="at">file=</span><span class="st">&quot;data/protein.csv&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">dec=</span><span class="st">&quot;.&quot;</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>protein<span class="sc">$</span>region <span class="ot">&lt;-</span> <span class="fu">factor</span>(protein<span class="sc">$</span>region)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(protein) <span class="ot">&lt;-</span> protein<span class="sc">$</span>country</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(protein)</span></code></pre></div>
-<pre><code>##    country      region redmeat whitemeat eggs milk fish cereals starch nuts frveg
+Данные из Weber, 1973</div>
+
+</article></slide><slide class=""><hgroup><h2>Открываем данные</h2></hgroup><article  id="открываем-данные" class="smaller">
+
+<pre class = 'prettyprint lang-r'>protein &lt;- read.table(file=&quot;data/protein.csv&quot;, sep=&quot;\t&quot;, dec=&quot;.&quot;, header=TRUE)
+protein$region &lt;- factor(protein$region)
+rownames(protein) &lt;- protein$country
+head(protein)</pre>
+
+<pre >##    country      region redmeat whitemeat eggs milk fish cereals starch nuts frveg
 ## Al      Al     Balkans    10.1       1.4  0.5  8.9  0.2    42.3    0.6  5.5   1.7
 ## At      At    W Europe     8.9      14.0  4.3 19.9  2.1    28.0    3.6  1.3   4.3
 ## Be      Be    W Europe    13.5       9.3  4.1 17.5  4.5    26.6    5.7  2.1   4.0
 ## Bu      Bu     Balkans     7.8       6.0  1.6  8.3  1.2    56.7    1.1  3.7   4.2
 ## Cz      Cz    E Europe     9.7      11.4  2.8 12.5  2.0    34.3    5.0  1.1   4.0
-## Dk      Dk Scandinavia    10.6      10.8  3.7 25.0  9.9    21.9    4.8  0.7   2.4</code></pre>
+## Dk      Dk Scandinavia    10.6      10.8  3.7 25.0  9.9    21.9    4.8  0.7   2.4</pre>
+
 <div class="footnote">
-Данные из Weber, 1973
-</div>
-</div>
-<div id="делаем-pca" class="section level2">
-<h2>Делаем PCA</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>prot_pca <span class="ot">&lt;-</span> <span class="fu">rda</span>(protein[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(prot_pca)</span></code></pre></div>
-<p><img src="08_PCA_files/figure-html/pca-owl-1.png" width="480" style="display: block; margin: auto auto auto 0;" /></p>
-</div>
-<div id="делаем-pca-1" class="section level2">
-<h2>Делаем PCA</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>prot_pca <span class="ot">&lt;-</span> <span class="fu">rda</span>(protein[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)], <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(prot_pca)</span></code></pre></div>
+Данные из Weber, 1973</div>
+
+</article></slide><slide class=""><hgroup><h2>Делаем PCA</h2></hgroup><article  id="делаем-pca">
+
+<pre class = 'prettyprint lang-r'>library(vegan)
+prot_pca &lt;- rda(protein[, -c(1, 2)], scale = TRUE)
+biplot(prot_pca)</pre>
+
+<p><img src="08.1_PCA_files/figure-html/pca-owl-1.png" width="480" style="display: block; margin: auto auto auto 0;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Делаем PCA</h2></hgroup><article  id="делаем-pca-1">
+
+<pre class = 'prettyprint lang-r'>library(vegan)
+prot_pca &lt;- rda(protein[, -c(1, 2)], scale = TRUE)
+biplot(prot_pca)</pre>
+
 <div class="columns-2">
-<p><img src="08_PCA_files/figure-html/pca-owl-1.png" width="480" style="display: block; margin: auto;" /></p>
-<p><img src="images/how-to-owl.jpg" /></p>
-</div>
-</div>
-<div id="разбираемся-с-результатами-pca" class="section level2">
-<h2>Разбираемся с результатами PCA</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(prot_pca)</span></code></pre></div>
-<pre><code>## 
+<p><img src="08.1_PCA_files/figure-html/pca-owl-1.png" width="480" style="display: block; margin: auto;" /></p>
+
+<img src='images/how-to-owl.jpg' title=''/></div>
+
+</article></slide><slide class=""><hgroup><h2>Разбираемся с результатами PCA</h2></hgroup><article  id="разбираемся-с-результатами-pca">
+
+<pre class = 'prettyprint lang-r'>summary(prot_pca)</pre>
+
+<pre >## 
 ## Call:
 ## rda(X = protein[, -c(1, 2)], scale = TRUE) 
 ## 
@@ -660,62 +441,67 @@ div.tocify {
 ## Uk   -0.6785 -0.0575 -0.84933 -1.3885  1.2455 -0.1325
 ## USSR  0.3060 -0.0678 -0.27239  0.7429  1.9183  0.2545
 ## W Ge -0.8186 -0.1798  0.59240 -0.0871 -0.0785 -0.2758
-## Yu    1.4164 -0.6353  0.15182  0.6580  0.4340  0.4857</code></pre>
-</div>
-</div>
-<div id="сколько-компонент-нужно-оставить" class="section level1">
-<h1>1. Сколько компонент нужно оставить?</h1>
-<div id="собственные-числа-показывают-вклады-главных-компонент-в-общую-изменчивость" class="section level2">
-<h2>Собственные числа показывают вклады главных компонент в общую изменчивость</h2>
-<pre><code>Eigenvalues, and their contribution to the correlations 
+## Yu    1.4164 -0.6353  0.15182  0.6580  0.4340  0.4857</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>1. Сколько компонент нужно оставить?</h2></hgroup><article  id="сколько-компонент-нужно-оставить">
+
+</article></slide><slide class=""><hgroup><h2>Собственные числа показывают вклады главных компонент в общую изменчивость</h2></hgroup><article  id="собственные-числа-показывают-вклады-главных-компонент-в-общую-изменчивость">
+
+<pre >Eigenvalues, and their contribution to the correlations 
 
 Importance of components:
                          PC1    PC2    PC3    PC4     PC5     PC6  ...  
 Eigenvalue            4.0064 1.6350 1.1279 0.9547 0.46384 0.32513 ...
 Proportion Explained  0.4452 0.1817 0.1253 0.1061 0.05154 0.03613 ...
-Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvals</span>(prot_pca) <span class="co"># собственные числа</span></span></code></pre></div>
-<pre><code>##  PC1  PC2  PC3  PC4  PC5  PC6  PC7  PC8  PC9 
-## 4.01 1.63 1.13 0.95 0.46 0.33 0.27 0.12 0.10</code></pre>
-</div>
-<div id="сколько-компонент-нужно-оставить-если-мы-хотим-редуцировать-данные" class="section level2">
-<h2>Сколько компонент нужно оставить, если мы хотим редуцировать данные?</h2>
+Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</pre>
+
+<pre class = 'prettyprint lang-r'>eigenvals(prot_pca) # собственные числа</pre>
+
+<pre >##  PC1  PC2  PC3  PC4  PC5  PC6  PC7  PC8  PC9 
+## 4.01 1.63 1.13 0.95 0.46 0.33 0.27 0.12 0.10</pre>
+
+</article></slide><slide class=""><hgroup><h2>Сколько компонент нужно оставить, если мы хотим редуцировать данные?</h2></hgroup><article  id="сколько-компонент-нужно-оставить-если-мы-хотим-редуцировать-данные">
+
 <ul>
 <li>Эмпирические правила (выберите любое, но одно)
+
 <ul>
 <li>Компоненты у которых соб. число &gt; 1 (правило Кайзера-Гатмана)</li>
 <li>В сумме объясняют заданный % от общей изменчивости (60-80%) - слишком субъективно</li>
 <li>Объясняют больше чем по Broken Stick Model.</li>
 </ul></li>
 </ul>
-<p><img src="images/broken-stick-md.png" /></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eigenvals</span>(prot_pca) <span class="co"># собственные числа</span></span></code></pre></div>
-<pre><code>##  PC1  PC2  PC3  PC4  PC5  PC6  PC7  PC8  PC9 
-## 4.01 1.63 1.13 0.95 0.46 0.33 0.27 0.12 0.10</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bstick</span>(prot_pca) <span class="co"># ожидаемое по Broken Stick Model</span></span></code></pre></div>
-<pre><code>##   PC1   PC2   PC3   PC4   PC5   PC6   PC7   PC8   PC9 
-## 2.829 1.829 1.329 0.996 0.746 0.546 0.379 0.236 0.111</code></pre>
-</div>
-<div id="график-собственных-чисел" class="section level2">
-<h2>График собственных чисел</h2>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">screeplot</span>(prot_pca, <span class="at">type =</span> <span class="st">&quot;lines&quot;</span>, <span class="at">bstick =</span> <span class="cn">TRUE</span>) <span class="co"># график собственных чисел</span></span></code></pre></div>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="графики-факторных-нагрузок-и-ординации" class="section level1">
-<h1>2. Графики факторных нагрузок и ординации</h1>
-<div id="параметр-scaling" class="section level2">
-<h2>Параметр <code>scaling</code></h2>
+
+<img src='images/broken-stick-md.png' title=''/>
+
+<pre class = 'prettyprint lang-r'>eigenvals(prot_pca) # собственные числа</pre>
+
+<pre >##  PC1  PC2  PC3  PC4  PC5  PC6  PC7  PC8  PC9 
+## 4.01 1.63 1.13 0.95 0.46 0.33 0.27 0.12 0.10</pre>
+
+<pre class = 'prettyprint lang-r'>bstick(prot_pca) # ожидаемое по Broken Stick Model</pre>
+
+<pre >##   PC1   PC2   PC3   PC4   PC5   PC6   PC7   PC8   PC9 
+## 2.829 1.829 1.329 0.996 0.746 0.546 0.379 0.236 0.111</pre>
+
+</article></slide><slide class=""><hgroup><h2>График собственных чисел</h2></hgroup><article  id="график-собственных-чисел">
+
+<pre class = 'prettyprint lang-r'>screeplot(prot_pca, type = &quot;lines&quot;, bstick = TRUE) # график собственных чисел</pre>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>2. Графики факторных нагрузок и ординации</h2></hgroup><article  id="графики-факторных-нагрузок-и-ординации">
+
+</article></slide><slide class=""><hgroup><h2>Параметр <code>scaling</code></h2></hgroup><article  id="параметр-scaling">
+
 <p>Внимание! Координаты объектов или переменных можно получить в нескольких вариантах, отличающихся масштабом. От этого масштаба будет зависеть интерпретация.</p>
-<table>
-<colgroup>
-<col width="7%" />
-<col width="10%" />
-<col width="51%" />
-<col width="17%" />
-<col width="12%" />
-</colgroup>
-<thead>
+
+<table class = 'rmdtable'>
+<col width="7.926829%" />
+<col width="10.975610%" />
+<col width="51.219512%" />
+<col width="17.073171%" />
+<col width="12.804878%" />
 <tr class="header">
 <th align="left">scaling</th>
 <th align="left">Название графика</th>
@@ -723,8 +509,6 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 <th align="left">Расстояния между объектами</th>
 <th align="left">Углы между векторами</th>
 </tr>
-</thead>
-<tbody>
 <tr class="odd">
 <td align="left">1, sites</td>
 <td align="left">биплот расстояний</td>
@@ -753,67 +537,70 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 <td align="left"></td>
 <td align="left"></td>
 </tr>
-</tbody>
 </table>
-</div>
-<div id="графики" class="section level2">
-<h2>Графики</h2>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># График факторных нагрузок</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;species&quot;</span>, <span class="at">scaling =</span> <span class="st">&quot;species&quot;</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># График факторных координат</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;sites&quot;</span>)</span></code></pre></div>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span></code></pre></div>
-</div>
-<div id="те-же-самые-графики-можно-построить-в-ggplot2" class="section level2">
-<h2>Те же самые графики можно построить в ggplot2</h2>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-13-1.png" width="960" style="display: block; margin: auto;" /></p>
-</div>
-<div id="исходный-код-графика-нагрузок" class="section level2">
-<h2>Исходный код графика нагрузок</h2>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Данные для графиков</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df_load <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scores</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;species&quot;</span>, </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">scaling =</span> <span class="st">&quot;species&quot;</span>))</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># поправки для размещения подписей</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df_load<span class="sc">$</span>hjust <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df_load<span class="sc">$</span>PC1 <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="sc">-</span><span class="fl">0.1</span>, <span class="dv">1</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>df_load<span class="sc">$</span>vjust <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df_load<span class="sc">$</span>PC2 <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="sc">-</span><span class="fl">0.1</span>, <span class="dv">1</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grid) <span class="co"># для стрелочек</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>ar <span class="ot">&lt;-</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;cm&quot;</span>))</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="do">## График нагрузок в ggplot</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>p_load <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_load) <span class="sc">+</span> </span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">label =</span> <span class="fu">rownames</span>(df_load)), </span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">3</span>, <span class="at">vjust =</span> df_load<span class="sc">$</span>vjust, <span class="at">hjust =</span> df_load<span class="sc">$</span>hjust) <span class="sc">+</span> </span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> PC1, <span class="at">yend =</span> PC2), </span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">&quot;grey40&quot;</span>, <span class="at">arrow =</span> ar) <span class="sc">+</span> </span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div>
-</div>
-<div id="исходный-код-графика-ординации" class="section level2">
-<h2>Исходный код графика ординации</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## График ординации в ggplot</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df_scores <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(protein[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>],</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scores</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;sites&quot;</span>, <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">scaling =</span> <span class="st">&quot;sites&quot;</span>))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>p_scores <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_scores, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">colour =</span> region)) <span class="sc">+</span> </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> country)) <span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>))</span></code></pre></div>
-</div>
-</div>
-<div id="интерпретация-компонент" class="section level1">
-<h1>3. Интерпретация компонент</h1>
-<div id="интерпретация-компонент-1" class="section level2 smaller">
-<h2 class="smaller">Интерпретация компонент</h2>
+
+</article></slide><slide class=""><hgroup><h2>Графики</h2></hgroup><article  id="графики">
+
+<pre class = 'prettyprint lang-r'>op &lt;- par(mfrow = c(1, 2))
+# График факторных нагрузок
+biplot(prot_pca, display = &quot;species&quot;, scaling = &quot;species&quot;)
+# График факторных координат
+biplot(prot_pca, display = &quot;sites&quot;)</pre>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+<pre class = 'prettyprint lang-r'>par(op)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Те же самые графики можно построить в ggplot2</h2></hgroup><article  id="те-же-самые-графики-можно-построить-в-ggplot2">
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-13-1.png" width="960" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Исходный код графика нагрузок</h2></hgroup><article  id="исходный-код-графика-нагрузок">
+
+<pre class = 'prettyprint lang-r'># Данные для графиков
+df_load &lt;- as.data.frame(scores(prot_pca, display = &quot;species&quot;, 
+                                choices = c(1, 2, 3), scaling = &quot;species&quot;))
+# поправки для размещения подписей
+df_load$hjust &lt;- ifelse(df_load$PC1 &gt;= 0, -0.1, 1)
+df_load$vjust &lt;- ifelse(df_load$PC2 &gt;= 0, -0.1, 1)
+
+library(grid) # для стрелочек
+ar &lt;- arrow(length = unit(0.25, &quot;cm&quot;))
+
+## График нагрузок в ggplot
+p_load &lt;- ggplot(df_load) + 
+  geom_text(aes(x = PC1, y = PC2, label = rownames(df_load)), 
+            size = 3, vjust = df_load$vjust, hjust = df_load$hjust) + 
+  geom_segment(aes(x = 0, y = 0, xend = PC1, yend = PC2), 
+               colour = &quot;grey40&quot;, arrow = ar) + 
+  coord_equal(xlim = c(-2, 2), ylim = c(-2, 2))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Исходный код графика ординации</h2></hgroup><article  id="исходный-код-графика-ординации">
+
+<pre class = 'prettyprint lang-r'>## График ординации в ggplot
+df_scores &lt;- data.frame(protein[, 1:2],
+  scores(prot_pca, display = &quot;sites&quot;, choices = c(1, 2, 3), scaling = &quot;sites&quot;))
+
+p_scores &lt;- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) + 
+  geom_text(aes(label = country)) +
+  coord_equal(xlim = c(-1.2, 1.2), ylim = c(-1.2, 1.2))</pre>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>3. Интерпретация компонент</h2></hgroup><article  id="интерпретация-компонент">
+
+</article></slide><slide class=""><hgroup><h2>Интерпретация компонент</h2></hgroup><article  id="интерпретация-компонент-1" class="smaller">
+
 <div class="columns-2">
 <p>Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте</p>
+
 <ul>
 <li>Модуль значения нагрузки — величина вклада</li>
 <li>Знак значения нагрузки — направление вклада</li>
 </ul>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scores</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;species&quot;</span>, </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">scaling =</span> <span class="dv">0</span>)</span></code></pre></div>
-<pre><code>##              PC1     PC2     PC3
+
+<pre class = 'prettyprint lang-r'>scores(prot_pca, display = &quot;species&quot;, 
+       choices = c(1, 2, 3), scaling = 0)</pre>
+
+<pre >##              PC1     PC2     PC3
 ## redmeat   -0.303 -0.0563 -0.2976
 ## whitemeat -0.311 -0.2369  0.6239
 ## eggs      -0.427 -0.0353  0.1815
@@ -824,32 +611,36 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 ## nuts       0.420  0.1433 -0.0544
 ## frveg      0.110  0.5362  0.4076
 ## attr(,&quot;const&quot;)
-## [1] 3.83</code></pre>
-<blockquote>
-<ul>
-<li>Т.е. первую компоненту можно назвать “Мясо – злаки и орехи”</li>
+## [1] 3.83</pre>
+
+<ul class = 'build'>
+<li>Т.е. первую компоненту можно назвать &ldquo;Мясо – злаки и орехи&rdquo;</li>
 </ul>
-</blockquote>
+
 <p><br/><br/></p>
-<div id="первая-главная-компонента" class="section level3">
+
 <h3>Первая главная компонента:</h3>
+
 <p>Высокие <strong>положительные нагрузки по первой главной компоненте</strong> у переменных <code>cereals</code> и <code>nuts</code>. Значит, чем больше значение PC1, тем больше потребление этих продуктов.</p>
+
 <p>Высокие <strong>отрицательные нагрузки</strong> у переменных <code>eggs</code>, <code>milk</code>, <code>whitemeat</code>, <code>redmeat</code>. Т.е., чем меньше значение PC1, тем больше их потребление.</p>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-</div>
-<div id="интерпретация-компонент-2" class="section level2 smaller">
-<h2 class="smaller">Интерпретация компонент</h2>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p></div>
+
+</article></slide><slide class=""><hgroup><h2>Интерпретация компонент</h2></hgroup><article  id="интерпретация-компонент-2" class="smaller">
+
 <div class="columns-2">
 <p>Факторные нагрузки оценивают вклады переменных в изменчивость по главной компоненте</p>
+
 <ul>
 <li>Модуль значения нагрузки — величина вклада</li>
 <li>Знак значения нагрузки — направление вклада</li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scores</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;species&quot;</span>, </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">scaling =</span> <span class="dv">0</span>)</span></code></pre></div>
-<pre><code>##              PC1     PC2     PC3
+
+<pre class = 'prettyprint lang-r'>scores(prot_pca, display = &quot;species&quot;, 
+       choices = c(1, 2, 3), scaling = 0)</pre>
+
+<pre >##              PC1     PC2     PC3
 ## redmeat   -0.303 -0.0563 -0.2976
 ## whitemeat -0.311 -0.2369  0.6239
 ## eggs      -0.427 -0.0353  0.1815
@@ -860,33 +651,34 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 ## nuts       0.420  0.1433 -0.0544
 ## frveg      0.110  0.5362  0.4076
 ## attr(,&quot;const&quot;)
-## [1] 3.83</code></pre>
-<blockquote>
-<ul>
-<li>Т.е. вторую компоненту можно назвать “Рыба и овощи”</li>
+## [1] 3.83</pre>
+
+<ul class = 'build'>
+<li>Т.е. вторую компоненту можно назвать &ldquo;Рыба и овощи&rdquo;</li>
 </ul>
-</blockquote>
+
 <p><br/><br/></p>
-<div id="вторая-главная-компонента" class="section level3">
+
 <h3>Вторая главная компонента:</h3>
+
 <p>Высокие <strong>положительные нагрузки по второй главной компоненте</strong> у переменных <code>fish</code>, <code>frveg</code>. Значит, чем больше значение PC2, тем больше потребление рыбы, овощей.</p>
+
 <p>Высоких <strong>отрицательных нагрузок по второй главной компоненте</strong> нет ни у одной из переменных.</p>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-</div>
-</div>
-<div id="pca-и-другие-методы" class="section level1">
-<h1>PCA и другие методы</h1>
-<div id="section" class="section level2 smaller">
-<h2 class="smaller"></h2>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p></div>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>PCA и другие методы</h2></hgroup><article  id="pca-и-другие-методы">
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section" class="smaller">
+
 <div class="columns-2">
-<div id="pca" class="section level3">
 <h3>PCA</h3>
+
 <ul>
-<li>Метод обучения “без учителя” (unsupervised learning)</li>
+<li>Метод обучения &ldquo;без учителя&rdquo; (unsupervised learning)</li>
 <li>Все переменные-признаки равноправны</li>
 <li>Задачи:
+
 <ul>
 <li>описать сходство объектов</li>
 <li>снизить размерность данных</li>
@@ -894,112 +686,116 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 </ul></li>
 <li>Главные компоненты — линейные комбинации переменных, задающие направления максимального варьирования исходных данных.</li>
 </ul>
+
 <p><br/></p>
-</div>
-<div id="линейная-регрессия" class="section level3">
+
 <h3>Линейная регрессия</h3>
+
 <ul>
-<li>Метод обучения “с учителем” (supervised learninig)</li>
+<li>Метод обучения &ldquo;с учителем&rdquo; (supervised learninig)</li>
 <li>Переменные делятся на зависимые (один или несколько откликов) и независимые (предикторы)</li>
 <li>Задачи:
+
 <ul>
 <li>описать зависимость значений отклика от предикторов</li>
 <li>предсказать значения отклика при известных значениях предикторов</li>
 </ul></li>
 <li>Линия регрессии — направление, вдоль которого минимален разброс значений зависимой переменной (сумма квадратов остатков).</li>
-</ul>
-</div>
-</div>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-18-1.png" width="480" style="display: block; margin: auto;" /></p>
-</div>
-<div id="section-1" class="section level2">
-<h2></h2>
+</ul></div>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-18-1.png" width="480" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section-1">
+
 <div class="columns-2">
-<div id="pca-1" class="section level3">
 <h3>PCA</h3>
+
 <ul>
 <li><p>PCA представляет многомерные данные в пространстве независимых осей, ранжированных по важности, поэтому <strong>есть возможность оставить только самые важные оси изменчивости</strong>.</p></li>
 <li><p>Расстояния между объектами на любой ординации PCA соответствуют их евклидовым расстояниям в пространстве главных компонент.</p></li>
 <li><p>Исходные признаки — количественные переменные, связанные друг с другом линейно. Для описания различий между такими объектами подходит евклидово расстояние.</p></li>
 </ul>
-</div>
-<div id="nmds" class="section level3">
+
 <h3>nMDS</h3>
+
 <ul>
 <li><p>nMDS пытается найти отображение многомерного пространства в заданном числе измерений (например, на плоскости) <strong>с максимальным сохранением информации из всех измерений</strong>.</p></li>
 <li><p>Ранги расстояний между объектами на nMDS будут соответствовать их рангам в исходной матрице различий. <br/><br/></p></li>
 <li><p>Исходные признаки могут быть любыми, т.к. может быть использована любая мера различий между объектами.</p></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="результаты-pca-и-nmds-будут-похожи-если-для-nmds-ординации-использовано-евклидово-расстояние" class="section level2 smaller">
-<h2 class="smaller">Результаты PCA и nMDS будут похожи, если для nMDS-ординации использовано евклидово расстояние</h2>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="создание-составных-переменных-при-помощи-pca" class="section level1">
-<h1>Создание составных переменных при помощи PCA</h1>
-<div id="создание-составных-переменных" class="section level2">
-<h2>Создание составных переменных</h2>
+</ul></div>
+
+</article></slide><slide class=""><hgroup><h2>Результаты PCA и nMDS будут похожи, если для nMDS-ординации использовано евклидово расстояние</h2></hgroup><article  id="результаты-pca-и-nmds-будут-похожи-если-для-nmds-ординации-использовано-евклидово-расстояние" class="smaller">
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Создание составных переменных при помощи PCA</h2></hgroup><article  id="создание-составных-переменных-при-помощи-pca">
+
+</article></slide><slide class=""><hgroup><h2>Создание составных переменных</h2></hgroup><article  id="создание-составных-переменных">
+
 <p>Факторные координаты — это новые составные признаки, которых можно использовать вместо исходных переменных</p>
+
 <p>Свойства факторных координат:</p>
+
 <ul>
 <li>Среднее = 0, Дисперсия = 1</li>
 <li>Не коррелируют друг с другом</li>
 </ul>
+
 <p>Применение:</p>
+
 <ul>
 <li>Уменьшение числа зависимых переменных — для дисперсионного анализа</li>
 <li>Уменьшение числа предикторов — во множественной регрессии</li>
 </ul>
-<pre><code>##        PC1     PC2     PC3
+
+<pre >##        PC1     PC2     PC3
 ## Al  0.9091 -0.4253 -0.4594
 ## At -0.3711 -0.2716  0.3490
 ## Be -0.4231  0.0416  0.0565
 ## Bu  0.8175 -0.3394  0.0395
 ## Cz -0.0966 -0.1572  0.3120
-## Dk -0.6170  0.0745 -0.1962</code></pre>
-</div>
-<div id="при-помощи-дисперсионного-анализа-можно-проверить-различается-ли-значение-первой-главной-компоненты-мясо-злаки-и-орехи-между-разными-регионами-европы" class="section level2">
-<h2>При помощи дисперсионного анализа можно проверить, различается ли значение первой главной компоненты (“Мясо – злаки и орехи”) между разными регионами Европы</h2>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Значения факторов (= факторные координаты)</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">region =</span> protein<span class="sc">$</span>region,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scores</span>(prot_pca, <span class="at">display =</span> <span class="st">&quot;sites&quot;</span>, <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">scaling =</span> <span class="st">&quot;sites&quot;</span>))</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(PC1 <span class="sc">~</span> region, <span class="at">data =</span> df)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod)</span></code></pre></div>
-<pre><code>## Analysis of Variance Table
+## Dk -0.6170  0.0745 -0.1962</pre>
+
+</article></slide><slide class=""><hgroup><h2>При помощи дисперсионного анализа можно проверить, различается ли значение первой главной компоненты (&ldquo;Мясо – злаки и орехи&rdquo;) между разными регионами Европы</h2></hgroup><article  id="при-помощи-дисперсионного-анализа-можно-проверить-различается-ли-значение-первой-главной-компоненты-мясо-злаки-и-орехи-между-разными-регионами-европы">
+
+<pre class = 'prettyprint lang-r'># Значения факторов (= факторные координаты)
+df &lt;- data.frame(region = protein$region,
+  scores(prot_pca, display = &quot;sites&quot;, choices = c(1, 2, 3), scaling = &quot;sites&quot;))
+mod &lt;- lm(PC1 ~ region, data = df)
+anova(mod)</pre>
+
+<pre >## Analysis of Variance Table
 ## 
 ## Response: PC1
 ##           Df Sum Sq Mean Sq F value       Pr(&gt;F)    
 ## region     5   5.97    1.19    39.3 0.0000000022 ***
 ## Residuals 19   0.58    0.03                         
 ## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<blockquote>
-<ul>
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</pre>
+
+<ul class = 'build'>
 <li>Регионы Европы различаются по потреблению мяса, злаков и орехов</li>
 </ul>
-</blockquote>
-</div>
-<div id="проверка-условий-применимости-дисперсионного-анализа" class="section level2">
-<h2>Проверка условий применимости дисперсионного анализа</h2>
-<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="08_PCA_files/figure-html/unnamed-chunk-22-1.png" width="960" style="display: block; margin: auto;" /></p>
-<blockquote>
-<ul>
+
+</article></slide><slide class=""><hgroup><h2>Проверка условий применимости дисперсионного анализа</h2></hgroup><article  id="проверка-условий-применимости-дисперсионного-анализа">
+
+<pre >## `geom_smooth()` using formula &#39;y ~ x&#39;</pre>
+
+<p><img src="08.1_PCA_files/figure-html/unnamed-chunk-22-1.png" width="960" style="display: block; margin: auto;" /></p>
+
+<ul class = 'build'>
 <li>Условия применимости дисперсионного анализа выполняются</li>
 </ul>
-</blockquote>
-</div>
-<div id="график-значений-первой-компоненты-по-регионам" class="section level2">
-<h2>График значений первой компоненты по регионам</h2>
-<p><img src="08_PCA_files/figure-html/pc1_p-1.png" width="960" style="display: block; margin: auto;" /></p>
-</div>
-<div id="пост-хок-тест" class="section level2">
-<h2>Пост-хок тест</h2>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(mod))</span></code></pre></div>
-<pre><code>##   Tukey multiple comparisons of means
+
+</article></slide><slide class=""><hgroup><h2>График значений первой компоненты по регионам</h2></hgroup><article  id="график-значений-первой-компоненты-по-регионам">
+
+<p><img src="08.1_PCA_files/figure-html/pc1_p-1.png" width="960" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Пост-хок тест</h2></hgroup><article  id="пост-хок-тест">
+
+<pre class = 'prettyprint lang-r'>TukeyHSD(aov(mod))</pre>
+
+<pre >##   Tukey multiple comparisons of means
 ##     95% family-wise confidence level
 ## 
 ## Fit: aov(formula = mod)
@@ -1020,12 +816,13 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 ## W Europe-Iberian          -0.8363 -1.2716 -0.4011 0.000
 ## Scandinavia-Mediterranean -0.9186 -1.3954 -0.4418 0.000
 ## W Europe-Mediterranean    -0.9350 -1.3703 -0.4998 0.000
-## W Europe-Scandinavia      -0.0164 -0.3536  0.3207 1.000</code></pre>
-</div>
-<div id="take-home-messages" class="section level2">
-<h2>Take-home messages</h2>
+## W Europe-Scandinavia      -0.0164 -0.3536  0.3207 1.000</pre>
+
+</article></slide><slide class=""><hgroup><h2>Take-home messages</h2></hgroup><article  id="take-home-messages">
+
 <ul>
 <li>Применение метода главных компонент (PCA):
+
 <ul>
 <li>снижение размерности данных</li>
 <li>исследование связей между переменными</li>
@@ -1033,94 +830,29 @@ Cumulative Proportion 0.4452 0.6268 0.7521 0.8582 0.90976 0.94589 ...</code></pr
 <li>создание комплексных переменных</li>
 </ul></li>
 <li>Терминология:
+
 <ul>
 <li>Собственные числа — вклад компонент в общую изменчивость</li>
 <li>Факторные нагрузки — корреляции исходных переменных с компонентами — используются для интерпретации</li>
 <li>Значения факторов — новые координаты объектов в пространстве уменьшенной размерности</li>
 </ul></li>
 </ul>
-</div>
-<div id="что-почитать" class="section level2">
-<h2>Что почитать</h2>
+
+</article></slide><slide class=""><hgroup><h2>Что почитать</h2></hgroup><article  id="что-почитать">
+
 <ul>
 <li>Borcard, D., Gillet, F., Legendre, P., 2011. Numerical ecology with R. Springer.</li>
 <li>Legendre, P., Legendre, L., 2012. Numerical ecology. Elsevier.</li>
 <li>Oksanen, J., 2011. Multivariate analysis of ecological communities in R: vegan tutorial. R package version 2–0.</li>
-<li>The Ordination Web Page <a href="http://ordination.okstate.edu/" class="uri">http://ordination.okstate.edu/</a> (accessed 05.04.17).</li>
+<li>The Ordination Web Page <a href='http://ordination.okstate.edu/' title=''>http://ordination.okstate.edu/</a> (accessed 05.04.17).</li>
 <li>Quinn, G.G.P., Keough, M.J., 2002. Experimental design and data analysis for biologists. Cambridge University Press.</li>
 <li>Zuur, A.F., Ieno, E.N., Smith, G.M., 2007. Analysing ecological data. Springer.</li>
-</ul>
-</div>
-</div>
-
-<p><small>
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">multivar</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="varmara.github.io/multivar" property="cc:attributionName" rel="cc:attributionURL">Marina Varfolomeeva, Vadim Khaitov, and Yuta tamberg</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
-</small></p>
+</ul></article></slide>
 
 
-</div>
-</div>
+  <slide class="backdrop"></slide>
 
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open');
-  });
-});
-</script>
-
-<!-- code folding -->
-
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
+</slides>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
@@ -1129,6 +861,20 @@ $(document).ready(function ()  {
     script.type = "text/javascript";
     script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
   })();
 </script>
 
