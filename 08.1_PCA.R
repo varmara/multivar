@@ -16,13 +16,13 @@ head(protein)
 # ## Делаем PCA  ####
 library(vegan)
 prot_pca <- rda(protein[, -c(1, 2)], scale = TRUE)
-op <- par(mar = c(5, 4, 0, 2) + 0.1)
+op <- par(mar = c(5, 4, 0, 1) + 0.1)
 biplot(prot_pca)
 par(op)
 
 
 # ## Разбираемся с результатами PCA  ####
-summary(prot_pca)
+tmp <- summary(prot_pca)
 
 # # 1. Сколько компонент нужно оставить? ----
 
@@ -32,8 +32,10 @@ bstick(prot_pca) # ожидаемое по Broken Stick Model
 
 screeplot(prot_pca, type = "lines", bstick = TRUE) # График собственных чисел
 
+prop_expl <- eigenvals(prot_pca)/sum(eigenvals(prot_pca))
+cumsum(prop_expl*100)
 
-# # 2. Графики факторных нагрузок и ординации ----
+# # 2. Графики факторных н агрузок и ординации ----
 # ## Параметр `scaling`
 # Внимание! Координаты объектов или переменных можно получить в нескольких вариантах, отличающихся масштабом. От этого масштаба будет зависеть интерпретация.
 
@@ -42,7 +44,7 @@ op <- par(mfrow = c(1, 2))
 # График факторных нагрузок
 biplot(prot_pca, display = "species", scaling = "species")
 # График факторных координат
-biplot(prot_pca, display = "sites")
+biplot(prot_pca, display = "sites", scaling = "sites")
 par(op)
 
 # ## Те же самые графики можно построить в ggplot2
@@ -71,7 +73,7 @@ p_scores <- ggplot(df_scores, aes(x = PC1, y = PC2, colour = region)) +
 
 # Все вместе
 library(cowplot)
-plot_grid(p_load, p_scores, align = "h", rel_widths = c(0.36, 0.64))
+plot_grid(p_load, p_scores, align = "hv", rel_widths = c(0.4, 0.64))
 
 
 # # 3. Интерпретация компонент -----
