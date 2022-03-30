@@ -220,19 +220,19 @@ install.packages("ade4")
 ```
 
 <!-- - Презентация [html](09_CA_and_CA_calculation.html) -->
-<!-- - [код R](09_CA_calculation.R) -->
-<!-- - Данные [macnally.xlsx](data/macnally.xlsx) -->
+- [код R](09_CA_calculation.R)
+- Данные [macnally.xlsx](data/macnally.xlsx)
 
-<!-- **Данные для самостоятельной работы** -->
+**Данные для самостоятельной работы**
 
-<!-- - Растительные сообщества во франции La Mafragh (Annaba, Algérie). Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.* -->
-<!--     + [mafragh_species.csv](data/mafragh_species.csv) -->
+- Растительные сообщества во франции La Mafragh (Annaba, Algérie). Данные из работы  *de Belair, G. and Bencheikh-Lehocine, M. (1987) Composition et déterminisme de la végétation d'une plaine côtière marécageuse : La Mafragh (Annaba, Algérie). Bulletin d'Ecologie, 18, 393–407.*
+    + [mafragh_species.csv](data/mafragh_species.csv)
 
-<!-- - __Крысы.__ -->
-<!--     + [bolger1.csv](data/bolger1.csv) -->
+- __Крысы.__
+    + [bolger1.csv](data/bolger1.csv)
 
-<!-- - __Бабочки.__ -->
-<!--     + butterfly{ade4} -->
+- __Бабочки.__
+    + butterfly{ade4}
 
 
 ## 10. Анализ избыточности (Redundancy analysis, RDA) (чт 7 апреля, МВ)
