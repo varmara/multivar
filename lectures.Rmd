@@ -219,9 +219,10 @@ install.packages(c("cowplot", "geomorph"))
 install.packages("ade4")
 ```
 
-<!-- - Презентация [html](09_CA_and_CA_calculation.html) -->
+- Презентация [html](09_CA_and_CA_calculation.html)
 - [код R](09_CA_calculation.R)
 - Данные [macnally.xlsx](data/macnally.xlsx)
+-  [Решение для задания про птиц](09_CA_bird_analysis_solution.R)
 
 **Данные для самостоятельной работы**
 
