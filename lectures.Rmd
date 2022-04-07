@@ -238,10 +238,8 @@ install.packages("ade4")
 
 ## 10. Анализ избыточности (Redundancy analysis, RDA) (чт 7 апреля, МВ)
 
-<!-- - Презентация [html](10_RDA.html) -->
-
+- Презентация [html](10_RDA.html)
 - [код R](10_RDA.R)
-
 - Данные butterfly{ade4} 
     - [butterfly_envir.csv](data/butterfly_envir.csv)
     - [butterfly_genet.csv](data/butterfly_genet.csv)
