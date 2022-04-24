@@ -427,24 +427,6 @@ class: middle, center, inverse
 ## Распределения обилия видов асимметричны
 
 
-
-```
-## ── Attaching packages ───────────────────────────── tidyverse 1.3.1 ──
-```
-
-```
-## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
-## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
-## ✓ readr   2.1.2     ✓ forcats 0.5.1
-## ✓ purrr   0.3.4
-```
-
-```
-## ── Conflicts ──────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
 &lt;img src="12_dbRDA_files/figure-html/asymm-1.png" style="display: block; margin: auto;" /&gt;
 
 ???
@@ -1033,20 +1015,20 @@ mod_pcoa_bray_cai_env
 ## ***VECTORS
 ## 
 ##            Dim1   Dim2   r2 Pr(&gt;r)    
-## N         0.135  0.991 0.23  0.073 .  
-## P         0.487 -0.873 0.27  0.040 *  
-## K         0.726 -0.687 0.16  0.152    
-## Ca        0.685 -0.729 0.35  0.009 ** 
-## Mg        0.726 -0.687 0.28  0.029 *  
-## S         0.211 -0.977 0.11  0.275    
+## N         0.135  0.991 0.23  0.059 .  
+## P         0.487 -0.873 0.27  0.032 *  
+## K         0.726 -0.687 0.16  0.158    
+## Ca        0.685 -0.729 0.35  0.008 ** 
+## Mg        0.726 -0.687 0.28  0.027 *  
+## S         0.211 -0.977 0.11  0.292    
 ## Al       -0.987  0.159 0.52  0.002 ** 
 ## Fe       -0.974  0.225 0.46  0.001 ***
-## Mn        0.933 -0.360 0.44  0.005 ** 
-## Zn        0.761 -0.649 0.19  0.088 .  
-## Mo       -0.706  0.708 0.05  0.565    
-## Baresoil  0.950  0.312 0.25  0.049 *  
-## Humdepth  0.914 -0.405 0.45  0.001 ***
-## pH       -0.992 -0.129 0.24  0.056 .  
+## Mn        0.933 -0.360 0.44  0.004 ** 
+## Zn        0.761 -0.649 0.19  0.114    
+## Mo       -0.706  0.708 0.05  0.590    
+## Baresoil  0.950  0.312 0.25  0.046 *  
+## Humdepth  0.914 -0.405 0.45  0.003 ** 
+## pH       -0.992 -0.129 0.24  0.057 .  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## Permutation: free
@@ -1325,9 +1307,9 @@ anova(mod_tbrda, by = "mar")
 ## 
 ## Model: rda(formula = decostand(varespec, method = "hellinger") ~ Mn + Baresoil + N, data = varechem)
 ##          Df Variance    F Pr(&gt;F)   
-## Mn        1   0.0492 3.99  0.003 **
-## Baresoil  1   0.0303 2.46  0.039 * 
-## N         1   0.0225 1.83  0.107   
+## Mn        1   0.0492 3.99  0.004 **
+## Baresoil  1   0.0303 2.46  0.036 * 
+## N         1   0.0225 1.83  0.112   
 ## Residual 20   0.2468               
 ## ---
 ## Signif. codes:  
@@ -1449,9 +1431,9 @@ anova(mod_dbrda_lingoes, by = "mar")
 ## 
 ## Model: capscale(formula = varespec ~ Mn + Baresoil + N, data = varechem, distance = "bray", add = TRUE)
 ##          Df SumOfSqs    F Pr(&gt;F)   
-## Mn        1     0.70 3.16  0.002 **
-## Baresoil  1     0.51 2.29  0.028 * 
-## N         1     0.42 1.91  0.041 * 
+## Mn        1     0.70 3.16  0.003 **
+## Baresoil  1     0.51 2.29  0.026 * 
+## N         1     0.42 1.91  0.050 * 
 ## Residual 20     4.46               
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1

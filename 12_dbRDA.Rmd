@@ -365,7 +365,7 @@ class: middle, center, inverse
 ## Распределения обилия видов асимметричны
 
 
-```{r asymm, echo=FALSE, purl=FALSE}
+```{r asymm, echo=FALSE, purl=FALSE, message=FALSE}
 library("tidyverse", quietly = T)
 varespec_tidy <- varespec %>%
   rownames_to_column("Site") %>% 
