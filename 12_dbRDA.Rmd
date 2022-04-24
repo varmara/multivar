@@ -374,7 +374,7 @@ varespec_tidy <- varespec %>%
                values_to = "Abundance")
   
 ggplot(data = varespec_tidy, aes(x = Abundance)) +
-  geom_histogram(binwidth = 30) +
+  geom_histogram(bins = 30) +
   facet_wrap(~ Species)
 ```
 
