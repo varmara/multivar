@@ -33,7 +33,12 @@ p {
 }
 
 .red { color: red; }
+.green { color: darkgreen; }
 
+
+.blurred-background {
+  backdrop-filter: blur(10px) saturate(70%);
+}
 
 /***********
  Code blocks
@@ -57,6 +62,11 @@ pre {
   line-height: 1.2em;
   font-size: 90%;
 }
+
+code.hljs {
+  border-left: 3px solid #9F2D20;
+}
+
 
 /******************
  * Slide scrolling
@@ -149,7 +159,7 @@ slides > slide {
 }
 .content-box-blue { background-color: #F0F8FF; }
 .content-box-gray { background-color: #e2e2e2; }
-.content-box-grey {	background-color: #F5F5F5; }
+.content-box-grey {	background-color: #e2e2e2; }
 .content-box-army {	background-color: #737a36; }
 .content-box-green { background-color: #d9edc2; }
 .content-box-purple { background-color: #e2e2f9; }

@@ -294,4 +294,17 @@ install.packages("reshape2")
     + [BCI_species.csv](data/BCI_species.csv)
     + параметры среды [BCI_env.csv](data/BCI_env.csv)
 
-## 12. Анализ избыточности, основанный на расстояниях (distance-based Redundancy Analysis, dbRDA) (чт 21 апреля, МВ)
+## 12. Анализ избыточности, основанный на расстояниях (distance-based Redundancy Analysis, dbRDA) (пн 25 апреля, МВ)
+
+<!-- - Презентация [html](12_dbRDA.html) -->
+- [код R](12_dbRDA.R)
+- Данные 
+  - `varespec{vegan}`
+  - `varechem{vegan}`
+
+**Данные для самостоятельной работы**
+
+- Данные из работы *Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches écologiques sur le réseau hydrographique du Doubs. Essai de biotypologie. Thèse d'état, Besançon. 1–257.*
+
+    + doubs{ade4}
+
