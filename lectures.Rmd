@@ -296,7 +296,7 @@ install.packages("reshape2")
 
 ## 12. Анализ избыточности, основанный на расстояниях (distance-based Redundancy Analysis, dbRDA) (пн 25 апреля, МВ)
 
-<!-- - Презентация [html](12_dbRDA.html) -->
+- Презентация [html](12_dbRDA.html)
 - [код R](12_dbRDA.R)
 - Данные 
   - `varespec{vegan}`
