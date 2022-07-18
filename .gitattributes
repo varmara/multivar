@@ -1,0 +1,5 @@
+*.Rmd linguist-language=RMarkdown
+*.R linguist-language=R
+libs/* linguist-vendored
+assets/* linguist-vendored
+*.html linguist-detectable=false
