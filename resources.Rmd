@@ -15,6 +15,13 @@ output:
 
 ---
 
+<span style="color: red; font-size:20pt">
+Это архивная версия курса. Последний раз таким составом авторов курс был прочитан весной 2022-23г.</span>
+
+Современная версия [здесь](https://polydora.github.io/multivar/)
+
+---
+
 ## R --- базовые знания
 
 - [Cheat-sheet по RStudio](https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf) от [RStudio](https://www.rstudio.com)
